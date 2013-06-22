@@ -1,11 +1,69 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="Test1.xcdatamodel" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel"
-       documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic"
-       macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="Event">
-        <attribute name="timeStamp" optional="YES" attributeType="Date"/>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="12E55" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="EEYEOAppUser" representedClassName="EEYEOAppUser" parentEntity="EEYEOIdObject" syncable="YES">
+        <attribute name="activated" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="active" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="admin" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="emailAddress" attributeType="String" minValueString="1" maxValueString="40" syncable="YES"/>
+        <attribute name="firstName" attributeType="String" minValueString="1" maxValueString="50" syncable="YES"/>
+        <attribute name="lastLogout" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastName" attributeType="String" minValueString="0" maxValueString="100" syncable="YES"/>
+    </entity>
+    <entity name="EEYEOAppUserOwnedObject" representedClassName="EEYEOAppUserOwnedObject" isAbstract="YES" parentEntity="EEYEOIdObject" syncable="YES">
+        <attribute name="archived" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <relationship name="appUser" minCount="1" maxCount="1" deletionRule="Deny" destinationEntity="EEYEOAppUser" syncable="YES"/>
+    </entity>
+    <entity name="EEYEOClassList" representedClassName="EEYEOClassList" parentEntity="EEYEOObservable" syncable="YES">
+        <attribute name="desc" attributeType="String" minValueString="1" maxValueString="50" syncable="YES"/>
+    </entity>
+    <entity name="EEYEODeletedObject" representedClassName="EEYEODeletedObject" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
+        <attribute name="deletedId" attributeType="String" minValueString="1" syncable="YES"/>
+    </entity>
+    <entity name="EEYEOIdObject" representedClassName="EEYEOIdObject" isAbstract="YES" syncable="YES">
+        <attribute name="id" attributeType="String" minValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="modificationTimestamp" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="EEYEOObservable" representedClassName="EEYEOObservable" isAbstract="YES" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
+        <attribute name="lastObservationTimestamp" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="EEYEOObservation" representedClassName="EEYEOObservation" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
+        <attribute name="comment" attributeType="String" minValueString="1" maxValueString="5000" syncable="YES"/>
+        <attribute name="observationTimestamp" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="significant" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="EEYEOObservationCategory" syncable="YES"/>
+        <relationship name="observable" optional="YES" minCount="1" maxCount="1" deletionRule="Deny" destinationEntity="EEYEOObservable" syncable="YES"/>
+    </entity>
+    <entity name="EEYEOObservationCategory" representedClassName="EEYEObservationCategory" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
+        <attribute name="desc" attributeType="String" minValueString="1" maxValueString="50" syncable="YES"/>
+        <attribute name="shortName" attributeType="String" minValueString="1" maxValueString="10" syncable="YES"/>
+    </entity>
+    <entity name="EEYEOPhoto" representedClassName="EEYEOPhoto" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
+        <attribute name="desc" attributeType="String" minValueString="1" maxValueString="50" syncable="YES"/>
+        <attribute name="imageData" attributeType="Binary" syncable="YES"/>
+        <attribute name="mimeType" attributeType="String" minValueString="1" syncable="YES"/>
+        <attribute name="thumbnailImageData" attributeType="Binary" syncable="YES"/>
+        <attribute name="timestamp" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="photoFor" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="EEYEOAppUserOwnedObject" syncable="YES"/>
+    </entity>
+    <entity name="EEYEOStudent" representedClassName="EEYEOStudent" parentEntity="EEYEOObservable" syncable="YES">
+        <attribute name="firstName" attributeType="String" minValueString="0" maxValueString="50" syncable="YES"/>
+        <attribute name="lastName" attributeType="String" minValueString="0" maxValueString="50" syncable="YES"/>
+        <relationship name="classLists" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="EEYEOClassList" syncable="YES"/>
+    </entity>
+    <entity name="Event" syncable="YES">
+        <attribute name="timeStamp" optional="YES" attributeType="Date" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Event" positionX="261" positionY="189" width="128" height="60"/>
+        <element name="EEYEOAppUser" positionX="-279" positionY="135" width="128" height="148"/>
+        <element name="EEYEOAppUserOwnedObject" positionX="-225" positionY="332" width="128" height="73"/>
+        <element name="EEYEOClassList" positionX="187" positionY="437" width="128" height="58"/>
+        <element name="EEYEODeletedObject" positionX="-333" positionY="410" width="128" height="58"/>
+        <element name="EEYEOIdObject" positionX="160" positionY="192" width="128" height="75"/>
+        <element name="EEYEOObservable" positionX="-18" positionY="406" width="128" height="58"/>
+        <element name="EEYEOObservation" positionX="196" positionY="288" width="128" height="118"/>
+        <element name="EEYEOObservationCategory" positionX="-9" positionY="135" width="128" height="73"/>
+        <element name="EEYEOPhoto" positionX="-216" positionY="524" width="128" height="133"/>
+        <element name="EEYEOStudent" positionX="88" positionY="524" width="128" height="88"/>
+        <element name="Event" positionX="160" positionY="192" width="128" height="60"/>
     </elements>
 </model>

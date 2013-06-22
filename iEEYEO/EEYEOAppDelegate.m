@@ -8,6 +8,7 @@
 #import "EEYEOAppDelegate.h"
 
 #import "EEYEOMasterViewController.h"
+#import "EEYEOLocalDataStore.h"
 
 @implementation EEYEOAppDelegate
 
@@ -25,6 +26,10 @@
     UINavigationController *masterNavigationController = splitViewController.viewControllers[0];
     EEYEOMasterViewController *controller = (EEYEOMasterViewController *) masterNavigationController.topViewController;
     controller.managedObjectContext = self.managedObjectContext;
+    EEYEOLocalDataStore *localDataStore = [EEYEOLocalDataStore instance];
+    [localDataStore setContext:self.managedObjectContext];
+    [localDataStore setModel:self.managedObjectModel];
+    [localDataStore createDummyData];
     return YES;
 }
 
@@ -42,6 +47,7 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    EEYEOLocalDataStore *instance = [EEYEOLocalDataStore instance];
 
 }
 
