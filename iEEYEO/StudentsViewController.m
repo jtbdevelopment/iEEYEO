@@ -21,6 +21,8 @@
     [super viewDidLoad];
     [self.collectionView registerClass:[StudentsViewCell class] forCellWithReuseIdentifier:STUDENT_CELL];
     [self setTitle:@"iE-EYE-O"];
+    //  TODO - central colors - this is darkbrown
+    [self.collectionView setBackgroundColor:[UIColor colorWithRed:0.773 green:0.451 blue:0.294 alpha:1] /*#c5734b*/];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -30,22 +32,12 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     StudentsViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    [[cell first] setBackgroundColor:[UIColor whiteColor]];
-    [[cell last] setBackgroundColor:[UIColor whiteColor]];
+    [cell setHighlighted:NO];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     StudentsViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-    [[cell first] setBackgroundColor:[UIColor greenColor]];
-    [[cell last] setBackgroundColor:[UIColor greenColor]];
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-    return [super collectionView:collectionView canPerformAction:action forItemAtIndexPath:indexPath withSender:sender];
-}
-
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-    [super collectionView:collectionView performAction:action forItemAtIndexPath:indexPath withSender:sender];
+    [cell setHighlighted:YES];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -69,6 +61,7 @@
     }
 }
 
+//  TODO - should this be here?  Or add to dao?
 - (NSFetchedResultsController *)fetchedResultsController {
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
@@ -83,6 +76,7 @@
     [fetchRequest setFetchBatchSize:20];
 
     // Edit the sort key as appropriate.
+    //  TODO - const the fields
     NSSortDescriptor *sortDescriptorFN = [[NSSortDescriptor alloc] initWithKey:@"firstName" ascending:YES];
     NSSortDescriptor *sortDescriptorLN = [[NSSortDescriptor alloc] initWithKey:@"lastName" ascending:YES];
     NSArray *sortDescriptors = @[sortDescriptorFN, sortDescriptorLN];
@@ -104,10 +98,6 @@
     }
 
     return _fetchedResultsController;
-}
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-//    [self.collectionView upd beginUpdates];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
@@ -149,17 +139,8 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-//    [self.collectionView endUpdates];
-}
-
-/*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
-
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
     // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
+    [self.collectionView reloadData];
 }
- */
 
 @end
