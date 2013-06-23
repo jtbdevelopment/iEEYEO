@@ -122,13 +122,25 @@
     [observationCategory2 setAppUser:appUser];
     [context save:&error];
 
-    EEYEOStudent *student = [self findOrCreate:STUDENTENTITY withId:@"S1"];
-    [student setFirstName:@"first"];
-    [student setLastName:@"Last"];
-    [student addClassListsObject:classList];
-    [student setAppUser:appUser];
-    [student setModificationTimestamp:5];
+    EEYEOStudent *student1 = [self findOrCreate:STUDENTENTITY withId:@"S1"];
+    [student1 setFirstName:@"student"];
+    [student1 setLastName:@"1"];
+    [student1 addClassListsObject:classList];
+    [student1 setAppUser:appUser];
+    [student1 setModificationTimestamp:5];
     [context save:&error];
+
+    for (int i = 2; i < 51; ++i) {
+        NSMutableString *id = [[NSMutableString alloc] initWithString:@"S"];
+        [id appendFormat:@"%d", i];
+        EEYEOStudent *student2 = [self findOrCreate:STUDENTENTITY withId:id];
+        [student2 setFirstName:@"student"];
+        [student2 setLastName:id];
+        [student2 addClassListsObject:classList];
+        [student2 setAppUser:appUser];
+        [student2 setModificationTimestamp:5];
+        [context save:&error];
+    }
 
     EEYEOObservation *observation = [self findOrCreate:OBSERVATIONENTITY withId:@"O1"];
     [observation setModificationTimestamp:6];
@@ -136,7 +148,7 @@
     [observation addCategoriesObject:observationCategory1];
     [observation addCategoriesObject:observationCategory2];
     [observation setComment:@"An observation"];
-    [observation setObservable:student];
+    [observation setObservable:student1];
     [observation setSignificant:YES];
     [observation setAppUser:appUser];
     [context save:&error];

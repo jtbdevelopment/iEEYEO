@@ -7,8 +7,9 @@
 
 #import "EEYEOAppDelegate.h"
 
-#import "EEYEOMasterViewController.h"
 #import "EEYEOLocalDataStore.h"
+#import "StudentsViewController.h"
+#import "StudentsViewLayout.h"
 
 @implementation EEYEOAppDelegate
 
@@ -18,18 +19,17 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
-    UISplitViewController *splitViewController = (UISplitViewController *) self.window.rootViewController;
-    UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
-    splitViewController.delegate = (id) navigationController.topViewController;
-
-    UINavigationController *masterNavigationController = splitViewController.viewControllers[0];
-    EEYEOMasterViewController *controller = (EEYEOMasterViewController *) masterNavigationController.topViewController;
-    controller.managedObjectContext = self.managedObjectContext;
     EEYEOLocalDataStore *localDataStore = [EEYEOLocalDataStore instance];
     [localDataStore setContext:self.managedObjectContext];
     [localDataStore setModel:self.managedObjectModel];
     [localDataStore createDummyData];
+
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    StudentsViewLayout *studentsViewLayout = [[StudentsViewLayout alloc] init];
+    StudentsViewController *studentsViewController = [[StudentsViewController alloc] initWithCollectionViewLayout:studentsViewLayout];
+    studentsViewController.managedObjectContext = self.managedObjectContext;
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:studentsViewController];
+    [[self window] setRootViewController:navigationController];
     return YES;
 }
 
