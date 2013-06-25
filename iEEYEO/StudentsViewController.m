@@ -9,20 +9,27 @@
 #import "EEYEOLocalDataStore.h"
 #import "StudentsViewCell.h"
 #import "EEYEOStudent.h"
+#import "ObservationsViewController.h"
 
 @interface StudentsViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
-@implementation StudentsViewController
 
+@implementation StudentsViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.collectionView registerClass:[StudentsViewCell class] forCellWithReuseIdentifier:STUDENT_CELL];
+    [self setClearsSelectionOnViewWillAppear:NO];
     [self setTitle:@"iE-EYE-O"];
     //  TODO - central colors - this is darkbrown
     [self.collectionView setBackgroundColor:[UIColor colorWithRed:0.773 green:0.451 blue:0.294 alpha:1] /*#c5734b*/];
+    //  TODO - probably in init or alloc
+    if (!_observationsViewController) {
+        self.observationsViewController = [[ObservationsViewController alloc] initWithStyle:UITableViewStylePlain];
+        self.observationsViewController.managedObjectContext = self.managedObjectContext;
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -38,6 +45,8 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     StudentsViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
     [cell setHighlighted:YES];
+    _observationsViewController.student = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [[self navigationController] pushViewController:_observationsViewController animated:YES];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {

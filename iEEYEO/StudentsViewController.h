@@ -7,10 +7,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class ObservationsViewController;
+
 static NSString *const STUDENT_CELL = @"StudentCell";
 
 @interface StudentsViewController : UICollectionViewController <NSFetchedResultsControllerDelegate>
 
+@property(strong, nonatomic) ObservationsViewController *observationsViewController;
 @property(strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property(strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 

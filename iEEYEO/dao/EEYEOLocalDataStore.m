@@ -43,14 +43,6 @@
     return _instance;
 }
 
-- (NSString *)daoDir {
-    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentationDirectory, NSUserDomainMask, YES);
-    NSString *docDir = [docDirs objectAtIndex:0];
-    NSString *dir = [docDir stringByAppendingPathComponent:@"eeyeo.data"];
-    NSLog(@"Local dao to %@", dir);
-    return dir;
-}
-
 - (id)find:(NSString *)entityType withId:(NSString *)withId {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:entityType inManagedObjectContext:context];
@@ -93,6 +85,7 @@
 //  TODO - get rid of me
 - (void)createDummyData {
     NSError *error = nil;
+    NSDate *date = nil;
 
     EEYEOAppUser *appUser = [self findOrCreate:APPUSERENTITY withId:@"U1"];
     [appUser setActivated:YES];
@@ -106,20 +99,24 @@
     [classList setDesc:@"A Class"];
     [classList setAppUser:appUser];
     [classList setModificationTimestamp:1];
+    date = [NSDate dateWithTimeIntervalSinceNow:0];
+    [classList setModificationTSAsNSDate:date];
     [context save:&error];
 
     EEYEOObservationCategory *observationCategory1 = [self findOrCreate:CATEGORYENTITY withId:@"OC1"];
-//    [observationCategory1 setModificationTimestamp:(int64_t)2];
     [observationCategory1 setShortName:@"OC1"];
     [observationCategory1 setDesc:@"Observation Category 1"];
     [observationCategory1 setAppUser:appUser];
+    date = [NSDate dateWithTimeIntervalSinceNow:0];
+    [observationCategory1 setModificationTSAsNSDate:date];
     [context save:&error];
 
     EEYEOObservationCategory *observationCategory2 = [self findOrCreate:CATEGORYENTITY withId:@"OC2"];
-//    [observationCategory2 setModifdicationTimestamp:2];
     [observationCategory2 setShortName:@"OC2"];
     [observationCategory2 setDesc:@"Observation Category 2"];
     [observationCategory2 setAppUser:appUser];
+    date = [NSDate dateWithTimeIntervalSinceNow:0];
+    [observationCategory1 setModificationTSAsNSDate:date];
     [context save:&error];
 
     EEYEOStudent *student1 = [self findOrCreate:STUDENTENTITY withId:@"S1"];
@@ -128,6 +125,14 @@
     [student1 addClassListsObject:classList];
     [student1 setAppUser:appUser];
     [student1 setModificationTimestamp:5];
+    [context save:&error];
+
+    EEYEOStudent *student2 = [self findOrCreate:STUDENTENTITY withId:@"S2"];
+    [student2 setFirstName:@"student"];
+    [student2 setLastName:@"2"];
+    [student2 addClassListsObject:classList];
+    [student2 setAppUser:appUser];
+    [student2 setModificationTimestamp:5];
     [context save:&error];
 
     for (int i = 2; i < 51; ++i) {
@@ -142,16 +147,28 @@
         [context save:&error];
     }
 
-    EEYEOObservation *observation = [self findOrCreate:OBSERVATIONENTITY withId:@"O1"];
-    [observation setModificationTimestamp:6];
-    [observation setObservationTimestamp:6];
-    [observation addCategoriesObject:observationCategory1];
-    [observation addCategoriesObject:observationCategory2];
-    [observation setComment:@"An observation"];
-    [observation setObservable:student1];
-    [observation setSignificant:YES];
-    [observation setAppUser:appUser];
-    [context save:&error];
+    for (int i = 1; i < 15; ++i) {
+        NSMutableString *id = [[NSMutableString alloc] initWithString:@"O"];
+        [id appendFormat:@"%d", i];
+
+        EEYEOObservation *observation = [self findOrCreate:OBSERVATIONENTITY withId:id];
+        [observation setModificationTSAsNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
+        date = [NSDate dateWithTimeIntervalSinceNow:(i * 60 * 60 * 24 * -1)];
+        [observation setObservationTSAsNSDate:date];
+        [observation addCategoriesObject:observationCategory1];
+        [observation addCategoriesObject:observationCategory2];
+        [observation setComment:@"An observation"];
+        if (i % 3 == 0) {
+            [observation setObservable:student1];
+        } else if (i % 3 == 1) {
+            [observation setObservable:student2];
+        } else {
+            [observation setObservable:classList];
+        }
+        [observation setSignificant:YES];
+        [observation setAppUser:appUser];
+        [context save:&error];
+    }
 }
 
 

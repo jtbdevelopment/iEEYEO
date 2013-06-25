@@ -14,4 +14,12 @@
 @property(nonatomic, retain) NSString *id;
 @property(nonatomic) int64_t modificationTimestamp;
 
+- (NSDate *)modificationTSAsNSDate;
+
+- (void)setModificationTSAsNSDate:(NSDate *)modificationTSAsDate;
+
++ (NSDate *)fromJodaDateTime:(long long)jodaDateTimeInMilliseconds;
+
++ (long long)toJodaDateTime:(NSDate *)dateTime;
+
 @end

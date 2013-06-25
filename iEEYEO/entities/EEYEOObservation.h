@@ -18,6 +18,11 @@
 @property(nonatomic) BOOL significant;
 @property(nonatomic, retain) NSSet *categories;
 @property(nonatomic, retain) EEYEOObservable *observable;
+
+- (NSDate *)observationTSAsNSDate;
+
+- (void)setObservationTSAsNSDate:(NSDate *)observationTS;
+
 @end
 
 @interface EEYEOObservation (CoreDataGeneratedAccessors)
