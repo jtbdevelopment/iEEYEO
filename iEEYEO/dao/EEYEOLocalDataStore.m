@@ -153,7 +153,7 @@
 
         EEYEOObservation *observation = [self findOrCreate:OBSERVATIONENTITY withId:id];
         [observation setModificationTSAsNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
-        date = [NSDate dateWithTimeIntervalSinceNow:(i * 60 * 60 * 24 * -1)];
+        date = [NSDate dateWithTimeIntervalSinceNow:(i * 24 * 60 * 60 * -1)];
         [observation setObservationTSAsNSDate:date];
         [observation addCategoriesObject:observationCategory1];
         [observation addCategoriesObject:observationCategory2];

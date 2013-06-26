@@ -16,7 +16,7 @@
 
 - (NSDate *)modificationTSAsNSDate;
 
-- (void)setModificationTSAsNSDate:(NSDate *)modificationTSAsDate;
+- (void)setModificationTSAsNSDate:(NSDate *)dateTime;
 
 + (NSDate *)fromJodaDateTime:(long long)jodaDateTimeInMilliseconds;
 

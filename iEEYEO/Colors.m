@@ -29,7 +29,7 @@
 + (UIColor *)forestGreen {
     static UIColor *FOREST_GREEN = nil;
     if (!FOREST_GREEN) {
-        [UIColor colorWithRed:0.8 green:0.765 blue:0.502 alpha:1];/*#ccc380*/
+        FOREST_GREEN = [UIColor colorWithRed:0.8 green:0.765 blue:0.502 alpha:1];/*#ccc380*/
     }
     return FOREST_GREEN;
 }

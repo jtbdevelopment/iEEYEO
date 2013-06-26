@@ -52,10 +52,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSArray *array = [self.fetchedResultsController sections];
-    id o = [array objectAtIndex:section];
-    NSUInteger i = [o numberOfObjects];
-    return i;
+    return [[[self.fetchedResultsController sections] objectAtIndex:section] numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

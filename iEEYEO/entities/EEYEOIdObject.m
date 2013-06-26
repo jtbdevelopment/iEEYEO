@@ -17,8 +17,8 @@
     return [EEYEOIdObject fromJodaDateTime:[self modificationTimestamp]];
 }
 
-- (void)setModificationTSAsNSDate:(NSDate *)modificationTSAsDate {
-    [self setModificationTimestamp:[EEYEOIdObject toJodaDateTime:modificationTSAsDate]];
+- (void)setModificationTSAsNSDate:(NSDate *)dateTime {
+    [self setModificationTimestamp:[EEYEOIdObject toJodaDateTime:dateTime]];
 }
 
 + (NSDate *)fromJodaDateTime:(long long int)jodaDateTimeInMilliseconds {
@@ -26,7 +26,7 @@
 }
 
 + (long long int)toJodaDateTime:(NSDate *)dateTime {
-    return (long long) [dateTime timeIntervalSince1970];
+    return (long long) ([dateTime timeIntervalSince1970] * 1000);
 }
 
 @end
