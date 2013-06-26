@@ -5,6 +5,7 @@
 
 
 #import "StudentsViewCell.h"
+#import "Colors.h"
 
 
 @implementation StudentsViewCell {
@@ -36,17 +37,14 @@
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
-    //  TODO - central colors
-
+    UIColor *color;
     if (highlighted) {
-        UIColor *FOREST_GREEN = [UIColor colorWithRed:0.8 green:0.765 blue:0.502 alpha:1]; /*#ccc380*/
-        self.first.backgroundColor = FOREST_GREEN;
-        [self.last setBackgroundColor:FOREST_GREEN];
+        color = [Colors forestGreen];
     } else {
-        UIColor *CREAM = [UIColor colorWithRed:0.949 green:0.89 blue:0.725 alpha:1]; /*#f2e3b9*/
-        self.first.backgroundColor = CREAM;
-        [self.last setBackgroundColor:CREAM];
+        color = [Colors cream];
     }
+    [self.first setBackgroundColor:color];
+    [self.last setBackgroundColor:color];
 }
 
 @end

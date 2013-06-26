@@ -10,6 +10,7 @@
 #import "StudentsViewCell.h"
 #import "EEYEOStudent.h"
 #import "ObservationsViewController.h"
+#import "Colors.h"
 
 @interface StudentsViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -23,11 +24,10 @@
     [self.collectionView registerClass:[StudentsViewCell class] forCellWithReuseIdentifier:STUDENT_CELL];
     [self setClearsSelectionOnViewWillAppear:NO];
     [self setTitle:@"iE-EYE-O"];
-    //  TODO - central colors - this is darkbrown
-    [self.collectionView setBackgroundColor:[UIColor colorWithRed:0.773 green:0.451 blue:0.294 alpha:1] /*#c5734b*/];
+    [self.collectionView setBackgroundColor:[Colors darkBrown]];
     //  TODO - probably in init or alloc
     if (!_observationsViewController) {
-        self.observationsViewController = [[ObservationsViewController alloc] initWithStyle:UITableViewStylePlain];
+        self.observationsViewController = [[ObservationsViewController alloc] initWithStyle:UITableViewStyleGrouped];
         self.observationsViewController.managedObjectContext = self.managedObjectContext;
     }
 }

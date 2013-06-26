@@ -9,6 +9,7 @@
 #import "EEYEOStudent.h"
 #import "EEYEOLocalDataStore.h"
 #import "EEYEOObservation.h"
+#import "Colors.h"
 
 @interface ObservationsViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -61,7 +62,8 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
 
     // Configure the cell...
@@ -219,7 +221,11 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [observation description];
+    cell.detailTextLabel.text = [[observation observationTSAsNSDate] description];
+    cell.textLabel.text = [observation comment];
+    cell.textLabel.backgroundColor = [Colors cream];
+    cell.detailTextLabel.backgroundColor = [Colors cream];
+    cell.backgroundColor = [Colors darkBrown];
 }
 
 @end
