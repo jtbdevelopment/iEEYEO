@@ -15,4 +15,8 @@
 @property(strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property(strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
+- (void)setStudent:(EEYEOStudent *)student;
+
+- (EEYEOStudent *)student;
+
 @end

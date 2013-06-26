@@ -33,7 +33,7 @@
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="EEYEOObservationCategory" syncable="YES"/>
         <relationship name="observable" optional="YES" minCount="1" maxCount="1" deletionRule="Deny" destinationEntity="EEYEOObservable" syncable="YES"/>
     </entity>
-    <entity name="EEYEOObservationCategory" representedClassName="EEYEObservationCategory" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
+    <entity name="EEYEOObservationCategory" representedClassName="EEYEOObservationCategory" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
         <attribute name="desc" attributeType="String" minValueString="1" maxValueString="50" syncable="YES"/>
         <attribute name="shortName" attributeType="String" minValueString="1" maxValueString="10" syncable="YES"/>
     </entity>
@@ -60,8 +60,8 @@
         <element name="EEYEODeletedObject" positionX="-333" positionY="410" width="128" height="58"/>
         <element name="EEYEOIdObject" positionX="160" positionY="192" width="128" height="75"/>
         <element name="EEYEOObservable" positionX="-18" positionY="406" width="128" height="58"/>
-        <element name="EEYEOObservation" positionX="196" positionY="288" width="128" height="118"/>
-        <element name="EEYEOObservationCategory" positionX="-9" positionY="135" width="128" height="73"/>
+        <element name="EEYEOObservation" positionX="196" positionY="288" width="128" height="120"/>
+        <element name="EEYEOObservationCategory" positionX="-9" positionY="135" width="128" height="75"/>
         <element name="EEYEOPhoto" positionX="-216" positionY="524" width="128" height="133"/>
         <element name="EEYEOStudent" positionX="88" positionY="524" width="128" height="88"/>
         <element name="Event" positionX="160" positionY="192" width="128" height="60"/>

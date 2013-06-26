@@ -14,9 +14,12 @@
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
-@implementation ObservationsViewController
+@implementation ObservationsViewController {
+@private
+    EEYEOStudent *_student;
+}
 
-@synthesize student;
+@synthesize student = _student;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
@@ -45,13 +48,13 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [[self.fetchedResultsController sections] count];
-
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
-    return [sectionInfo numberOfObjects];
-
+    NSArray *array = [self.fetchedResultsController sections];
+    id o = [array objectAtIndex:section];
+    NSUInteger i = [o numberOfObjects];
+    return i;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -123,16 +126,16 @@
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
 
-    //  TODO - filter for observable
-
     NSSortDescriptor *sortDescriptorOTS = [[NSSortDescriptor alloc] initWithKey:@"observationTimestamp" ascending:NO];
     NSArray *sortDescriptors = @[sortDescriptorOTS];
-
     [fetchRequest setSortDescriptors:sortDescriptors];
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"observable.id = %@", [[self student] id]];
+    [fetchRequest setPredicate:predicate];
 
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
 
@@ -146,6 +149,17 @@
 
     return _fetchedResultsController;
 }
+
+- (void)setStudent:(EEYEOStudent *)student {
+    _student = student;
+    _fetchedResultsController = nil;
+    [[self tableView] reloadData];
+}
+
+- (EEYEOStudent *)student {
+    return _student;
+}
+
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     [self.tableView beginUpdates];
