@@ -27,6 +27,8 @@ static NSString *const OBSERVATIONENTITY = @"EEYEOObservation";
 
 + (EEYEOLocalDataStore *)instance;
 
+- (id)find:(NSString *)entityType withId:(NSString *)withId;
+
 - (NSString *)daoDir;
 
 - (void)createDummyData;

@@ -165,7 +165,11 @@
         } else {
             [observation setObservable:classList];
         }
-        [observation setSignificant:YES];
+        if (i % 2 == 0) {
+            [observation setSignificant:YES];
+        } else {
+            [observation setSignificant:NO];
+        }
         [observation setAppUser:appUser];
         [context save:&error];
     }

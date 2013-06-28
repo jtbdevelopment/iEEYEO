@@ -17,6 +17,4 @@
 
 - (void)setStudent:(EEYEOStudent *)student;
 
-- (EEYEOStudent *)student;
-
 @end

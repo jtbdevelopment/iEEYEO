@@ -14,7 +14,7 @@
 @dynamic lastName;
 @dynamic classLists;
 
-- (NSString *)description {
+- (NSString *)desc {
     NSMutableString *firstLast = [[NSMutableString alloc] initWithString:[self firstName]];
     if (self.lastName) {
         [firstLast appendString:@" "];
@@ -22,5 +22,4 @@
     }
     return firstLast;
 }
-
 @end

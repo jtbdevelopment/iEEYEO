@@ -16,6 +16,7 @@
 @property(nonatomic, retain) NSString *firstName;
 @property(nonatomic, retain) NSString *lastName;
 @property(nonatomic, retain) NSSet *classLists;
+
 @end
 
 @interface EEYEOStudent (CoreDataGeneratedAccessors)

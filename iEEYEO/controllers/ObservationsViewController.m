@@ -10,14 +10,18 @@
 #import "EEYEOLocalDataStore.h"
 #import "EEYEOObservation.h"
 #import "Colors.h"
+#import "ObservationViewController.h"
 
 @interface ObservationsViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
+//  TODO - highlight color?
 @implementation ObservationsViewController {
 @private
     EEYEOStudent *_student;
+    NSDateFormatter *_dateFormatter;
+    ObservationViewController *_observationView;
 }
 
 @synthesize student = _student;
@@ -25,7 +29,10 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (self) {
-        // Custom initialization
+        //  TODO - central
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+        _observationView = [[ObservationViewController alloc] init];
     }
     return self;
 }
@@ -34,10 +41,14 @@
     [super viewDidLoad];
 
     // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
+    self.clearsSelectionOnViewWillAppear = NO;
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:nil];
+    self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:self.editButtonItem, addButton, nil];
+
+    self.tableView.backgroundColor = [Colors cream];
+    self.tableView.separatorColor = [Colors darkBrown];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -99,8 +110,17 @@
 }
 
 #pragma mark - Table view delegate
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    cell.backgroundColor = [Colors cream];
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self.navigationController pushViewController:_observationView animated:YES];
+    [_observationView setObservation:observation];
     // Navigation logic may go here. Create and push another view controller.
     /*
      <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
@@ -154,11 +174,6 @@
     _fetchedResultsController = nil;
     [[self tableView] reloadData];
 }
-
-- (EEYEOStudent *)student {
-    return _student;
-}
-
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
     [self.tableView beginUpdates];
@@ -218,11 +233,9 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.detailTextLabel.text = [[observation observationTSAsNSDate] description];
+    cell.detailTextLabel.text = [_dateFormatter stringFromDate:[observation observationTSAsNSDate]];
     cell.textLabel.text = [observation comment];
-    cell.textLabel.backgroundColor = [Colors cream];
-    cell.detailTextLabel.backgroundColor = [Colors cream];
-    cell.backgroundColor = [Colors darkBrown];
+    cell.selectedBackgroundView.backgroundColor = [Colors forestGreen];
 }
 
 @end

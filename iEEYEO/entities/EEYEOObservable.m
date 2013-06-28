@@ -5,11 +5,14 @@
 //  Copyright (c) 2013 jtbdevelopment. All rights reserved.
 //
 
-#import "EEYEOObservable.h"
+#import "EEYEOStudent.h"
 
 
 @implementation EEYEOObservable
 
 @dynamic lastObservationTimestamp;
 
+- (NSString *)desc {
+    return [self description];
+}
 @end
