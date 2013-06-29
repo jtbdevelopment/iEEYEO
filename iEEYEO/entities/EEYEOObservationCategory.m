@@ -12,5 +12,6 @@
 
 @dynamic desc;
 @dynamic shortName;
+@dynamic observations;
 
 @end

@@ -54,9 +54,6 @@
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     [request setSortDescriptors:sortDescriptors];
 
-    NSFetchedResultsController *controller = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:context sectionNameKeyPath:nil cacheName:nil];
-    [controller setDelegate:self];
-
     NSError *error = nil;
     NSArray *result = [context executeFetchRequest:request error:&error];
     if (error != nil || result == nil || [result count] == 0) {
@@ -116,7 +113,7 @@
     [observationCategory2 setDesc:@"Observation Category 2"];
     [observationCategory2 setAppUser:appUser];
     date = [NSDate dateWithTimeIntervalSinceNow:0];
-    [observationCategory1 setModificationTSAsNSDate:date];
+    [observationCategory2 setModificationTSAsNSDate:date];
     [context save:&error];
 
     EEYEOStudent *student1 = [self findOrCreate:STUDENTENTITY withId:@"S1"];

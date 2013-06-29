@@ -30,7 +30,7 @@
     studentsViewController.managedObjectContext = self.managedObjectContext;
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:studentsViewController];
     [[self window] setRootViewController:navigationController];
-    return YES;
+    [[self window] makeKeyAndVisible];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

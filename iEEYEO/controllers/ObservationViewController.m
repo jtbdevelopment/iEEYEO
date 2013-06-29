@@ -58,7 +58,7 @@
     _significant.on = observation.significant;
     [_timestamp setTitle:[_dateFormatter stringFromDate:[observation observationTSAsNSDate]] forState:UIControlStateNormal];
     NSMutableArray *codes = [[NSMutableArray alloc] init];
-    for (EEYEOObservationCategory *category in [observation categories]) {
+    for (EEYEOObservationCategory *category in observation.categories) {
         [codes addObject:category.shortName];
     }
     [_categories setTitle:[codes componentsJoinedByString:@", "] forState:UIControlStateNormal];
