@@ -29,7 +29,5 @@ static NSString *const OBSERVATIONENTITY = @"EEYEOObservation";
 
 - (id)find:(NSString *)entityType withId:(NSString *)withId;
 
-- (NSString *)daoDir;
-
 - (void)createDummyData;
 @end

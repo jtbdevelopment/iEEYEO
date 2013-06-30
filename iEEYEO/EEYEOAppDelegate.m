@@ -31,6 +31,7 @@
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:studentsViewController];
     [[self window] setRootViewController:navigationController];
     [[self window] makeKeyAndVisible];
+    return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -47,8 +48,6 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    EEYEOLocalDataStore *instance = [EEYEOLocalDataStore instance];
-
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
