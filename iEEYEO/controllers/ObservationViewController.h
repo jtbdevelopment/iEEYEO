@@ -10,13 +10,28 @@
 @class EEYEOObservation;
 
 @interface ObservationViewController : UIViewController
-@property(nonatomic, retain) IBOutlet UITextView *comments;
-@property(nonatomic, retain) IBOutlet UIButton *observable;
-@property(nonatomic, retain) IBOutlet UIButton *categories;
-@property(nonatomic, retain) IBOutlet UIButton *timestamp;
-@property(nonatomic, retain) IBOutlet UISwitch *significant;
+@property(nonatomic, retain) IBOutlet UITextView *commentField;
+@property(nonatomic, retain) IBOutlet UIButton *observableField;
+@property(nonatomic, retain) IBOutlet UIButton *categoriesField;
+@property(nonatomic, retain) IBOutlet UIButton *timestampField;
+@property(nonatomic, retain) IBOutlet UISwitch *significantField;
 
 @property(nonatomic, strong) EEYEOObservation *observation;
 
 - (void)setObservation:(EEYEOObservation *)observation;
+
+- (IBAction)editSignificant:(id)sender;
+
+- (IBAction)editObservable:(id)sender;
+
+- (IBAction)editCategories:(id)sender;
+
+- (IBAction)editTimestamp:(id)sender;
+
+- (IBAction)cancel:(id)sender;
+
+- (IBAction)reset:(id)sender;
+
+- (IBAction)save:(id)sender;
+
 @end

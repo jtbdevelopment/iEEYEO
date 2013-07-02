@@ -100,21 +100,20 @@
     [classList setModificationTSAsNSDate:date];
     [context save:&error];
 
-    EEYEOObservationCategory *observationCategory1 = [self findOrCreate:CATEGORYENTITY withId:@"OC1"];
-    [observationCategory1 setShortName:@"OC1"];
-    [observationCategory1 setDesc:@"Observation Category 1"];
-    [observationCategory1 setAppUser:appUser];
-    date = [NSDate dateWithTimeIntervalSinceNow:0];
-    [observationCategory1 setModificationTSAsNSDate:date];
-    [context save:&error];
+    NSMutableArray *categories = [[NSMutableArray alloc] init];
+    for (int i = 1; i <= 5; ++i) {
+        NSMutableString *id = [[NSMutableString alloc] initWithString:@"OC"];
+        [id appendFormat:@"%d", i];
 
-    EEYEOObservationCategory *observationCategory2 = [self findOrCreate:CATEGORYENTITY withId:@"OC2"];
-    [observationCategory2 setShortName:@"OC2"];
-    [observationCategory2 setDesc:@"Observation Category 2"];
-    [observationCategory2 setAppUser:appUser];
-    date = [NSDate dateWithTimeIntervalSinceNow:0];
-    [observationCategory2 setModificationTSAsNSDate:date];
-    [context save:&error];
+        EEYEOObservationCategory *observationCategory = [self findOrCreate:CATEGORYENTITY withId:id];
+        [observationCategory setShortName:id];
+        [observationCategory setDesc:@"Observation Category"];
+        [observationCategory setAppUser:appUser];
+        date = [NSDate dateWithTimeIntervalSinceNow:0];
+        [observationCategory setModificationTSAsNSDate:date];
+        [context save:&error];
+        [categories addObject:observationCategory];
+    }
 
     EEYEOStudent *student1 = [self findOrCreate:STUDENTENTITY withId:@"S1"];
     [student1 setFirstName:@"student"];
@@ -144,7 +143,7 @@
         [context save:&error];
     }
 
-    for (int i = 1; i < 15; ++i) {
+    for (unsigned i = 1; i < 15; ++i) {
         NSMutableString *id = [[NSMutableString alloc] initWithString:@"O"];
         [id appendFormat:@"%d", i];
 
@@ -152,8 +151,12 @@
         [observation setModificationTSAsNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
         date = [NSDate dateWithTimeIntervalSinceNow:(i * 24 * 60 * 60 * -1)];
         [observation setObservationTSAsNSDate:date];
-        [observation addCategoriesObject:observationCategory1];
-        [observation addCategoriesObject:observationCategory2];
+        NSSet *oldC = [[NSSet alloc] initWithSet:observation.categories];
+        for (EEYEOObservationCategory *category in oldC) {
+            [observation removeCategoriesObject:category];
+        }
+        [observation addCategoriesObject:[categories objectAtIndex:(i % 3)]];
+        [observation addCategoriesObject:[categories objectAtIndex:(i % 5)]];
         [observation setComment:@"An observation"];
         if (i % 3 == 0) {
             [observation setObservable:student1];

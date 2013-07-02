@@ -1,38 +1,36 @@
 //
-//  ObservationsViewController.m
+//  CategoryPickerViewController.m
 //  iEEYEO
 //
+//  Created by Joseph Buscemi on 7/1/13.
 //  Copyright (c) 2013 jtbdevelopment. All rights reserved.
 //
 
-#import "ObservationsViewController.h"
-#import "EEYEOStudent.h"
+#import "CategoryPickerViewController.h"
 #import "EEYEOLocalDataStore.h"
-#import "EEYEOObservation.h"
+#import "EEYEOObservationCategory.h"
 #import "Colors.h"
-#import "ObservationViewController.h"
 
-@interface ObservationsViewController ()
+@interface CategoryPickerViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+
 @end
 
-//  TODO - highlight color?
-@implementation ObservationsViewController {
+@implementation CategoryPickerViewController {
 @private
-    EEYEOStudent *_student;
-    NSDateFormatter *_dateFormatter;
-    ObservationViewController *_observationView;
+    NSMutableSet *_selectedCategories;
+    NSFetchedResultsController *_fetchedResultsController;
+    NSManagedObjectContext *_managedObjectContext;
 }
 
-@synthesize student = _student;
+@synthesize selectedCategories = _selectedCategories;
+@synthesize fetchedResultsController = _fetchedResultsController;
+@synthesize managedObjectContext = _managedObjectContext;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (self) {
-        //  TODO - central
-        _dateFormatter = [[NSDateFormatter alloc] init];
-        [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
-        _observationView = [[ObservationViewController alloc] init];
+        // Custom initialization
     }
     return self;
 }
@@ -41,14 +39,10 @@
     [super viewDidLoad];
 
     // Uncomment the following line to preserve selection between presentations.
-    self.clearsSelectionOnViewWillAppear = NO;
+    // self.clearsSelectionOnViewWillAppear = NO;
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:nil];
-    self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:self.editButtonItem, addButton, nil];
-
-    self.tableView.backgroundColor = [Colors cream];
-    self.tableView.separatorColor = [Colors darkBrown];
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -57,6 +51,7 @@
 }
 
 #pragma mark - Table view data source
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [[self.fetchedResultsController sections] count];
@@ -103,31 +98,35 @@
 }
 */
 
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return NO;
+/*
+// Override to support rearranging the table view.
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
 }
+*/
+
+/*
+// Override to support conditional rearranging of the table view.
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the item to be re-orderable.
+    return YES;
+}
+*/
 
 #pragma mark - Table view delegate
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    cell.backgroundColor = [Colors cream];
-}
-
-- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
-}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [_observationView setObservation:observation];
-    [self.navigationController pushViewController:_observationView animated:YES];
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+
+    NSString *code = cell.textLabel.text;
+    if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        [_selectedCategories removeObject:code];
+    } else {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        [_selectedCategories addObject:code];
+    }
 }
 
 #pragma mark - Fetched results controller
@@ -139,18 +138,15 @@
 
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:OBSERVATIONENTITY inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:CATEGORYENTITY inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
 
-    NSSortDescriptor *sortDescriptorOTS = [[NSSortDescriptor alloc] initWithKey:@"observationTimestamp" ascending:NO];
-    NSArray *sortDescriptors = @[sortDescriptorOTS];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"shortName" ascending:YES];
+    NSArray *sortDescriptors = @[sortDescriptor];
     [fetchRequest setSortDescriptors:sortDescriptors];
-
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"observable.id = %@", [[self student] id]];
-    [fetchRequest setPredicate:predicate];
 
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
@@ -167,12 +163,6 @@
     }
 
     return _fetchedResultsController;
-}
-
-- (void)setStudent:(EEYEOStudent *)student {
-    _student = student;
-    _fetchedResultsController = nil;
-    [[self tableView] reloadData];
 }
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
@@ -232,10 +222,14 @@
  */
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.detailTextLabel.text = [_dateFormatter stringFromDate:[observation observationTSAsNSDate]];
-    cell.textLabel.text = [observation comment];
+    EEYEOObservationCategory *category = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.detailTextLabel.text = [category desc];
+    cell.textLabel.text = [category shortName];
     cell.selectedBackgroundView.backgroundColor = [Colors forestGreen];
+    if ([_selectedCategories containsObject:[category shortName]]) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    } else {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
 }
-
 @end
