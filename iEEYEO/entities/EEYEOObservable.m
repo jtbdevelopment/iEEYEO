@@ -12,7 +12,4 @@
 
 @dynamic lastObservationTimestamp;
 
-- (NSString *)desc {
-    return [self description];
-}
 @end

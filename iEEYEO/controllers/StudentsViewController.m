@@ -13,7 +13,7 @@
 #import "Colors.h"
 
 @interface StudentsViewController ()
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+- (void)configureCell:(StudentsViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
 
@@ -38,12 +38,12 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-    StudentsViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    StudentsViewCell *cell = (StudentsViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
     [cell setHighlighted:NO];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    StudentsViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    StudentsViewCell *cell = (StudentsViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
     [cell setHighlighted:YES];
     [_observationsViewController setStudent:[_fetchedResultsController objectAtIndexPath:indexPath]];
     [[self navigationController] pushViewController:_observationsViewController animated:YES];
@@ -137,7 +137,7 @@
             break;
 
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[collectionView cellForItemAtIndexPath:indexPath] atIndexPath:indexPath];
+            [self configureCell:(StudentsViewCell *) [collectionView cellForItemAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
 
         case NSFetchedResultsChangeMove:

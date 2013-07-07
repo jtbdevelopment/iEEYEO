@@ -37,6 +37,12 @@
     return self;
 }
 
+- (void)setStudent:(EEYEOStudent *)student {
+    _student = student;
+    _fetchedResultsController = nil;
+    [[self tableView] reloadData];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -167,12 +173,6 @@
     }
 
     return _fetchedResultsController;
-}
-
-- (void)setStudent:(EEYEOStudent *)student {
-    _student = student;
-    _fetchedResultsController = nil;
-    [[self tableView] reloadData];
 }
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {

@@ -12,6 +12,11 @@
 #import "Colors.h"
 #import "CategoryPickerViewController.h"
 #import "EEYEOLocalDataStore.h"
+#import "ObservationTimestampPickerViewController.h"
+#import "ObservablePickerViewController.h"
+
+//  TODO - make this all look a heck of lot nicer
+//  TODO - look into custom inputs for setting fields instead of more screens
 
 @interface ObservationViewController ()
 
@@ -27,8 +32,8 @@
     UISwitch *_significantField;
 
     EEYEOObservation *_observation;
-    EEYEOObservable *_observable;
-    NSDate *_observationTimestamp;
+    NSMutableArray *_observable;
+    NSMutableArray *_observationTimestamp;
     NSString *_comments;
     BOOL _significant;
     NSMutableSet *_categories;
@@ -50,6 +55,9 @@
         //  TODO - central
         _dateFormatter = [[NSDateFormatter alloc] init];
         [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+        _observable = [[NSMutableArray alloc] init];
+        _observationTimestamp = [[NSMutableArray alloc] init];
+
     }
     return self;
 }
@@ -72,20 +80,20 @@
     [super viewWillAppear:animated];
     _commentField.text = _comments;
     _significantField.on = _significant;
-    [_timestampField setTitle:[_dateFormatter stringFromDate:_observationTimestamp] forState:UIControlStateNormal];
+    [_timestampField setTitle:[_dateFormatter stringFromDate:[_observationTimestamp objectAtIndex:0]] forState:UIControlStateNormal];
     [_categoriesField setTitle:[[_categories allObjects] componentsJoinedByString:@", "] forState:UIControlStateNormal];
-    [_observableField setTitle:[_observable desc] forState:UIControlStateNormal];
+    [_observableField setTitle:[[_observable objectAtIndex:0] desc] forState:UIControlStateNormal];
 }
 
 - (void)setObservation:(EEYEOObservation *)observation {
     _observation = observation;
-    _observable = observation.observable;
+    [_observable setObject:observation.observable atIndexedSubscript:0];
     _categories = [[NSMutableSet alloc] init];
     for (EEYEOObservationCategory *category in observation.categories) {
         [_categories addObject:category.shortName];
     }
     _significant = observation.significant;
-    _observationTimestamp = observation.observationTSAsNSDate;
+    [_observationTimestamp setObject:observation.observationTSAsNSDate atIndexedSubscript:0];
     _comments = observation.comment;
 }
 
@@ -94,7 +102,10 @@
 }
 
 - (IBAction)editObservable:(id)sender {
-
+    ObservablePickerViewController *controller = [[ObservablePickerViewController alloc] init];
+    controller.managedObjectContext = [[EEYEOLocalDataStore instance] context];
+    controller.observable = _observable;
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 - (IBAction)editCategories:(id)sender {
@@ -105,7 +116,9 @@
 }
 
 - (IBAction)editTimestamp:(id)sender {
-
+    ObservationTimestampPickerViewController *picker = [[ObservationTimestampPickerViewController alloc] init];
+    [picker setTimestamp:_observationTimestamp];
+    [self.navigationController pushViewController:picker animated:YES];
 }
 
 - (IBAction)cancel:(id)sender {

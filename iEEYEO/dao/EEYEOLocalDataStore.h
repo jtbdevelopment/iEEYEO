@@ -18,6 +18,8 @@ static NSString *const STUDENTENTITY = @"EEYEOStudent";
 
 static NSString *const OBSERVATIONENTITY = @"EEYEOObservation";
 
+static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
+
 @interface EEYEOLocalDataStore : NSObject {
 
 }

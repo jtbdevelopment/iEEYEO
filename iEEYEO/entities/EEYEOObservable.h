@@ -14,5 +14,4 @@
 
 @property(nonatomic) int64_t lastObservationTimestamp;
 
-- (NSString *)desc;
 @end
