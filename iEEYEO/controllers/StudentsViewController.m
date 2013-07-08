@@ -17,6 +17,9 @@
 @end
 
 
+//  TODO - show classlists?
+//  TODO - add student  ?
+
 @implementation StudentsViewController
 
 - (void)viewDidLoad {
@@ -24,7 +27,7 @@
     [self.collectionView registerClass:[StudentsViewCell class] forCellWithReuseIdentifier:STUDENT_CELL];
     [self setClearsSelectionOnViewWillAppear:NO];
     [self setTitle:@"iE-EYE-O"];
-    [self.collectionView setBackgroundColor:[Colors darkBrown]];
+    [self.collectionView setBackgroundColor:[Colors cream]];
     //  TODO - probably in init or alloc
     if (!_observationsViewController) {
         self.observationsViewController = [[ObservationsViewController alloc] initWithStyle:UITableViewStyleGrouped];

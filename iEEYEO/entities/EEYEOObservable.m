@@ -12,4 +12,9 @@
 
 @dynamic lastObservationTimestamp;
 
+- (NSString *)desc {
+    return nil;
+}
+
+
 @end

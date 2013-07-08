@@ -10,6 +10,7 @@
 @class EEYEOObservation;
 
 @interface ObservationViewController : UIViewController
+@property(strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property(nonatomic, retain) IBOutlet UITextView *commentField;
 @property(nonatomic, retain) IBOutlet UIButton *observableField;
 @property(nonatomic, retain) IBOutlet UIButton *categoriesField;

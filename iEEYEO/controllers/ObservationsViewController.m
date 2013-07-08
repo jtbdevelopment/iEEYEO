@@ -41,6 +41,7 @@
     _student = student;
     _fetchedResultsController = nil;
     [[self tableView] reloadData];
+    [[self navigationItem] setTitle:[_student desc]];
 }
 
 - (void)viewDidLoad {
@@ -49,7 +50,6 @@
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:nil];
     self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:self.editButtonItem, addButton, nil];
 
@@ -126,6 +126,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [_observationView setObservation:observation];
+    [_observationView setManagedObjectContext:_managedObjectContext];
     [self.navigationController pushViewController:_observationView animated:YES];
     // Navigation logic may go here. Create and push another view controller.
     /*

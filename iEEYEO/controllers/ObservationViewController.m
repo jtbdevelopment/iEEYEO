@@ -17,9 +17,10 @@
 
 //  TODO - make this all look a heck of lot nicer
 //  TODO - look into custom inputs for setting fields instead of more screens
+//  TODO - photos
 
 @interface ObservationViewController ()
-
+- (void)reset:(id)sender;
 @end
 
 @implementation ObservationViewController {
@@ -37,6 +38,7 @@
     NSString *_comments;
     BOOL _significant;
     NSMutableSet *_categories;
+    NSManagedObjectContext *_managedObjectContext;
 }
 
 @synthesize commentField = _commentField;
@@ -48,6 +50,8 @@
 @synthesize observation = _observation;
 
 //  TODO - remove cancel?
+
+@synthesize managedObjectContext = _managedObjectContext;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -69,6 +73,11 @@
     [[self observableField] setBackgroundColor:[Colors darkBrown]];
     [self significantField].thumbTintColor = [Colors darkBrown];
     [self significantField].onTintColor = [Colors darkBrown];
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)];
+    UIBarButtonItem *resetButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemUndo target:self action:@selector(reset:)];
+    doneButton.title = @"Done";
+    resetButton.title = @"Reset";
+    [[self navigationItem] setRightBarButtonItems:[NSArray arrayWithObjects:doneButton, resetButton, nil] animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -95,6 +104,22 @@
     _significant = observation.significant;
     [_observationTimestamp setObject:observation.observationTSAsNSDate atIndexedSubscript:0];
     _comments = observation.comment;
+    [[self navigationItem] setTitle:[_observation desc]];
+}
+
+- (void)reset:(id)sender {
+    [self setObservation:_observation];
+    [self viewWillAppear:NO];
+}
+
+- (void)done:(id)sender {
+    [_observation setSignificant:[_significantField isOn]];
+    [_observation setComment:[_commentField text]];
+    [_observation setObservationTSAsNSDate:[_observationTimestamp objectAtIndex:0]];
+    NSError *error = [[NSError alloc] init];
+    [_managedObjectContext save:&error];
+    //  TODO - error
+    [[self navigationController] popViewControllerAnimated:YES];
 }
 
 - (IBAction)editSignificant:(id)sender {
@@ -119,18 +144,6 @@
     ObservationTimestampPickerViewController *picker = [[ObservationTimestampPickerViewController alloc] init];
     [picker setTimestamp:_observationTimestamp];
     [self.navigationController pushViewController:picker animated:YES];
-}
-
-- (IBAction)cancel:(id)sender {
-
-}
-
-- (IBAction)reset:(id)sender {
-
-}
-
-- (IBAction)save:(id)sender {
-
 }
 
 

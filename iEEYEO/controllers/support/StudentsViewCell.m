@@ -41,7 +41,7 @@
     if (highlighted) {
         color = [Colors forestGreen];
     } else {
-        color = [Colors cream];
+        color = [Colors darkBrown];
     }
     [self.first setBackgroundColor:color];
     [self.last setBackgroundColor:color];

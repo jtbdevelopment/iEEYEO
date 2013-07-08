@@ -23,6 +23,8 @@
 
 - (void)setObservationTSAsNSDate:(NSDate *)observationTS;
 
+- (NSString *)desc;
+
 @end
 
 @interface EEYEOObservation (CoreDataGeneratedAccessors)
