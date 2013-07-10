@@ -13,12 +13,20 @@
 @dynamic id;
 @dynamic modificationTimestamp;
 
-- (NSDate *)modificationTSAsNSDate {
-    return [EEYEOIdObject fromJodaDateTime:[self modificationTimestamp]];
+- (long long)modificationTimestampToJoda {
+    return [EEYEOIdObject toJodaDateTime:[self modificationTimestampToNSDate]];
 }
 
-- (void)setModificationTSAsNSDate:(NSDate *)dateTime {
-    [self setModificationTimestamp:[EEYEOIdObject toJodaDateTime:dateTime]];
+- (NSDate *)modificationTimestampToNSDate {
+    return [NSDate dateWithTimeIntervalSince1970:[self modificationTimestamp]];
+}
+
+- (void)setModificationTimestampFromNSDate:(NSDate *)date {
+    [self setModificationTimestamp:[date timeIntervalSince1970]];
+}
+
+- (void)setModificationTimestampFromJoda:(long long)millis {
+    [self setModificationTimestampFromNSDate:[EEYEOIdObject fromJodaDateTime:millis]];
 }
 
 + (NSDate *)fromJodaDateTime:(long long int)jodaDateTimeInMilliseconds {
@@ -28,5 +36,6 @@
 + (long long int)toJodaDateTime:(NSDate *)dateTime {
     return (long long) ([dateTime timeIntervalSince1970] * 1000);
 }
+
 
 @end

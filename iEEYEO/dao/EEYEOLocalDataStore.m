@@ -97,7 +97,7 @@
     [classList setAppUser:appUser];
     [classList setModificationTimestamp:1];
     date = [NSDate dateWithTimeIntervalSinceNow:0];
-    [classList setModificationTSAsNSDate:date];
+    [classList setModificationTimestampFromNSDate:date];
     [context save:&error];
 
     NSMutableArray *categories = [[NSMutableArray alloc] init];
@@ -110,7 +110,7 @@
         [observationCategory setDesc:@"Observation Category"];
         [observationCategory setAppUser:appUser];
         date = [NSDate dateWithTimeIntervalSinceNow:0];
-        [observationCategory setModificationTSAsNSDate:date];
+        [observationCategory setModificationTimestampFromNSDate:date];
         [context save:&error];
         [categories addObject:observationCategory];
     }
@@ -148,16 +148,19 @@
         [id appendFormat:@"%d", i];
 
         EEYEOObservation *observation = [self findOrCreate:OBSERVATIONENTITY withId:id];
-        [observation setModificationTSAsNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
-        date = [NSDate dateWithTimeIntervalSinceNow:(i * 24 * 60 * 60 * -1)];
-        [observation setObservationTSAsNSDate:date];
+        [observation setModificationTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
+        double secs = (double) i * (double) 24.0 * 60.0 * 60.0;
+        secs = secs * -1;
+        date = [NSDate dateWithTimeIntervalSinceNow:secs];
+        [observation setObservationTimestampFromNSDate:date];
         NSSet *oldC = [[NSSet alloc] initWithSet:observation.categories];
         for (EEYEOObservationCategory *category in oldC) {
             [observation removeCategoriesObject:category];
         }
         [observation addCategoriesObject:[categories objectAtIndex:(i % 3)]];
         [observation addCategoriesObject:[categories objectAtIndex:(i % 5)]];
-        [observation setComment:@"An observation"];
+        NSString *comment = [NSString stringWithFormat:@"An observation %d", i];
+        [observation setComment:comment];
         if (i % 3 == 0) {
             [observation setObservable:student1];
         } else if (i % 3 == 1) {

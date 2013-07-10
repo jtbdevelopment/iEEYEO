@@ -12,7 +12,8 @@
 
 @interface EEYEOObservable : EEYEOAppUserOwnedObject
 
-@property(nonatomic) int64_t lastObservationTimestamp;
+//  TODO - computed
+@property(nonatomic) NSTimeInterval lastObservationTimestamp;
 
 - (NSString *)desc;
 

@@ -14,14 +14,18 @@
 @interface EEYEOObservation : EEYEOAppUserOwnedObject
 
 @property(nonatomic, retain) NSString *comment;
-@property(nonatomic) int64_t observationTimestamp;
+@property(nonatomic) NSTimeInterval observationTimestamp;
 @property(nonatomic) BOOL significant;
 @property(nonatomic, retain) NSSet *categories;
 @property(nonatomic, retain) EEYEOObservable *observable;
 
-- (NSDate *)observationTSAsNSDate;
+- (long long)observationTimestampToJoda;
 
-- (void)setObservationTSAsNSDate:(NSDate *)observationTS;
+- (NSDate *)observationTimestampToNSDate;
+
+- (void)setObservationTimestampFromNSDate:(NSDate *)date;
+
+- (void)setObservationTimestampFromJoda:(long long)millis;
 
 - (NSString *)desc;
 

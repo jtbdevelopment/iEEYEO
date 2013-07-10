@@ -31,19 +31,26 @@
     return self;
 }
 
-
-- (NSDate *)observationTSAsNSDate {
-    return [EEYEOIdObject fromJodaDateTime:[self observationTimestamp]];
+- (long long)observationTimestampToJoda {
+    return [EEYEOIdObject toJodaDateTime:[self observationTimestampToNSDate]];
 }
 
-- (void)setObservationTSAsNSDate:(NSDate *)observationTS {
-    [self setObservationTimestamp:[EEYEOIdObject toJodaDateTime:observationTS]];
+- (NSDate *)observationTimestampToNSDate {
+    return [NSDate dateWithTimeIntervalSince1970:[self observationTimestamp]];
+}
+
+- (void)setObservationTimestampFromNSDate:(NSDate *)date {
+    [self setObservationTimestamp:[date timeIntervalSince1970]];
+}
+
+- (void)setObservationTimestampFromJoda:(long long)millis {
+    [self setObservationTimestampFromNSDate:[EEYEOIdObject fromJodaDateTime:millis]];
 }
 
 - (NSString *)desc {
     NSMutableString *s = [[NSMutableString alloc] initWithString:[self.observable desc]];
     [s appendString:@" @ "];
-    [s appendString:[_dateFormatter stringFromDate:[self observationTSAsNSDate]]];
+    [s appendString:[_dateFormatter stringFromDate:[self observationTimestampToNSDate]]];
     return s;
 }
 

@@ -17,7 +17,7 @@
 @property(nonatomic, retain) NSData *imageData;
 @property(nonatomic, retain) NSString *mimeType;
 @property(nonatomic, retain) NSData *thumbnailImageData;
-@property(nonatomic) int64_t timestamp;
+@property(nonatomic) NSTimeInterval timestamp;
 @property(nonatomic, retain) EEYEOAppUserOwnedObject *photoFor;
 
 @end

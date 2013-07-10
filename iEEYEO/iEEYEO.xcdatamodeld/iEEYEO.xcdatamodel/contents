@@ -6,7 +6,7 @@
         <attribute name="admin" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="emailAddress" attributeType="String" minValueString="1" maxValueString="40" syncable="YES"/>
         <attribute name="firstName" attributeType="String" minValueString="1" maxValueString="50" syncable="YES"/>
-        <attribute name="lastLogout" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastLogout" attributeType="Date" syncable="YES"/>
         <attribute name="lastName" attributeType="String" minValueString="0" maxValueString="100" syncable="YES"/>
         <relationship name="ownedObjects" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EEYEOAppUserOwnedObject" inverseName="appUser" inverseEntity="EEYEOAppUserOwnedObject" syncable="YES"/>
     </entity>
@@ -24,15 +24,15 @@
     </entity>
     <entity name="EEYEOIdObject" representedClassName="EEYEOIdObject" isAbstract="YES" syncable="YES">
         <attribute name="id" attributeType="String" minValueString="0" indexed="YES" syncable="YES"/>
-        <attribute name="modificationTimestamp" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="modificationTimestamp" attributeType="Date" indexed="YES" syncable="YES"/>
     </entity>
     <entity name="EEYEOObservable" representedClassName="EEYEOObservable" isAbstract="YES" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
-        <attribute name="lastObservationTimestamp" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastObservationTimestamp" attributeType="Date" syncable="YES"/>
         <relationship name="observations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EEYEOObservation" inverseName="observable" inverseEntity="EEYEOObservation" syncable="YES"/>
     </entity>
     <entity name="EEYEOObservation" representedClassName="EEYEOObservation" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
         <attribute name="comment" attributeType="String" minValueString="1" maxValueString="5000" syncable="YES"/>
-        <attribute name="observationTimestamp" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="observationTimestamp" attributeType="Date" syncable="YES"/>
         <attribute name="significant" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="EEYEOObservationCategory" inverseName="observations" inverseEntity="EEYEOObservationCategory" syncable="YES"/>
         <relationship name="observable" minCount="1" maxCount="1" deletionRule="Deny" destinationEntity="EEYEOObservable" inverseName="observations" inverseEntity="EEYEOObservable" syncable="YES"/>
@@ -47,7 +47,7 @@
         <attribute name="imageData" attributeType="Binary" syncable="YES"/>
         <attribute name="mimeType" attributeType="String" minValueString="1" syncable="YES"/>
         <attribute name="thumbnailImageData" attributeType="Binary" syncable="YES"/>
-        <attribute name="timestamp" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="timestamp" attributeType="Date" syncable="YES"/>
         <relationship name="photoFor" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="EEYEOAppUserOwnedObject" inverseName="photos" inverseEntity="EEYEOAppUserOwnedObject" syncable="YES"/>
     </entity>
     <entity name="EEYEOStudent" representedClassName="EEYEOStudent" parentEntity="EEYEOObservable" syncable="YES">

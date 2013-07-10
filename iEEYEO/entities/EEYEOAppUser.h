@@ -17,7 +17,7 @@
 @property(nonatomic) BOOL admin;
 @property(nonatomic, retain) NSString *emailAddress;
 @property(nonatomic, retain) NSString *firstName;
-@property(nonatomic) int64_t lastLogout;
+@property(nonatomic) NSTimeInterval lastLogout;
 @property(nonatomic, retain) NSString *lastName;
 
 @end

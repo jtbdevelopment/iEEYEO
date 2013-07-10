@@ -12,14 +12,21 @@
 @interface EEYEOIdObject : NSManagedObject
 
 @property(nonatomic, retain) NSString *id;
-@property(nonatomic) int64_t modificationTimestamp;
+@property(nonatomic) NSTimeInterval modificationTimestamp;
 
-- (NSDate *)modificationTSAsNSDate;
++ (NSDate *)fromJodaDateTime:(long long int)jodaDateTimeInMilliseconds;
 
-- (void)setModificationTSAsNSDate:(NSDate *)dateTime;
++ (long long int)toJodaDateTime:(NSDate *)dateTime;
 
-+ (NSDate *)fromJodaDateTime:(long long)jodaDateTimeInMilliseconds;
+- (long long)modificationTimestampToJoda;
 
-+ (long long)toJodaDateTime:(NSDate *)dateTime;
+- (NSDate *)modificationTimestampToNSDate;
+
+- (void)setModificationTimestampFromNSDate:(NSDate *)date;
+
+- (void)setModificationTimestampFromJoda:(long long)millis;
+
+- (NSString *)desc;
+
 
 @end

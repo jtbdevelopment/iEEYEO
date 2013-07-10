@@ -102,7 +102,7 @@
         [_categories addObject:category.shortName];
     }
     _significant = observation.significant;
-    [_observationTimestamp setObject:observation.observationTSAsNSDate atIndexedSubscript:0];
+    [_observationTimestamp setObject:[observation observationTimestampToNSDate] atIndexedSubscript:0];
     _comments = observation.comment;
     [[self navigationItem] setTitle:[_observation desc]];
 }
@@ -115,7 +115,7 @@
 - (void)done:(id)sender {
     [_observation setSignificant:[_significantField isOn]];
     [_observation setComment:[_commentField text]];
-    [_observation setObservationTSAsNSDate:[_observationTimestamp objectAtIndex:0]];
+    [_observation setObservationTimestampFromNSDate:[_observationTimestamp objectAtIndex:0]];
     NSError *error = [[NSError alloc] init];
     [_managedObjectContext save:&error];
     //  TODO - error

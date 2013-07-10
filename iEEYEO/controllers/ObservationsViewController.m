@@ -109,9 +109,7 @@
 }
 */
 
-// Override to support conditional rearranging of the table view.
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
     return NO;
 }
 
@@ -128,13 +126,6 @@
     [_observationView setObservation:observation];
     [_observationView setManagedObjectContext:_managedObjectContext];
     [self.navigationController pushViewController:_observationView animated:YES];
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
 }
 
 #pragma mark - Fetched results controller
@@ -234,7 +225,7 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.detailTextLabel.text = [_dateFormatter stringFromDate:[observation observationTSAsNSDate]];
+    cell.detailTextLabel.text = [_dateFormatter stringFromDate:[observation observationTimestampToNSDate]];
     cell.textLabel.text = [observation comment];
     cell.selectedBackgroundView.backgroundColor = [Colors forestGreen];
 }
