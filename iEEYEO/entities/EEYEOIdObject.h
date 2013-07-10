@@ -11,6 +11,7 @@
 
 @interface EEYEOIdObject : NSManagedObject
 
+@property(nonatomic) BOOL dirty;
 @property(nonatomic, retain) NSString *id;
 @property(nonatomic) NSTimeInterval modificationTimestamp;
 

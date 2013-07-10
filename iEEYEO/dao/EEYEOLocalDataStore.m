@@ -43,6 +43,17 @@
     return _instance;
 }
 
+- (void)save:(EEYEOIdObject *)object {
+    [object setDirty:YES];
+    NSError *error = nil;
+    [context save:&error];
+    if (error != nil) {
+        NSLog(@"Error saving entity %@ with desc %@.  Error %@", [object class], [object objectID], [error description]);
+    }
+    return;
+}
+
+
 - (id)find:(NSString *)entityType withId:(NSString *)withId {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:entityType inManagedObjectContext:context];
@@ -56,11 +67,18 @@
 
     NSError *error = nil;
     NSArray *result = [context executeFetchRequest:request error:&error];
-    if (error != nil || result == nil || [result count] == 0) {
+    if (error != nil) {
+        NSLog(@"Error finding entityType %@ with id %@.  Error %@", entityType, withId, [error description]);
+        return nil;
+    }
+    if (result == nil || [result count] == 0) {
         return nil;
     }
     if ([result count] > 1) {
-        //  TODO
+        NSLog(@"Error finding entityType %@ with id %@.  Found more than 1 - %d", entityType, withId, [result count]);
+        for (EEYEOIdObject *object in result) {
+            NSLog(@"%@ %@", object.objectID, object.description);
+        }
     }
     return [result objectAtIndex:0];
 }
@@ -81,7 +99,6 @@
 
 //  TODO - get rid of me
 - (void)createDummyData {
-    NSError *error = nil;
     NSDate *date = nil;
 
     EEYEOAppUser *appUser = [self findOrCreate:APPUSERENTITY withId:@"U1"];
@@ -90,7 +107,7 @@
     [appUser setEmailAddress:@"test@test.com"];
     [appUser setFirstName:@"first"];
     [appUser setLastName:@"last"];
-    [context save:&error];
+    [self save:appUser];
 
     EEYEOClassList *classList = [self findOrCreate:CLASSLISTENTITY withId:@"CL1"];
     [classList setDesc:@"A Class"];
@@ -98,7 +115,7 @@
     [classList setModificationTimestamp:1];
     date = [NSDate dateWithTimeIntervalSinceNow:0];
     [classList setModificationTimestampFromNSDate:date];
-    [context save:&error];
+    [self save:classList];
 
     NSMutableArray *categories = [[NSMutableArray alloc] init];
     for (int i = 1; i <= 5; ++i) {
@@ -111,7 +128,7 @@
         [observationCategory setAppUser:appUser];
         date = [NSDate dateWithTimeIntervalSinceNow:0];
         [observationCategory setModificationTimestampFromNSDate:date];
-        [context save:&error];
+        [self save:observationCategory];
         [categories addObject:observationCategory];
     }
 
@@ -121,7 +138,7 @@
     [student1 addClassListsObject:classList];
     [student1 setAppUser:appUser];
     [student1 setModificationTimestamp:5];
-    [context save:&error];
+    [self save:student1];
 
     EEYEOStudent *student2 = [self findOrCreate:STUDENTENTITY withId:@"S2"];
     [student2 setFirstName:@"student"];
@@ -129,18 +146,18 @@
     [student2 addClassListsObject:classList];
     [student2 setAppUser:appUser];
     [student2 setModificationTimestamp:5];
-    [context save:&error];
+    [self save:student2];
 
     for (int i = 2; i < 51; ++i) {
         NSMutableString *id = [[NSMutableString alloc] initWithString:@"S"];
         [id appendFormat:@"%d", i];
-        EEYEOStudent *student2 = [self findOrCreate:STUDENTENTITY withId:id];
-        [student2 setFirstName:@"student"];
-        [student2 setLastName:id];
-        [student2 addClassListsObject:classList];
-        [student2 setAppUser:appUser];
-        [student2 setModificationTimestamp:5];
-        [context save:&error];
+        EEYEOStudent *student = [self findOrCreate:STUDENTENTITY withId:id];
+        [student setFirstName:@"student"];
+        [student setLastName:id];
+        [student addClassListsObject:classList];
+        [student setAppUser:appUser];
+        [student setModificationTimestamp:5];
+        [self save:student];
     }
 
     for (unsigned i = 1; i < 15; ++i) {
@@ -174,7 +191,7 @@
             [observation setSignificant:NO];
         }
         [observation setAppUser:appUser];
-        [context save:&error];
+        [self save:observation];
     }
 }
 

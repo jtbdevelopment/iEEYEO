@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class EEYEOIdObject;
+
 
 static NSString *const APPUSERENTITY = @"EEYEOAppUser";
 
@@ -28,6 +30,8 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 @property(nonatomic, retain) NSManagedObjectModel *model;
 
 + (EEYEOLocalDataStore *)instance;
+
+- (void)save:(EEYEOIdObject *)object;
 
 - (id)find:(NSString *)entityType withId:(NSString *)withId;
 

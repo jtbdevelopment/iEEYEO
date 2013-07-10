@@ -10,6 +10,8 @@
 
 @implementation EEYEOIdObject
 
+
+@dynamic dirty;
 @dynamic id;
 @dynamic modificationTimestamp;
 
