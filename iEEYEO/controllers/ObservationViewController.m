@@ -120,7 +120,6 @@
     [_observation setSignificant:[_significantField isOn]];
     [_observation setComment:[_commentField text]];
     [_observation setObservationTimestampFromNSDate:[_observationTimestamp objectAtIndex:0]];
-    NSError *error = [[NSError alloc] init];
     [_observation setCategories:_categories];
     [_observation setObservable:[_observable objectAtIndex:0]];
     [[EEYEOLocalDataStore instance] save:_observation];

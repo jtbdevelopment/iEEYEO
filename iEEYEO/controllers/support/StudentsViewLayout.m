@@ -28,10 +28,6 @@
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSArray *array = [super layoutAttributesForElementsInRect:rect];
-    CGRect visibleRect;
-    visibleRect.origin = self.collectionView.contentOffset;
-    visibleRect.size = self.collectionView.bounds.size;
-
     return array;
 }
 
