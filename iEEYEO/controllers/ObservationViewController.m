@@ -20,7 +20,6 @@
 //  TODO - photos
 
 @interface ObservationViewController ()
-- (void)reset:(id)sender;
 @end
 
 @implementation ObservationViewController {

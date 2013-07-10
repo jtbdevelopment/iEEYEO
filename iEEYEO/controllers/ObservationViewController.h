@@ -29,10 +29,7 @@
 
 - (IBAction)editTimestamp:(id)sender;
 
-- (IBAction)cancel:(id)sender;
-
 - (IBAction)reset:(id)sender;
 
-- (IBAction)save:(id)sender;
-
+- (void)done:(id)sender;
 @end

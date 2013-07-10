@@ -21,6 +21,10 @@
     return [NSDate dateWithTimeIntervalSince1970:[self modificationTimestamp]];
 }
 
+- (NSString *)desc {
+    return [self id];
+}
+
 - (void)setModificationTimestampFromNSDate:(NSDate *)date {
     [self setModificationTimestamp:[date timeIntervalSince1970]];
 }
