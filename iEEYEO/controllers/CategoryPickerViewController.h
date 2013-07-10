@@ -7,6 +7,8 @@
 
 #import <UIKit/UIKit.h>
 
+static NSString *const CATEGORY_CELL = @"CATEGORY_CELL";
+
 @interface CategoryPickerViewController : UITableViewController <NSFetchedResultsControllerDelegate>
 
 @property(strong, nonatomic) NSMutableSet *selectedCategories;

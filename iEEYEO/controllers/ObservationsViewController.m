@@ -17,6 +17,7 @@
 @end
 
 //  TODO - highlight color?
+//  TODO - search filter?
 @implementation ObservationsViewController {
 @private
     EEYEOStudent *_student;

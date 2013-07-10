@@ -9,9 +9,10 @@
 #import "EEYEOLocalDataStore.h"
 #import "EEYEOObservationCategory.h"
 #import "Colors.h"
+#import "EEYEOObjectTableCell.h"
 
 @interface CategoryPickerViewController ()
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+- (void)configureCell:(EEYEOObjectTableCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
@@ -37,6 +38,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    [self.tableView registerClass:[EEYEOObjectTableCell class] forCellReuseIdentifier:CATEGORY_CELL];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
 
@@ -61,12 +63,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
+    EEYEOObjectTableCell *cell = [tableView dequeueReusableCellWithIdentifier:CATEGORY_CELL];
 
     // Configure the cell...
     [self configureCell:cell atIndexPath:indexPath];
@@ -116,15 +113,15 @@
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    EEYEOObjectTableCell *cell = (EEYEOObjectTableCell *) [tableView cellForRowAtIndexPath:indexPath];
 
-    NSString *code = cell.textLabel.text;
+    EEYEOObservationCategory *category = (EEYEOObservationCategory *) cell.object;
     if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
         cell.accessoryType = UITableViewCellAccessoryNone;
-        [_selectedCategories removeObject:code];
+        [_selectedCategories removeObject:category];
     } else {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        [_selectedCategories addObject:code];
+        [_selectedCategories addObject:category];
     }
 }
 
@@ -220,12 +217,13 @@
 }
  */
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)configureCell:(EEYEOObjectTableCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     EEYEOObservationCategory *category = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [cell setObject:category];
     cell.detailTextLabel.text = [category desc];
     cell.textLabel.text = [category shortName];
     cell.selectedBackgroundView.backgroundColor = [Colors forestGreen];
-    if ([_selectedCategories containsObject:[category shortName]]) {
+    if ([_selectedCategories containsObject:category]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;

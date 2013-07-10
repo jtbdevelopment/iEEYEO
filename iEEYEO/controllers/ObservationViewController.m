@@ -34,8 +34,6 @@
     EEYEOObservation *_observation;
     NSMutableArray *_observable;
     NSMutableArray *_observationTimestamp;
-    NSString *_comments;
-    BOOL _significant;
     NSMutableSet *_categories;
     NSManagedObjectContext *_managedObjectContext;
 }
@@ -86,10 +84,21 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    _commentField.text = _comments;
-    _significantField.on = _significant;
+    _commentField.text = [_observation comment];
+    _significantField.on = [_observation significant];
     [_timestampField setTitle:[_dateFormatter stringFromDate:[_observationTimestamp objectAtIndex:0]] forState:UIControlStateNormal];
-    [_categoriesField setTitle:[[_categories allObjects] componentsJoinedByString:@", "] forState:UIControlStateNormal];
+    NSMutableString *categories = [[NSMutableString alloc] init];
+    BOOL first = YES;
+    for (EEYEOObservationCategory *category in _categories) {
+        if (first) {
+            first = NO;
+
+        } else {
+            [categories appendString:@", "];
+        }
+        [categories appendFormat:@"%@", [category shortName]];
+    }
+    [_categoriesField setTitle:categories forState:UIControlStateNormal];
     [_observableField setTitle:[[_observable objectAtIndex:0] desc] forState:UIControlStateNormal];
 }
 
@@ -97,12 +106,8 @@
     _observation = observation;
     [_observable setObject:observation.observable atIndexedSubscript:0];
     _categories = [[NSMutableSet alloc] init];
-    for (EEYEOObservationCategory *category in observation.categories) {
-        [_categories addObject:category.shortName];
-    }
-    _significant = observation.significant;
+    [_categories addObjectsFromArray:[[_observation categories] allObjects]];
     [_observationTimestamp setObject:[observation observationTimestampToNSDate] atIndexedSubscript:0];
-    _comments = observation.comment;
     [[self navigationItem] setTitle:[_observation desc]];
 }
 
@@ -116,13 +121,15 @@
     [_observation setComment:[_commentField text]];
     [_observation setObservationTimestampFromNSDate:[_observationTimestamp objectAtIndex:0]];
     NSError *error = [[NSError alloc] init];
+    [_observation setCategories:_categories];
+    [_observation setObservable:[_observable objectAtIndex:0]];
     [_managedObjectContext save:&error];
     //  TODO - error
     [[self navigationController] popViewControllerAnimated:YES];
 }
 
 - (IBAction)editSignificant:(id)sender {
-    _significant = _significantField.on;
+    _significantField.on;
 }
 
 - (IBAction)editObservable:(id)sender {
