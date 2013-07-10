@@ -107,10 +107,12 @@
     [appUser setEmailAddress:@"test@test.com"];
     [appUser setFirstName:@"first"];
     [appUser setLastName:@"last"];
+    [appUser setModificationTimestampFromNSDate:[NSDate dateWithTimeIntervalSince1970:0]];
+    [appUser setLastLogout:[[NSDate dateWithTimeIntervalSince1970:0] timeIntervalSince1970]];
     [self save:appUser];
 
     EEYEOClassList *classList = [self findOrCreate:CLASSLISTENTITY withId:@"CL1"];
-    [classList setDesc:@"A Class"];
+    [classList setName:@"A Class"];
     [classList setAppUser:appUser];
     [classList setModificationTimestamp:1];
     date = [NSDate dateWithTimeIntervalSinceNow:0];
@@ -124,7 +126,7 @@
 
         EEYEOObservationCategory *observationCategory = [self findOrCreate:CATEGORYENTITY withId:id];
         [observationCategory setShortName:id];
-        [observationCategory setDesc:@"Observation Category"];
+        [observationCategory setName:@"Observation Category"];
         [observationCategory setAppUser:appUser];
         date = [NSDate dateWithTimeIntervalSinceNow:0];
         [observationCategory setModificationTimestampFromNSDate:date];

@@ -10,6 +10,11 @@
 
 @implementation EEYEOClassList
 
-@dynamic desc;
+@dynamic name;
+
+- (NSString *)desc {
+    return [self name];
+}
+
 
 @end

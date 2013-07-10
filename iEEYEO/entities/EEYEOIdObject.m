@@ -2,6 +2,7 @@
 //  EEYEOIdObject.m
 //  iEEYEO
 //
+//  Created by Joseph Buscemi on 7/10/13.
 //  Copyright (c) 2013 jtbdevelopment. All rights reserved.
 //
 
@@ -10,10 +11,9 @@
 
 @implementation EEYEOIdObject
 
-
-@dynamic dirty;
 @dynamic id;
 @dynamic modificationTimestamp;
+@dynamic dirty;
 
 - (long long)modificationTimestampToJoda {
     return [EEYEOIdObject toJodaDateTime:[self modificationTimestampToNSDate]];

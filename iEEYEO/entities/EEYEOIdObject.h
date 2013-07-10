@@ -2,6 +2,7 @@
 //  EEYEOIdObject.h
 //  iEEYEO
 //
+//  Created by Joseph Buscemi on 7/10/13.
 //  Copyright (c) 2013 jtbdevelopment. All rights reserved.
 //
 
@@ -11,9 +12,9 @@
 
 @interface EEYEOIdObject : NSManagedObject
 
-@property(nonatomic) BOOL dirty;
 @property(nonatomic, retain) NSString *id;
 @property(nonatomic) NSTimeInterval modificationTimestamp;
+@property(nonatomic) BOOL dirty;
 
 + (NSDate *)fromJodaDateTime:(long long int)jodaDateTimeInMilliseconds;
 

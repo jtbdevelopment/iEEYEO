@@ -12,6 +12,6 @@
 
 @interface EEYEOClassList : EEYEOObservable
 
-@property(nonatomic, retain) NSString *desc;
+@property(nonatomic, retain) NSString *name;
 
 @end

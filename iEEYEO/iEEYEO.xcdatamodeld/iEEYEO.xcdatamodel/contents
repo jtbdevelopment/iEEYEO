@@ -16,7 +16,7 @@
         <relationship name="photos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EEYEOPhoto" inverseName="photoFor" inverseEntity="EEYEOPhoto" syncable="YES"/>
     </entity>
     <entity name="EEYEOClassList" representedClassName="EEYEOClassList" parentEntity="EEYEOObservable" syncable="YES">
-        <attribute name="desc" attributeType="String" minValueString="1" maxValueString="50" syncable="YES"/>
+        <attribute name="name" attributeType="String" minValueString="1" maxValueString="50" syncable="YES"/>
         <relationship name="students" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EEYEOStudent" inverseName="classLists" inverseEntity="EEYEOStudent" syncable="YES"/>
     </entity>
     <entity name="EEYEODeletedObject" representedClassName="EEYEODeletedObject" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
@@ -28,7 +28,6 @@
         <attribute name="modificationTimestamp" attributeType="Date" indexed="YES" syncable="YES"/>
     </entity>
     <entity name="EEYEOObservable" representedClassName="EEYEOObservable" isAbstract="YES" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
-        <attribute name="lastObservationTimestamp" attributeType="Date" syncable="YES"/>
         <relationship name="observations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EEYEOObservation" inverseName="observable" inverseEntity="EEYEOObservation" syncable="YES"/>
     </entity>
     <entity name="EEYEOObservation" representedClassName="EEYEOObservation" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
@@ -39,14 +38,14 @@
         <relationship name="observable" minCount="1" maxCount="1" deletionRule="Deny" destinationEntity="EEYEOObservable" inverseName="observations" inverseEntity="EEYEOObservable" syncable="YES"/>
     </entity>
     <entity name="EEYEOObservationCategory" representedClassName="EEYEOObservationCategory" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
-        <attribute name="desc" attributeType="String" minValueString="1" maxValueString="50" indexed="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" minValueString="1" maxValueString="50" indexed="YES" syncable="YES"/>
         <attribute name="shortName" attributeType="String" minValueString="1" maxValueString="10" indexed="YES" syncable="YES"/>
         <relationship name="observations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EEYEOObservation" inverseName="categories" inverseEntity="EEYEOObservation" syncable="YES"/>
     </entity>
     <entity name="EEYEOPhoto" representedClassName="EEYEOPhoto" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
-        <attribute name="desc" attributeType="String" minValueString="1" maxValueString="50" syncable="YES"/>
         <attribute name="imageData" attributeType="Binary" syncable="YES"/>
         <attribute name="mimeType" attributeType="String" minValueString="1" syncable="YES"/>
+        <attribute name="name" attributeType="String" minValueString="1" maxValueString="50" syncable="YES"/>
         <attribute name="thumbnailImageData" attributeType="Binary" syncable="YES"/>
         <attribute name="timestamp" attributeType="Date" syncable="YES"/>
         <relationship name="photoFor" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="EEYEOAppUserOwnedObject" inverseName="photos" inverseEntity="EEYEOAppUserOwnedObject" syncable="YES"/>
@@ -62,7 +61,7 @@
         <element name="EEYEOClassList" positionX="187" positionY="437" width="128" height="75"/>
         <element name="EEYEODeletedObject" positionX="-333" positionY="410" width="128" height="58"/>
         <element name="EEYEOIdObject" positionX="160" positionY="192" width="128" height="90"/>
-        <element name="EEYEOObservable" positionX="-18" positionY="406" width="128" height="75"/>
+        <element name="EEYEOObservable" positionX="-18" positionY="406" width="128" height="60"/>
         <element name="EEYEOObservation" positionX="196" positionY="288" width="128" height="120"/>
         <element name="EEYEOObservationCategory" positionX="-9" positionY="135" width="128" height="90"/>
         <element name="EEYEOPhoto" positionX="-216" positionY="524" width="128" height="135"/>

@@ -2,19 +2,15 @@
 //  EEYEOObservable.m
 //  iEEYEO
 //
+//  Created by Joseph Buscemi on 7/10/13.
 //  Copyright (c) 2013 jtbdevelopment. All rights reserved.
 //
 
-#import "EEYEOStudent.h"
+#import "EEYEOObservable.h"
 
 
 @implementation EEYEOObservable
 
-@dynamic lastObservationTimestamp;
-
-- (NSString *)desc {
-    return nil;
-}
-
+@dynamic observations;
 
 @end

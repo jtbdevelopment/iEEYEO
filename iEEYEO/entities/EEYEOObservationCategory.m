@@ -10,7 +10,7 @@
 
 @implementation EEYEOObservationCategory
 
-@dynamic desc;
+@dynamic name;
 @dynamic shortName;
 @dynamic observations;
 

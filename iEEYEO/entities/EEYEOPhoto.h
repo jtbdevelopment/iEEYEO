@@ -13,7 +13,7 @@
 
 @interface EEYEOPhoto : EEYEOAppUserOwnedObject
 
-@property(nonatomic, retain) NSString *desc;
+@property(nonatomic, retain) NSString *name;
 @property(nonatomic, retain) NSData *imageData;
 @property(nonatomic, retain) NSString *mimeType;
 @property(nonatomic, retain) NSData *thumbnailImageData;

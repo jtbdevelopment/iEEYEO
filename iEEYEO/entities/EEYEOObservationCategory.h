@@ -13,7 +13,7 @@
 
 @interface EEYEOObservationCategory : EEYEOAppUserOwnedObject
 
-@property(nonatomic, retain) NSString *desc;
+@property(nonatomic, retain) NSString *name;
 @property(nonatomic, retain) NSString *shortName;
 @property(nonatomic, retain) NSSet *observations;
 @end

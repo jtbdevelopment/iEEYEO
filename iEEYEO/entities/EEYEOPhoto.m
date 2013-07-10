@@ -10,7 +10,7 @@
 
 @implementation EEYEOPhoto
 
-@dynamic desc;
+@dynamic name;
 @dynamic imageData;
 @dynamic mimeType;
 @dynamic thumbnailImageData;

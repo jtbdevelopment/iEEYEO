@@ -123,8 +123,7 @@
     NSError *error = [[NSError alloc] init];
     [_observation setCategories:_categories];
     [_observation setObservable:[_observable objectAtIndex:0]];
-    [_managedObjectContext save:&error];
-    //  TODO - error
+    [[EEYEOLocalDataStore instance] save:_observation];
     [[self navigationController] popViewControllerAnimated:YES];
 }
 
