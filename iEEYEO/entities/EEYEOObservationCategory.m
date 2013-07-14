@@ -14,4 +14,11 @@
 @dynamic shortName;
 @dynamic observations;
 
+- (void)loadFromDictionary:(NSDictionary *)dictionary {
+    [super loadFromDictionary:dictionary];
+    [self setName:[dictionary valueForKey:@"description"]];
+    [self setShortName:[dictionary valueForKey:@"shortName"]];
+}
+
+
 @end

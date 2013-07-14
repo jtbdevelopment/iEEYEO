@@ -122,7 +122,7 @@
     [_observation setObservationTimestampFromNSDate:[_observationTimestamp objectAtIndex:0]];
     [_observation setCategories:_categories];
     [_observation setObservable:[_observable objectAtIndex:0]];
-    [[EEYEOLocalDataStore instance] save:_observation];
+    [[EEYEOLocalDataStore instance] saveToLocalStore:_observation];
     [[self navigationController] popViewControllerAnimated:YES];
 }
 

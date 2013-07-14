@@ -29,5 +29,6 @@
 
 - (NSString *)desc;
 
+- (void)loadFromDictionary:(NSDictionary *)dictionary;
 
 @end

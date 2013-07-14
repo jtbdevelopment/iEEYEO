@@ -31,9 +31,13 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 
 + (EEYEOLocalDataStore *)instance;
 
-- (void)save:(EEYEOIdObject *)object;
+- (void)saveToLocalStore:(EEYEOIdObject *)object;
+
+- (void)updateFromRemoteStore:(EEYEOIdObject *)object;
 
 - (id)find:(NSString *)entityType withId:(NSString *)withId;
+
+- (id)findOrCreate:(NSString *)entityType withId:(NSString *)withId;
 
 - (void)createDummyData;
 @end

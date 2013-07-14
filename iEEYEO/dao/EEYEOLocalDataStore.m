@@ -10,6 +10,7 @@
 #import "EEYEOObservationCategory.h"
 #import "EEYEOStudent.h"
 #import "EEYEOObservation.h"
+#import "EEYEORemoteDataStore.h"
 
 
 @implementation EEYEOLocalDataStore {
@@ -43,7 +44,7 @@
     return _instance;
 }
 
-- (void)save:(EEYEOIdObject *)object {
+- (void)saveToLocalStore:(EEYEOIdObject *)object {
     [object setDirty:YES];
     NSError *error = nil;
     [context save:&error];
@@ -53,6 +54,15 @@
     return;
 }
 
+- (void)updateFromRemoteStore:(EEYEOIdObject *)object {
+    [object setDirty:NO];
+    NSError *error = nil;
+    [context save:&error];
+    if (error != nil) {
+        NSLog(@"Error saving entity %@ with desc %@.  Error %@", [object class], [object objectID], [error description]);
+    }
+    return;
+}
 
 - (id)find:(NSString *)entityType withId:(NSString *)withId {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -87,7 +97,6 @@
     return [NSEntityDescription insertNewObjectForEntityForName:entityType inManagedObjectContext:context];
 }
 
-//  TODO - get rid  of me - helper for dummy data for now
 - (id)findOrCreate:(NSString *)entityType withId:(NSString *)withId {
     id entity = [self find:entityType withId:withId];
     if (!entity) {
@@ -99,6 +108,7 @@
 
 //  TODO - get rid of me
 - (void)createDummyData {
+    [[EEYEORemoteDataStore instance] loadData];
     NSDate *date = nil;
 
     EEYEOAppUser *appUser = [self findOrCreate:APPUSERENTITY withId:@"U1"];
@@ -109,7 +119,9 @@
     [appUser setLastName:@"last"];
     [appUser setModificationTimestampFromNSDate:[NSDate dateWithTimeIntervalSince1970:0]];
     [appUser setLastLogout:[[NSDate dateWithTimeIntervalSince1970:0] timeIntervalSince1970]];
-    [self save:appUser];
+    //  TODO
+    [appUser setId:@"4028810e3f0758cf013f075939790000"];
+    [self saveToLocalStore:appUser];
 
     EEYEOClassList *classList = [self findOrCreate:CLASSLISTENTITY withId:@"CL1"];
     [classList setName:@"A Class"];
@@ -117,7 +129,7 @@
     [classList setModificationTimestamp:1];
     date = [NSDate dateWithTimeIntervalSinceNow:0];
     [classList setModificationTimestampFromNSDate:date];
-    [self save:classList];
+    [self saveToLocalStore:classList];
 
     NSMutableArray *categories = [[NSMutableArray alloc] init];
     for (int i = 1; i <= 5; ++i) {
@@ -130,7 +142,7 @@
         [observationCategory setAppUser:appUser];
         date = [NSDate dateWithTimeIntervalSinceNow:0];
         [observationCategory setModificationTimestampFromNSDate:date];
-        [self save:observationCategory];
+        [self saveToLocalStore:observationCategory];
         [categories addObject:observationCategory];
     }
 
@@ -140,7 +152,7 @@
     [student1 addClassListsObject:classList];
     [student1 setAppUser:appUser];
     [student1 setModificationTimestamp:5];
-    [self save:student1];
+    [self saveToLocalStore:student1];
 
     EEYEOStudent *student2 = [self findOrCreate:STUDENTENTITY withId:@"S2"];
     [student2 setFirstName:@"student"];
@@ -148,7 +160,7 @@
     [student2 addClassListsObject:classList];
     [student2 setAppUser:appUser];
     [student2 setModificationTimestamp:5];
-    [self save:student2];
+    [self saveToLocalStore:student2];
 
     for (int i = 2; i < 51; ++i) {
         NSMutableString *id = [[NSMutableString alloc] initWithString:@"S"];
@@ -159,7 +171,7 @@
         [student addClassListsObject:classList];
         [student setAppUser:appUser];
         [student setModificationTimestamp:5];
-        [self save:student];
+        [self saveToLocalStore:student];
     }
 
     for (unsigned i = 1; i < 15; ++i) {
@@ -193,7 +205,7 @@
             [observation setSignificant:NO];
         }
         [observation setAppUser:appUser];
-        [self save:observation];
+        [self saveToLocalStore:observation];
     }
 }
 

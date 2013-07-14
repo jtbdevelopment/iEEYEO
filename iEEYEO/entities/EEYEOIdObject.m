@@ -26,6 +26,12 @@
     return [self id];
 }
 
+- (void)loadFromDictionary:(NSDictionary *)dictionary {
+    [self setId:[dictionary valueForKey:@"id"]];
+    [self setModificationTimestampFromJoda:(int) [dictionary valueForKey:@"modificationTimestamp"]];
+}
+
+
 - (void)setModificationTimestampFromNSDate:(NSDate *)date {
     [self setModificationTimestamp:[date timeIntervalSince1970]];
 }
