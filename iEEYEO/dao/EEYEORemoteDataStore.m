@@ -14,6 +14,34 @@
     NSMutableData *_data;
     NSString *_currentUser;
 }
++ (NSDictionary *)javaToIOSEntityMap {
+    static NSDictionary *map;
+    if (!map) {
+        map = [[NSMutableDictionary alloc] init];
+        [map setValue:OBSERVATIONENTITY forKey:JAVA_OBSERVATION];
+        [map setValue:CATEGORYENTITY forKey:JAVA_CATEGORY];
+        [map setValue:STUDENTENTITY forKey:JAVA_STUDENT];
+        [map setValue:CLASSLISTENTITY forKey:JAVA_CLASSLIST];
+//        [map setValue:PHOTOENTITY forKey:JAVA_PHOTO];
+        [map setValue:APPUSERENTITY forKey:JAVA_USER];
+        map = [[NSDictionary alloc] initWithDictionary:map];
+    }
+    return map;
+}
+
++ (NSDictionary *)iosToJavaEntityMap {
+    static NSDictionary *map;
+    if (!map) {
+        NSDictionary *javaToIOS = [EEYEORemoteDataStore javaToIOSEntityMap];
+        map = [[NSMutableDictionary alloc] init];
+        [javaToIOS enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop) {
+            [map setValue:key forKey:object];
+        }];
+        map = [[NSDictionary alloc] initWithDictionary:map];
+    }
+    return map;
+}
+
 - (id)init {
     self = [super init];
     if (self) {
@@ -122,17 +150,42 @@
     NSError *error = nil;
     NSArray *updates = [NSJSONSerialization JSONObjectWithData:_data options:kNilOptions error:&error];
     NSLog(@"%@", updates);
+    EEYEOLocalDataStore *store = [EEYEOLocalDataStore instance];
     for (NSDictionary *update in updates) {
-        NSString *entityType = [update objectForKey:@"entityType"];
-        if ([entityType isEqualToString:@"com.jtbdevelopment.e_eye_o.entities.ObservationCategory"]) {
-            NSString *id = [update objectForKey:@"id"];
-            EEYEOLocalDataStore *store = [EEYEOLocalDataStore instance];
-            EEYEOObservationCategory *category = [store findOrCreate:CATEGORYENTITY withId:id];
-            if (category.dirty) {
+        NSString *entityType = [update objectForKey:JSON_ENTITY];
+        if ([entityType isEqualToString:JAVA_DELETED]) {
+
+        } else {
+            NSString *localType = [[EEYEORemoteDataStore javaToIOSEntityMap] valueForKey:entityType];
+            if (!localType) {
+                NSLog(@"Unknown entity type %@", entityType);
+                continue;
+            }
+            NSString *id = [update objectForKey:JSON_ID];
+            EEYEOIdObject *local = [store findOrCreate:localType withId:id];
+            if (local.dirty) {
+                NSDate *remoteDate = [EEYEOIdObject fromJodaDateTime:[update valueForKey:JSON_MODIFICATIONTS]];
+                NSComparisonResult result = [remoteDate compare:local.modificationTimestampToNSDate];
+                switch (result) {
+                    case NSOrderedAscending:
+                        NSLog(@"Remote more recent");
+                        break;
+                    case NSOrderedDescending:
+                        NSLog(@"Local more recent");
+                        break;
+                    case NSOrderedSame:
+                        NSLog(@"Virtually impossible");
+                        break;
+                }
+                //  TODO
                 NSLog(@"Conflict");
             }
-            [category loadFromDictionary:update];
-            [store updateFromRemoteStore:category];
+            [local loadFromDictionary:update];
+            [store updateFromRemoteStore:local];
+            NSMutableDictionary *rewrite = [[NSMutableDictionary alloc] init];
+            [local writeToDictionary:rewrite];
+            NSLog(@"%@", update);
+            NSLog(@"%@", rewrite);
         }
     }
 }

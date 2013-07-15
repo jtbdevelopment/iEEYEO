@@ -16,6 +16,8 @@ static NSString *const CLASSLISTENTITY = @"EEYEOClassList";
 
 static NSString *const CATEGORYENTITY = @"EEYEOObservationCategory";
 
+static NSString *const PHOTOENTITY = @"EEYEOPhoto";
+
 static NSString *const STUDENTENTITY = @"EEYEOStudent";
 
 static NSString *const OBSERVATIONENTITY = @"EEYEOObservation";

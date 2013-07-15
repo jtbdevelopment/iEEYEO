@@ -29,6 +29,7 @@
     [self setClearsSelectionOnViewWillAppear:NO];
     [self setTitle:@"iE-EYE-O"];
     [self.collectionView setBackgroundColor:[Colors cream]];
+    [UIView setAnimationsEnabled:NO];
     //  TODO - probably in init or alloc
     if (!_observationsViewController) {
         self.observationsViewController = [[ObservationsViewController alloc] initWithStyle:UITableViewStyleGrouped];
@@ -111,44 +112,6 @@
     }
 
     return _fetchedResultsController;
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-    switch (type) {
-        case NSFetchedResultsChangeInsert:
-            [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
-            break;
-
-        case NSFetchedResultsChangeDelete:
-            [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
-            break;
-    }
-}
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath {
-    UICollectionView *collectionView = self.collectionView;
-
-    switch (type) {
-        case NSFetchedResultsChangeInsert:
-            [collectionView insertItemsAtIndexPaths:@[newIndexPath]];
-            break;
-
-        case NSFetchedResultsChangeDelete:
-            [collectionView deleteItemsAtIndexPaths:@[indexPath]];
-            break;
-
-        case NSFetchedResultsChangeUpdate:
-            [self configureCell:(StudentsViewCell *) [collectionView cellForItemAtIndexPath:indexPath] atIndexPath:indexPath];
-            break;
-
-        case NSFetchedResultsChangeMove:
-            [collectionView deleteItemsAtIndexPaths:@[indexPath]];
-            [collectionView insertItemsAtIndexPaths:@[newIndexPath]];
-            break;
-    }
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {

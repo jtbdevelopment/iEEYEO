@@ -22,7 +22,6 @@
     EEYEOLocalDataStore *localDataStore = [EEYEOLocalDataStore instance];
     [localDataStore setContext:self.managedObjectContext];
     [localDataStore setModel:self.managedObjectModel];
-    [localDataStore createDummyData];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     StudentsViewLayout *studentsViewLayout = [[StudentsViewLayout alloc] init];
@@ -31,6 +30,9 @@
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:studentsViewController];
     [[self window] setRootViewController:navigationController];
     [[self window] makeKeyAndVisible];
+
+    //[NSTimer scheduledTimerWithTimeInterval:10 target:localDataStore selector:@selector(createDummyData) userInfo:nil repeats:NO];
+    [localDataStore createDummyData];
     return YES;
 }
 

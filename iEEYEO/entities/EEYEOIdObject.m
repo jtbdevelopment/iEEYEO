@@ -6,6 +6,7 @@
 //
 
 #import "EEYEOIdObject.h"
+#import "EEYEORemoteDataStore.h"
 
 
 @implementation EEYEOIdObject
@@ -14,7 +15,7 @@
 @dynamic modificationTimestamp;
 @dynamic dirty;
 
-- (long long)modificationTimestampToJoda {
+- (NSNumber *)modificationTimestampToJoda {
     return [EEYEOIdObject toJodaDateTime:[self modificationTimestampToNSDate]];
 }
 
@@ -27,26 +28,44 @@
 }
 
 - (void)loadFromDictionary:(NSDictionary *)dictionary {
-    [self setId:[dictionary valueForKey:@"id"]];
-    [self setModificationTimestampFromJoda:(int) [dictionary valueForKey:@"modificationTimestamp"]];
+    [self setId:[dictionary valueForKey:JSON_ID]];
+    [self setModificationTimestampFromJoda:[dictionary valueForKey:JSON_MODIFICATIONTS]];
 }
 
+- (void)writeToDictionary:(NSMutableDictionary *)dictionary {
+    [dictionary setValue:[[EEYEORemoteDataStore iosToJavaEntityMap] valueForKey:[[self class] description]] forKey:JSON_ENTITY];
+    [dictionary setValue:[self id] forKey:JSON_ID];
+    [dictionary setValue:[self modificationTimestampToJoda] forKey:JSON_MODIFICATIONTS];
+}
 
 - (void)setModificationTimestampFromNSDate:(NSDate *)date {
     [self setModificationTimestamp:[date timeIntervalSince1970]];
 }
 
-- (void)setModificationTimestampFromJoda:(long long)millis {
+- (void)setModificationTimestampFromJoda:(NSNumber *)millis {
     [self setModificationTimestampFromNSDate:[EEYEOIdObject fromJodaDateTime:millis]];
 }
 
-+ (NSDate *)fromJodaDateTime:(long long int)jodaDateTimeInMilliseconds {
-    return [NSDate dateWithTimeIntervalSince1970:((int) (jodaDateTimeInMilliseconds / 1000))];
++ (NSDate *)fromJodaDateTime:(NSNumber *)jodaDateTimeInMilliseconds {
+    return [NSDate dateWithTimeIntervalSince1970:(((double) [jodaDateTimeInMilliseconds longLongValue]) / 1000)];
 }
 
-+ (long long int)toJodaDateTime:(NSDate *)dateTime {
-    return (long long) ([dateTime timeIntervalSince1970] * 1000);
++ (NSNumber *)toJodaDateTime:(NSDate *)dateTime {
+    return [[NSNumber alloc] initWithDouble:([dateTime timeIntervalSince1970] * 1000)];
 }
 
+- (void)writeSubobject:(id)object ToArray:(NSMutableArray *)array {
+    [array addObject:[self createSubDictionary:object]];
+}
 
+- (void)writeSubobject:(id)object ToDictionary:(NSMutableDictionary *)dictionary WithKey:(NSString *)key {
+    [dictionary setValue:[self createSubDictionary:object] forKey:key];
+}
+
+- (NSMutableDictionary *)createSubDictionary:(id)object {
+    NSMutableDictionary *subDictionary = [[NSMutableDictionary alloc] init];
+    [subDictionary setValue:[[EEYEORemoteDataStore iosToJavaEntityMap] valueForKey:[[object class] description]] forKey:JSON_ENTITY];
+    [subDictionary setValue:[object id] forKey:JSON_ID];
+    return subDictionary;
+}
 @end

@@ -11,6 +11,8 @@
 
 @class EEYEOClassList;
 
+static NSString *const JSON_CLASSLISTS = @"classLists";
+
 @interface EEYEOStudent : EEYEOObservable
 
 @property(nonatomic, retain) NSString *firstName;

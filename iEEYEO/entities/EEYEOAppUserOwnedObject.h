@@ -11,6 +11,10 @@
 
 @class EEYEOAppUser;
 
+static NSString *const JSON_ARCHIVED = @"archived";
+
+static NSString *const JSON_APPUSER = @"appUser";
+
 @interface EEYEOAppUserOwnedObject : EEYEOIdObject
 
 @property(nonatomic) BOOL archived;

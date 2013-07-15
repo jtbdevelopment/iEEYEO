@@ -16,8 +16,14 @@
 
 - (void)loadFromDictionary:(NSDictionary *)dictionary {
     [super loadFromDictionary:dictionary];
-    [self setName:[dictionary valueForKey:@"description"]];
-    [self setShortName:[dictionary valueForKey:@"shortName"]];
+    [self setName:[dictionary valueForKey:JSON_DESCRIPTION]];
+    [self setShortName:[dictionary valueForKey:JSON_SHORTNAME]];
+}
+
+- (void)writeToDictionary:(NSMutableDictionary *)dictionary {
+    [super writeToDictionary:dictionary];
+    [dictionary setValue:[self name] forKey:JSON_DESCRIPTION];
+    [dictionary setValue:[self shortName] forKey:JSON_SHORTNAME];
 }
 
 

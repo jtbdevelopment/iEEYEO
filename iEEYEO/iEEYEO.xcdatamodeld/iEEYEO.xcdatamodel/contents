@@ -23,7 +23,7 @@
         <attribute name="deletedId" attributeType="String" minValueString="1" syncable="YES"/>
     </entity>
     <entity name="EEYEOIdObject" representedClassName="EEYEOIdObject" isAbstract="YES" syncable="YES">
-        <attribute name="dirty" attributeType="Boolean" defaultValueString="YES" indexed="YES" syncable="YES"/>
+        <attribute name="dirty" attributeType="Boolean" defaultValueString="NO" indexed="YES" syncable="YES"/>
         <attribute name="id" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="modificationTimestamp" attributeType="Date" indexed="YES" syncable="YES"/>
     </entity>

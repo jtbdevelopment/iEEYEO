@@ -16,9 +16,15 @@
 
 - (void)loadFromDictionary:(NSDictionary *)dictionary {
     [super loadFromDictionary:dictionary];
-    [self setAppUser:[[EEYEOLocalDataStore instance] find:APPUSERENTITY withId:[[dictionary valueForKey:@"appUser"] valueForKey:@"id"]]];
-    [self setArchived:(BOOL) [dictionary valueForKey:@"archived"]];
+    //  TODO - error if not found
+    [self setAppUser:[[EEYEOLocalDataStore instance] find:APPUSERENTITY withId:[[dictionary valueForKey:JSON_APPUSER] valueForKey:JSON_ID]]];
+    [self setArchived:[[dictionary valueForKey:JSON_ARCHIVED] boolValue]];
 }
 
+- (void)writeToDictionary:(NSMutableDictionary *)dictionary {
+    [super writeToDictionary:dictionary];
+    [dictionary setValue:[[NSNumber alloc] initWithBool:[self archived]] forKey:JSON_ARCHIVED];
+    [self writeSubobject:[self appUser] ToDictionary:dictionary WithKey:JSON_APPUSER];
+}
 
 @end

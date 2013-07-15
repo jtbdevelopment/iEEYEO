@@ -8,6 +8,20 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+static NSString *const JSON_ID = @"id";
+
+static NSString *const JSON_ENTITY = @"entityType";
+
+static NSString *const JSON_MODIFICATIONTS = @"modificationTimestamp";
+
+static NSString *const JSON_DESCRIPTION = @"description";
+
+static NSString *const JSON_SHORTNAME = @"shortName";
+
+static NSString *const JSON_FIRST_NAME = @"firstName";
+
+static NSString *const JSON_LAST_NAME = @"lastName";
+
 
 @interface EEYEOIdObject : NSManagedObject
 
@@ -15,20 +29,25 @@
 @property(nonatomic) NSTimeInterval modificationTimestamp;
 @property(nonatomic) BOOL dirty;
 
-+ (NSDate *)fromJodaDateTime:(long long int)jodaDateTimeInMilliseconds;
++ (NSDate *)fromJodaDateTime:(NSNumber *)jodaDateTimeInMilliseconds;
 
-+ (long long int)toJodaDateTime:(NSDate *)dateTime;
++ (NSNumber *)toJodaDateTime:(NSDate *)dateTime;
 
-- (long long)modificationTimestampToJoda;
+- (void)writeSubobject:(id)object ToArray:(NSMutableArray *)array;
+
+- (void)writeSubobject:(id)object ToDictionary:(NSMutableDictionary *)dictionary WithKey:(NSString *)key;
+
+- (NSNumber *)modificationTimestampToJoda;
 
 - (NSDate *)modificationTimestampToNSDate;
 
 - (void)setModificationTimestampFromNSDate:(NSDate *)date;
 
-- (void)setModificationTimestampFromJoda:(long long)millis;
+- (void)setModificationTimestampFromJoda:(NSNumber *)millis;
 
 - (NSString *)desc;
 
 - (void)loadFromDictionary:(NSDictionary *)dictionary;
 
+- (void)writeToDictionary:(NSMutableDictionary *)dictionary;
 @end
