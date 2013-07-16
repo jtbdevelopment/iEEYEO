@@ -6,7 +6,6 @@
 
 #import "EEYEOLocalDataStore.h"
 #import "EEYEOAppUser.h"
-#import "EEYEOClassList.h"
 #import "EEYEORemoteDataStore.h"
 
 
@@ -43,22 +42,31 @@
 
 - (void)saveToLocalStore:(EEYEOIdObject *)object {
     [object setDirty:YES];
+    [self saveContext:object];
+}
+
+- (void)saveContext:(EEYEOIdObject *)object {
     NSError *error = nil;
     [context save:&error];
     if (error != nil) {
         NSLog(@"Error saving entity %@ with desc %@.  Error %@", [object class], [object objectID], [error description]);
     }
-    return;
+}
+
+- (void)deleteFromLocalStore:(EEYEORemoteDataStore *)object {
+    //  TODO - put on list to send back to remote server
+    [context deleteObject:object];
+    [self saveContext:object];
 }
 
 - (void)updateFromRemoteStore:(EEYEOIdObject *)object {
     [object setDirty:NO];
-    NSError *error = nil;
-    [context save:&error];
-    if (error != nil) {
-        NSLog(@"Error saving entity %@ with desc %@.  Error %@", [object class], [object objectID], [error description]);
-    }
-    return;
+    [self saveContext:object];
+}
+
+- (void)deleteUpdateFromRemoteStore:(EEYEOIdObject *)object {
+    [context deleteObject:object];
+    [self saveContext:object];
 }
 
 - (id)find:(NSString *)entityType withId:(NSString *)withId {
@@ -115,7 +123,7 @@
     [appUser setLastLogout:[[NSDate dateWithTimeIntervalSince1970:0] timeIntervalSince1970]];
     [self saveToLocalStore:appUser];
 
-    [[EEYEORemoteDataStore instance] loadData];
+    [[EEYEORemoteDataStore instance] initializeFromRemoteServer];
 }
 
 

@@ -38,7 +38,10 @@
     [self setComment:[dictionary valueForKey:JSON_COMMENT]];
     [self setSignificant:[[dictionary valueForKey:JSON_SIGNIFICANT] boolValue]];
     //  TODO - error if not found
-    [self setObservable:[[EEYEOLocalDataStore instance] find:OBSERVABLEENTITY withId:[[dictionary valueForKey:JSON_OBSERVATION_SUBJECT] valueForKey:JSON_ID]]];
+    EEYEOObservable *observable = [[EEYEOLocalDataStore instance] find:OBSERVABLEENTITY withId:[[dictionary valueForKey:JSON_OBSERVATION_SUBJECT] valueForKey:JSON_ID]];
+    if (observable) {
+        [self setObservable:observable];
+    }
     for (NSDictionary *category in [dictionary valueForKey:JSON_CATEGORIES]) {
         //  TODO - error if not found
         EEYEOObservationCategory *value = [[EEYEOLocalDataStore instance] find:CATEGORYENTITY withId:[category valueForKey:JSON_ID]];
@@ -46,7 +49,10 @@
             [self addCategoriesObject:value];
         }
     }
-    NSArray *jodaLocalDateTime = [dictionary valueForKey:JSON_OBSERVATIONTIMESTAMP];
+    [self setObservationTimestampFromNSDate:[self fromJodaLocalDateTime:[dictionary valueForKey:JSON_OBSERVATIONTIMESTAMP]]];
+}
+
+- (NSDate *)fromJodaLocalDateTime:(NSArray *)jodaLocalDateTime {
     NSDateComponents *components = [[NSDateComponents alloc] init];
     NSCalendar *cal = [NSCalendar currentCalendar];
     [components setCalendar:cal];
@@ -57,7 +63,7 @@
     [components setMinute:[[jodaLocalDateTime objectAtIndex:4] integerValue]];
     [components setSecond:[[jodaLocalDateTime objectAtIndex:5] integerValue]];
     NSDate *date = [cal dateFromComponents:components];
-    [self setObservationTimestamp:[date timeIntervalSince1970]];
+    return date;
 }
 
 - (void)writeToDictionary:(NSMutableDictionary *)dictionary {
@@ -70,8 +76,12 @@
         [self writeSubobject:category ToArray:categories];
     }
     [dictionary setValue:categories forKey:JSON_CATEGORIES];
+    [dictionary setValue:[self toJodaLocalDateTime:[self observationTimestampToNSDate]] forKey:JSON_OBSERVATIONTIMESTAMP];
+}
+
+- (NSMutableArray *)toJodaLocalDateTime:(NSDate *)date {
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *comps = [cal components:LOCAL_DATE_TIME_FLAGS fromDate:[self observationTimestampToNSDate]];
+    NSDateComponents *comps = [cal components:LOCAL_DATE_TIME_FLAGS fromDate:date];
     NSMutableArray *ts = [[NSMutableArray alloc] init];
     [ts addObject:[[NSNumber alloc] initWithInt:[comps year]]];
     [ts addObject:[[NSNumber alloc] initWithInt:[comps month]]];
@@ -80,7 +90,7 @@
     [ts addObject:[[NSNumber alloc] initWithInt:[comps minute]]];
     [ts addObject:[[NSNumber alloc] initWithInt:[comps second]]];
     [ts addObject:[[NSNumber alloc] initWithInt:0]];
-    [dictionary setValue:ts forKey:JSON_OBSERVATIONTIMESTAMP];
+    return ts;
 }
 
 - (NSNumber *)observationTimestampToJoda {

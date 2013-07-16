@@ -17,7 +17,10 @@
 - (void)loadFromDictionary:(NSDictionary *)dictionary {
     [super loadFromDictionary:dictionary];
     //  TODO - error if not found
-    [self setAppUser:[[EEYEOLocalDataStore instance] find:APPUSERENTITY withId:[[dictionary valueForKey:JSON_APPUSER] valueForKey:JSON_ID]]];
+    EEYEOAppUser *user = [[EEYEOLocalDataStore instance] find:APPUSERENTITY withId:[[dictionary valueForKey:JSON_APPUSER] valueForKey:JSON_ID]];
+    if (user) {
+        [self setAppUser:user];
+    }
     [self setArchived:[[dictionary valueForKey:JSON_ARCHIVED] boolValue]];
 }
 

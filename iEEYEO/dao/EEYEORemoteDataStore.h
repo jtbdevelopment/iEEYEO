@@ -7,8 +7,8 @@
 #import <Foundation/Foundation.h>
 
 
-static NSString *const BASE_REST_URL = @"http://192.168.1.141:8080/REST/";
-static NSString *const BASE_REST_USER_URL = @"http://192.168.1.141:8080/REST/users/";
+static NSString *const BASE_REST_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/";
+static NSString *const BASE_REST_USER_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/users/";
 
 static NSString *const USER_ID_KEY = @"userId";
 
@@ -29,5 +29,7 @@ static NSString *const JAVA_DELETED = @"com.jtbdevelopment.e_eye_o.entities.Dele
 
 + (EEYEORemoteDataStore *)instance;
 
-- (void)loadData;
+- (void)initializeFromRemoteServer;
+
+- (void)updateFromRemoteServer;
 @end

@@ -8,9 +8,12 @@
 #import <Foundation/Foundation.h>
 
 @class EEYEOIdObject;
+@class EEYEORemoteDataStore;
 
 
 static NSString *const APPUSERENTITY = @"EEYEOAppUser";
+
+static NSString *const APPUSEROWNEDENTITY = @"EEYEOAppUserOwnedObject";
 
 static NSString *const CLASSLISTENTITY = @"EEYEOClassList";
 
@@ -35,7 +38,11 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 
 - (void)saveToLocalStore:(EEYEOIdObject *)object;
 
+- (void)deleteFromLocalStore:(EEYEORemoteDataStore *)object;
+
 - (void)updateFromRemoteStore:(EEYEOIdObject *)object;
+
+- (void)deleteUpdateFromRemoteStore:(EEYEOIdObject *)object;
 
 - (id)find:(NSString *)entityType withId:(NSString *)withId;
 

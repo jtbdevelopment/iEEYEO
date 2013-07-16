@@ -10,6 +10,8 @@
 #import "EEYEOAppUserOwnedObject.h"
 
 
+static NSString *const JSON_DELETED_ID = @"deletedId";
+
 @interface EEYEODeletedObject : EEYEOAppUserOwnedObject
 
 @property(nonatomic, retain) NSString *deletedId;

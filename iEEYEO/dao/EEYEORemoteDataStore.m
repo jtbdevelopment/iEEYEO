@@ -7,6 +7,7 @@
 #import "EEYEORemoteDataStore.h"
 #import "EEYEOObservationCategory.h"
 #import "EEYEOLocalDataStore.h"
+#import "EEYEODeletedObject.h"
 
 
 @implementation EEYEORemoteDataStore {
@@ -82,7 +83,20 @@
     return _instance;
 }
 
-- (void)loadData {
+- (void)initializeFromRemoteServer {
+    NSArray *objectTypes = [[NSArray alloc] initWithObjects:@"categories", @"classes", @"students", @"observations", @"photos", nil];
+    [self authenticate:nil];
+    for (NSString *type in objectTypes) {
+        NSURL *url = [[NSURL alloc] initWithString:[BASE_REST_USER_URL stringByAppendingFormat:@"%@/%@/active", _currentUser, type]];
+        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+        NSURLResponse *response;
+        NSError *error;
+        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        [self processUpdatesFromServer:data];
+    }
+}
+
+- (void)updateFromRemoteServer {
     NSURL *url = [[NSURL alloc] initWithString:[self lastModifiedURL]];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
@@ -126,11 +140,16 @@
     if ([response.MIMEType isEqualToString:@"text/plain"]) {
         NSString *string = [[NSString alloc] initWithData:loginData encoding:NSUTF8StringEncoding];
         if ([string isEqualToString:@"SUCCESS"]) {
-            NSLog(@"Login success - resending request");
-            NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:currentRequest delegate:self];
-            if (!connection) {
-                //  TODO
-                NSLog(@"Failed");
+            if (currentRequest) {
+                NSLog(@"Login success - resending request");
+                NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:currentRequest delegate:self];
+                if (!connection) {
+                    //  TODO
+                    NSLog(@"Failed");
+                }
+            } else {
+                NSLog(@"Nil currentRequest");
+                return;
             }
         } else {
             //  TODO
@@ -147,13 +166,26 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    NSError *error = nil;
-    NSArray *updates = [NSJSONSerialization JSONObjectWithData:_data options:kNilOptions error:&error];
+    [self processUpdatesFromServer:_data];
+}
+
+- (void)processUpdatesFromServer:(NSData *)data {
+    NSError *error;
+    NSArray *updates = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
     NSLog(@"%@", updates);
-    EEYEOLocalDataStore *store = [EEYEOLocalDataStore instance];
+    EEYEOLocalDataStore *localDataStore = [EEYEOLocalDataStore instance];
     for (NSDictionary *update in updates) {
         NSString *entityType = [update objectForKey:JSON_ENTITY];
         if ([entityType isEqualToString:JAVA_DELETED]) {
+            EEYEODeletedObject *deletedObject = [[EEYEODeletedObject alloc] init];
+            [deletedObject loadFromDictionary:update];
+            EEYEOIdObject *local = [localDataStore find:APPUSEROWNEDENTITY withId:[deletedObject deletedId]];
+            if (local) {
+                NSLog(@"Deleting %@", [deletedObject deletedId]);
+                [localDataStore deleteUpdateFromRemoteStore:local];
+            } else {
+                NSLog(@"Deleted Id %@ not found locally - probably ok", [deletedObject deletedId]);
+            }
 
         } else {
             NSString *localType = [[EEYEORemoteDataStore javaToIOSEntityMap] valueForKey:entityType];
@@ -162,17 +194,18 @@
                 continue;
             }
             NSString *id = [update objectForKey:JSON_ID];
-            EEYEOIdObject *local = [store findOrCreate:localType withId:id];
+            EEYEOIdObject *local = [localDataStore findOrCreate:localType withId:id];
             if (local.dirty) {
                 NSDate *remoteDate = [EEYEOIdObject fromJodaDateTime:[update valueForKey:JSON_MODIFICATIONTS]];
                 NSComparisonResult result = [remoteDate compare:local.modificationTimestampToNSDate];
                 switch (result) {
                     case NSOrderedAscending:
-                        NSLog(@"Remote more recent");
+                        NSLog(@"Remote more recent - take it");
                         break;
                     case NSOrderedDescending:
-                        NSLog(@"Local more recent");
-                        break;
+                        NSLog(@"Local more recent - skip remote and remark local as dirty");
+                        [localDataStore saveToLocalStore:local];
+                        continue;
                     case NSOrderedSame:
                         NSLog(@"Virtually impossible");
                         break;
@@ -181,11 +214,15 @@
                 NSLog(@"Conflict");
             }
             [local loadFromDictionary:update];
-            [store updateFromRemoteStore:local];
-            NSMutableDictionary *rewrite = [[NSMutableDictionary alloc] init];
-            [local writeToDictionary:rewrite];
-            NSLog(@"%@", update);
-            NSLog(@"%@", rewrite);
+            [localDataStore updateFromRemoteStore:local];
+            if ([local isKindOfClass:[EEYEOAppUserOwnedObject class]] && [(EEYEOAppUserOwnedObject *) local archived]) {
+                [localDataStore deleteUpdateFromRemoteStore:local];
+            } else {
+                NSMutableDictionary *rewrite = [[NSMutableDictionary alloc] init];
+                [local writeToDictionary:rewrite];
+                NSLog(@"%@", update);
+                NSLog(@"%@", rewrite);
+            }
         }
     }
 }
