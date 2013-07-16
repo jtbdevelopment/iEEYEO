@@ -17,6 +17,7 @@
 @dynamic firstName;
 @dynamic lastLogout;
 @dynamic lastName;
+@dynamic ownedObjects;
 
 - (void)loadFromDictionary:(NSDictionary *)dictionary {
     [super loadFromDictionary:dictionary];
@@ -55,6 +56,5 @@
 - (void)setLastLogoutFromJoda:(NSNumber *)millis {
     [self setLastLogoutFromNSDate:[EEYEOIdObject fromJodaDateTime:millis]];
 }
-
 
 @end

@@ -11,6 +11,7 @@
 @implementation EEYEOClassList
 
 @dynamic name;
+@dynamic students;
 
 - (NSString *)desc {
     return [self name];
@@ -25,6 +26,5 @@
     [super writeToDictionary:dictionary];
     [dictionary setValue:[self name] forKey:JSON_DESCRIPTION];
 }
-
 
 @end

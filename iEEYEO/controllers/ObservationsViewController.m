@@ -20,12 +20,12 @@
 //  TODO - search filter?
 @implementation ObservationsViewController {
 @private
-    EEYEOStudent *_student;
+    EEYEOObservable *_observable;
     NSDateFormatter *_dateFormatter;
     ObservationViewController *_observationView;
 }
 
-@synthesize student = _student;
+@synthesize observable = _observable;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
@@ -38,11 +38,11 @@
     return self;
 }
 
-- (void)setStudent:(EEYEOStudent *)student {
-    _student = student;
+- (void)setObservable:(EEYEOStudent *)observable {
+    _observable = observable;
     _fetchedResultsController = nil;
     [[self tableView] reloadData];
-    [[self navigationItem] setTitle:[_student desc]];
+    [[self navigationItem] setTitle:[_observable desc]];
 }
 
 - (void)viewDidLoad {
@@ -51,7 +51,7 @@
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:nil];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addObservation:)];
     self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:self.editButtonItem, addButton, nil];
 
     self.tableView.backgroundColor = [Colors cream];
@@ -61,6 +61,19 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)addObservation:(id)sender {
+    EEYEOObservation *newObservation = [[EEYEOLocalDataStore instance] create:OBSERVATIONENTITY];
+    [newObservation setObservable:_observable];
+    [newObservation setAppUser:[_observable appUser]];
+    [newObservation setObservationTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
+    [newObservation setModificationTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
+    [newObservation setId:@""];
+    [_observationView setObservation:newObservation];
+    [_observationView setManagedObjectContext:_managedObjectContext];
+    [_observationView setNewObservation:YES];
+    [self.navigationController pushViewController:_observationView animated:YES];
 }
 
 #pragma mark - Table view data source
@@ -87,28 +100,16 @@
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
+        EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        [[EEYEOLocalDataStore instance] deleteFromLocalStore:observation];
+        //[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+    }
 }
-*/
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
@@ -126,6 +127,7 @@
     EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [_observationView setObservation:observation];
     [_observationView setManagedObjectContext:_managedObjectContext];
+    [_observationView setNewObservation:NO];
     [self.navigationController pushViewController:_observationView animated:YES];
 }
 
@@ -148,7 +150,7 @@
     NSArray *sortDescriptors = @[sortDescriptorOTS];
     [fetchRequest setSortDescriptors:sortDescriptors];
 
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"observable.id = %@", [[self student] id]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"observable.id = %@", [[self observable] id]];
     [fetchRequest setPredicate:predicate];
 
     // Edit the section name key path and cache name if appropriate.

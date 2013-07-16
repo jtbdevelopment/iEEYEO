@@ -16,6 +16,7 @@
 @property(nonatomic, retain) IBOutlet UIButton *categoriesField;
 @property(nonatomic, retain) IBOutlet UIButton *timestampField;
 @property(nonatomic, retain) IBOutlet UISwitch *significantField;
+@property(nonatomic) BOOL newObservation;
 
 @property(nonatomic, strong) EEYEOObservation *observation;
 

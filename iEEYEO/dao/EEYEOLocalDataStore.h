@@ -19,6 +19,8 @@ static NSString *const CLASSLISTENTITY = @"EEYEOClassList";
 
 static NSString *const CATEGORYENTITY = @"EEYEOObservationCategory";
 
+static NSString *const DELETEDENTITY = @"EEYEODeletedObject";
+
 static NSString *const PHOTOENTITY = @"EEYEOPhoto";
 
 static NSString *const STUDENTENTITY = @"EEYEOStudent";
@@ -45,6 +47,8 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 - (void)deleteUpdateFromRemoteStore:(EEYEOIdObject *)object;
 
 - (id)find:(NSString *)entityType withId:(NSString *)withId;
+
+- (id)create:(NSString *)entityType;
 
 - (id)findOrCreate:(NSString *)entityType withId:(NSString *)withId;
 

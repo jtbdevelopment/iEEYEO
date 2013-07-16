@@ -9,6 +9,7 @@
 #import <CoreData/CoreData.h>
 #import "EEYEOIdObject.h"
 
+@class EEYEOAppUserOwnedObject;
 
 static NSString *const JSON_ACTIVATED = @"activated";
 
@@ -29,14 +30,17 @@ static NSString *const JSON_LASTLOGOUT = @"lastLogout";
 @property(nonatomic, retain) NSString *firstName;
 @property(nonatomic) NSTimeInterval lastLogout;
 @property(nonatomic, retain) NSString *lastName;
+@property(nonatomic, retain) NSSet *ownedObjects;
+@end
 
-- (NSNumber *)lastLogoutToJoda;
+@interface EEYEOAppUser (CoreDataGeneratedAccessors)
 
-- (NSDate *)lastLogoutToNSDate;
+- (void)addOwnedObjectsObject:(EEYEOAppUserOwnedObject *)value;
 
-- (void)setLastLogoutFromNSDate:(NSDate *)date;
+- (void)removeOwnedObjectsObject:(EEYEOAppUserOwnedObject *)value;
 
-- (void)setLastLogoutFromJoda:(NSNumber *)millis;
+- (void)addOwnedObjects:(NSSet *)values;
 
+- (void)removeOwnedObjects:(NSSet *)values;
 
 @end

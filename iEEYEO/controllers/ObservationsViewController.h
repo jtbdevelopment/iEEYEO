@@ -7,14 +7,14 @@
 
 #import <UIKit/UIKit.h>
 
-@class EEYEOStudent;
+@class EEYEOObservable;
 
 @interface ObservationsViewController : UITableViewController <NSFetchedResultsControllerDelegate>
 
-@property(nonatomic, strong) EEYEOStudent *student;
+@property(nonatomic, strong) EEYEOObservable *observable;
 @property(strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property(strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
-- (void)setStudent:(EEYEOStudent *)student;
+- (void)setObservable:(EEYEOObservable *)observable;
 
 @end

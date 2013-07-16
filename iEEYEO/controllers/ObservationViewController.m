@@ -22,6 +22,14 @@
 @interface ObservationViewController ()
 @end
 
+//  TODO - nasty
+typedef NS_ENUM(NSInteger, ChildPopping) {
+    None,
+    Observable,
+    Categories,
+    Timestamp
+};
+
 @implementation ObservationViewController {
 @private
     NSDateFormatter *_dateFormatter;
@@ -36,6 +44,8 @@
     NSMutableArray *_observationTimestamp;
     NSMutableSet *_categories;
     NSManagedObjectContext *_managedObjectContext;
+    BOOL _newObservation;
+    ChildPopping _childPopping;
 }
 
 @synthesize commentField = _commentField;
@@ -50,6 +60,8 @@
 
 @synthesize managedObjectContext = _managedObjectContext;
 
+@synthesize newObservation = _newObservation;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -58,7 +70,7 @@
         [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
         _observable = [[NSMutableArray alloc] init];
         _observationTimestamp = [[NSMutableArray alloc] init];
-
+        _childPopping = None;
     }
     return self;
 }
@@ -84,9 +96,32 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    _commentField.text = [_observation comment];
-    _significantField.on = [_observation significant];
-    [_timestampField setTitle:[_dateFormatter stringFromDate:[_observationTimestamp objectAtIndex:0]] forState:UIControlStateNormal];
+    switch (_childPopping) {
+        case None:
+            [self updateCommentField];
+            [self updateSignificantField];
+            [self updateTimestampField];
+            [self updateCategoriesField];
+            [self updateObservableField];
+            break;
+        case Observable:
+            [self updateObservableField];
+            break;
+        case Categories:
+            [self updateCategoriesField];
+            break;
+        case Timestamp:
+            [self updateTimestampField];
+            break;
+    }
+    _childPopping = None;
+}
+
+- (void)updateObservableField {
+    [_observableField setTitle:[[_observable objectAtIndex:0] desc] forState:UIControlStateNormal];
+}
+
+- (void)updateCategoriesField {
     NSMutableString *categories = [[NSMutableString alloc] init];
     BOOL first = YES;
     for (EEYEOObservationCategory *category in _categories) {
@@ -99,7 +134,18 @@
         [categories appendFormat:@"%@", [category shortName]];
     }
     [_categoriesField setTitle:categories forState:UIControlStateNormal];
-    [_observableField setTitle:[[_observable objectAtIndex:0] desc] forState:UIControlStateNormal];
+}
+
+- (void)updateTimestampField {
+    [_timestampField setTitle:[_dateFormatter stringFromDate:[_observationTimestamp objectAtIndex:0]] forState:UIControlStateNormal];
+}
+
+- (void)updateSignificantField {
+    _significantField.on = [_observation significant];
+}
+
+- (void)updateCommentField {
+    _commentField.text = [_observation comment];
 }
 
 - (void)setObservation:(EEYEOObservation *)observation {
@@ -134,6 +180,7 @@
     ObservablePickerViewController *controller = [[ObservablePickerViewController alloc] init];
     controller.managedObjectContext = [[EEYEOLocalDataStore instance] context];
     controller.observable = _observable;
+    _childPopping = Observable;
     [self.navigationController pushViewController:controller animated:YES];
 }
 
@@ -141,12 +188,14 @@
     CategoryPickerViewController *categoryPickerViewController = [[CategoryPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
     categoryPickerViewController.managedObjectContext = [[EEYEOLocalDataStore instance] context];
     categoryPickerViewController.selectedCategories = _categories;
+    _childPopping = Categories;
     [self.navigationController pushViewController:categoryPickerViewController animated:YES];
 }
 
 - (IBAction)editTimestamp:(id)sender {
     ObservationTimestampPickerViewController *picker = [[ObservationTimestampPickerViewController alloc] init];
     [picker setTimestamp:_observationTimestamp];
+    _childPopping = Timestamp;
     [self.navigationController pushViewController:picker animated:YES];
 }
 

@@ -13,6 +13,7 @@
 
 @dynamic archived;
 @dynamic appUser;
+@dynamic photos;
 
 - (void)loadFromDictionary:(NSDictionary *)dictionary {
     [super loadFromDictionary:dictionary];

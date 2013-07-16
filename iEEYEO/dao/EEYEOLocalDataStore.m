@@ -7,6 +7,13 @@
 #import "EEYEOLocalDataStore.h"
 #import "EEYEOAppUser.h"
 #import "EEYEORemoteDataStore.h"
+#import "EEYEODeletedObject.h"
+#import "EEYEOObservation.h"
+#import "EEYEOObservable.h"
+#import "EEYEOStudent.h"
+#import "EEYEOClassList.h"
+#import "EEYEOObservationCategory.h"
+#import "EEYEOPhoto.h"
 
 
 @implementation EEYEOLocalDataStore {
@@ -53,10 +60,14 @@
     }
 }
 
-- (void)deleteFromLocalStore:(EEYEORemoteDataStore *)object {
+- (void)deleteFromLocalStore:(EEYEOIdObject *)object {
     //  TODO - put on list to send back to remote server
-    [context deleteObject:object];
-    [self saveContext:object];
+    if (object.id && object.id.length > 0) {
+        EEYEODeletedObject *deleted = [self create:DELETEDENTITY];
+        [deleted setDeletedId:[object id]];
+        [self saveToLocalStore:deleted];
+    }
+    [self deleteUpdateFromRemoteStore:object];
 }
 
 - (void)updateFromRemoteStore:(EEYEOIdObject *)object {
@@ -65,6 +76,29 @@
 }
 
 - (void)deleteUpdateFromRemoteStore:(EEYEOIdObject *)object {
+    if ([object isKindOfClass:[EEYEOAppUserOwnedObject class]]) {
+        EEYEOAppUserOwnedObject *owned = (EEYEOAppUserOwnedObject *) object;
+        [[owned appUser] removeOwnedObjectsObject:owned];
+    }
+    if ([object isKindOfClass:[EEYEOObservation class]]) {
+        EEYEOObservation *obs = (EEYEOObservation *) object;
+        [[obs observable] removeObservationsObject:obs];
+        NSSet *categories = [[NSSet alloc] initWithSet:[obs categories]];
+        for (EEYEOObservationCategory *category in categories) {
+            [category removeObservationsObject:obs];
+        }
+    }
+    if ([object isKindOfClass:[EEYEOStudent class]]) {
+        EEYEOStudent *student = (EEYEOStudent *) object;
+        NSSet *classes = [[NSSet alloc] initWithSet:[student classLists]];
+        for (EEYEOClassList *classList in classes) {
+            [classList removeStudentsObject:student];
+        }
+    }
+    if ([object isKindOfClass:[EEYEOPhoto class]]) {
+        EEYEOPhoto *photo = (EEYEOPhoto *) object;
+        [[photo photoFor] removePhotos:photo];
+    }
     [context deleteObject:object];
     [self saveContext:object];
 }

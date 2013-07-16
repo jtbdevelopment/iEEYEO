@@ -18,7 +18,7 @@
 
 
 //  TODO - show classlists?
-//  TODO - add student  ?
+//  TODO - add observable  ?
 //  TODO - add search filter?
 
 @implementation StudentsViewController
@@ -50,7 +50,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     StudentsViewCell *cell = (StudentsViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
     [cell setHighlighted:YES];
-    [_observationsViewController setStudent:[_fetchedResultsController objectAtIndexPath:indexPath]];
+    [_observationsViewController setObservable:[_fetchedResultsController objectAtIndexPath:indexPath]];
     [[self navigationController] pushViewController:_observationsViewController animated:YES];
 }
 
