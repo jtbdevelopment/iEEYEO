@@ -97,7 +97,7 @@
     }
     if ([object isKindOfClass:[EEYEOPhoto class]]) {
         EEYEOPhoto *photo = (EEYEOPhoto *) object;
-        [[photo photoFor] removePhotos:photo];
+        [[photo photoFor] removePhotosObject:photo];
     }
     [context deleteObject:object];
     [self saveContext:object];

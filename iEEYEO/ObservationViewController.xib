@@ -44,6 +44,7 @@
 						<string key="NSFrameSize">{768, 270}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="283588696"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">1</int>
@@ -258,15 +259,6 @@
 						<int key="IBEventType">7</int>
 					</object>
 					<int key="connectionID">200</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">editSignificant:</string>
-						<reference key="source" ref="357899399"/>
-						<reference key="destination" ref="841351856"/>
-						<int key="IBEventType">13</int>
-					</object>
-					<int key="connectionID">202</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -774,19 +766,12 @@
 					<string key="className">ObservationViewController</string>
 					<string key="superclassName">UIViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="cancel:">id</string>
 						<string key="editCategories:">id</string>
 						<string key="editObservable:">id</string>
-						<string key="editSignificant:">id</string>
 						<string key="editTimestamp:">id</string>
 						<string key="reset:">id</string>
-						<string key="save:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="cancel:">
-							<string key="name">cancel:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="editCategories:">
 							<string key="name">editCategories:</string>
 							<string key="candidateClassName">id</string>
@@ -795,20 +780,12 @@
 							<string key="name">editObservable:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="editSignificant:">
-							<string key="name">editSignificant:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="editTimestamp:">
 							<string key="name">editTimestamp:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="reset:">
 							<string key="name">reset:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="save:">
-							<string key="name">save:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>

@@ -172,10 +172,6 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [[self navigationController] popViewControllerAnimated:YES];
 }
 
-- (IBAction)editSignificant:(id)sender {
-    _significantField.on;
-}
-
 - (IBAction)editObservable:(id)sender {
     ObservablePickerViewController *controller = [[ObservablePickerViewController alloc] init];
     controller.managedObjectContext = [[EEYEOLocalDataStore instance] context];

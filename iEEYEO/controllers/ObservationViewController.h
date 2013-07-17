@@ -22,8 +22,6 @@
 
 - (void)setObservation:(EEYEOObservation *)observation;
 
-- (IBAction)editSignificant:(id)sender;
-
 - (IBAction)editObservable:(id)sender;
 
 - (IBAction)editCategories:(id)sender;

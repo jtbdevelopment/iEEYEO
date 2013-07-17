@@ -40,7 +40,7 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 
 - (void)saveToLocalStore:(EEYEOIdObject *)object;
 
-- (void)deleteFromLocalStore:(EEYEORemoteDataStore *)object;
+- (void)deleteFromLocalStore:(EEYEOIdObject *)object;
 
 - (void)updateFromRemoteStore:(EEYEOIdObject *)object;
 
