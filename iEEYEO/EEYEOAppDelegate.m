@@ -8,8 +8,8 @@
 #import "EEYEOAppDelegate.h"
 
 #import "EEYEOLocalDataStore.h"
-#import "StudentsViewController.h"
-#import "StudentsViewLayout.h"
+#import "ObservablesViewController.h"
+#import "ObservablesViewLayout.h"
 
 @implementation EEYEOAppDelegate
 
@@ -24,8 +24,8 @@
     [localDataStore setModel:self.managedObjectModel];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    StudentsViewLayout *studentsViewLayout = [[StudentsViewLayout alloc] init];
-    StudentsViewController *studentsViewController = [[StudentsViewController alloc] initWithCollectionViewLayout:studentsViewLayout];
+    ObservablesViewLayout *studentsViewLayout = [[ObservablesViewLayout alloc] init];
+    ObservablesViewController *studentsViewController = [[ObservablesViewController alloc] initWithCollectionViewLayout:studentsViewLayout];
     studentsViewController.managedObjectContext = self.managedObjectContext;
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:studentsViewController];
     [[self window] setRootViewController:navigationController];

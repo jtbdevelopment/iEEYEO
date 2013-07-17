@@ -1,5 +1,5 @@
 //
-//  StudentsViewController.h
+//  ObservablesViewController.h
 //  iEEYEO
 //
 //  Copyright (c) 2013 jtbdevelopment. All rights reserved.
@@ -9,9 +9,9 @@
 
 @class ObservationsViewController;
 
-static NSString *const STUDENT_CELL = @"StudentCell";
+static NSString *const OBSERVABLE_CELL = @"ObservableCell";
 
-@interface StudentsViewController : UICollectionViewController <NSFetchedResultsControllerDelegate>
+@interface ObservablesViewController : UICollectionViewController <NSFetchedResultsControllerDelegate>
 
 @property(strong, nonatomic) ObservationsViewController *observationsViewController;
 @property(strong, nonatomic) NSFetchedResultsController *fetchedResultsController;

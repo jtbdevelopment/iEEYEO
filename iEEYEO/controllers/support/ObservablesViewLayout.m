@@ -4,10 +4,10 @@
 //
 
 
-#import "StudentsViewLayout.h"
+#import "ObservablesViewLayout.h"
 
 
-@implementation StudentsViewLayout
+@implementation ObservablesViewLayout
 
 - (id)init {
     self = [super init];

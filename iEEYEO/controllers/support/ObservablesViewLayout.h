@@ -7,7 +7,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface StudentsViewLayout : UICollectionViewFlowLayout {
+@interface ObservablesViewLayout : UICollectionViewFlowLayout {
     UICollectionViewScrollDirection scrollDirection;
 }
 @property(nonatomic) UICollectionViewScrollDirection scrollDirection;
