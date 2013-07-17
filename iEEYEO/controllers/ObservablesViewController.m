@@ -78,14 +78,16 @@
     }
 
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:OBSERVABLEENTITY inManagedObjectContext:self.managedObjectContext];
+
+    NSEntityDescription *entity = [NSEntityDescription entityForName:STUDENTENTITY inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 
     [fetchRequest setFetchBatchSize:20];
 
     //  TODO - better sort
-    NSSortDescriptor *sortDescriptorFN = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES];
-    NSArray *sortDescriptors = @[sortDescriptorFN];
+    NSSortDescriptor *sortDescriptorFN = [[NSSortDescriptor alloc] initWithKey:@"firstName" ascending:YES];
+    NSSortDescriptor *sortDescriptorLN = [[NSSortDescriptor alloc] initWithKey:@"lastName" ascending:YES];
+    NSArray *sortDescriptors = @[sortDescriptorFN, sortDescriptorLN];
 
     [fetchRequest setSortDescriptors:sortDescriptors];
 
