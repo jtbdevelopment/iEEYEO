@@ -10,6 +10,7 @@
 #import "EEYEOLocalDataStore.h"
 #import "ObservablesViewController.h"
 #import "ObservablesViewLayout.h"
+#import "EEYEORemoteDataStore.h"
 
 @implementation EEYEOAppDelegate
 
@@ -31,9 +32,13 @@
     [[self window] setRootViewController:navigationController];
     [[self window] makeKeyAndVisible];
 
-    //[NSTimer scheduledTimerWithTimeInterval:10 target:localDataStore selector:@selector(createDummyData) userInfo:nil repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(remoteSync:) userInfo:nil repeats:NO];
     [localDataStore createDummyData];
     return YES;
+}
+
+- (void)remoteSync:(NSTimer *)timer {
+    [[EEYEORemoteDataStore instance] updateFromRemoteServer];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

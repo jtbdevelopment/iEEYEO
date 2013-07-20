@@ -46,11 +46,11 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 
 - (void)deleteUpdateFromRemoteStore:(EEYEOIdObject *)object;
 
-- (id)find:(NSString *)entityType withId:(NSString *)withId;
+- (EEYEOIdObject *)find:(NSString *)entityType withId:(NSString *)withId;
 
-- (id)create:(NSString *)entityType;
+- (EEYEOIdObject *)create:(NSString *)entityType;
 
-- (id)findOrCreate:(NSString *)entityType withId:(NSString *)withId;
+- (EEYEOIdObject *)findOrCreate:(NSString *)entityType withId:(NSString *)withId;
 
 - (void)createDummyData;
 @end

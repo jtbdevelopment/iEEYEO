@@ -22,6 +22,10 @@ static NSString *const JAVA_PHOTO = @"com.jtbdevelopment.e_eye_o.entities.Photo"
 static NSString *const JAVA_USER = @"com.jtbdevelopment.e_eye_o.entities.AppUser";
 static NSString *const JAVA_DELETED = @"com.jtbdevelopment.e_eye_o.entities.DeletedObject";
 
+static NSString *const INITIAL_LAST_UPDATETS = @"2013-01-01T00:00:00";
+
+static NSString *const COUNTER_KEY = @"iEEYEOCounter";
+
 @interface EEYEORemoteDataStore : NSObject <NSURLConnectionDataDelegate>
 + (NSDictionary *)javaToIOSEntityMap;
 
