@@ -51,7 +51,7 @@
 }
 
 + (NSNumber *)toJodaDateTime:(NSDate *)dateTime {
-    return [[NSNumber alloc] initWithDouble:([dateTime timeIntervalSince1970] * 1000)];
+    return [[NSNumber alloc] initWithUnsignedLongLong:((long long) ([dateTime timeIntervalSince1970] * 1000))];
 }
 
 - (void)writeSubobject:(id)object ToArray:(NSMutableArray *)array {

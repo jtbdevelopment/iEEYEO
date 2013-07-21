@@ -26,12 +26,20 @@ static NSString *const INITIAL_LAST_UPDATETS = @"2013-01-01T00:00:00";
 
 static NSString *const COUNTER_KEY = @"iEEYEOCounter";
 
-@interface EEYEORemoteDataStore : NSObject <NSURLConnectionDataDelegate>
+@interface EEYEORemoteDataStore : NSObject
 + (NSDictionary *)javaToIOSEntityMap;
 
 + (NSDictionary *)iosToJavaEntityMap;
 
 + (EEYEORemoteDataStore *)instance;
+
+- (void)setLastUpdateFromServerWithNSDate:(NSDate *)value;
+
+- (void)setLastUpdateFromServer:(NSString *)value;
+
+- (NSDate *)getLastUpdateFromServerAsNSDate;
+
+- (NSString *)getLastUpdateFromServer;
 
 - (void)initializeFromRemoteServer;
 

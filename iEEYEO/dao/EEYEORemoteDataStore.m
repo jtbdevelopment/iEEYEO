@@ -9,14 +9,13 @@
 #import "EEYEOLocalDataStore.h"
 #import "EEYEODeletedObject.h"
 #import "EEYEOClassList.h"
+#import "BaseRESTDelegate.h"
 
 
 @implementation EEYEORemoteDataStore {
 @private
     NSString *_currentUser;
     NSDateFormatter *_dateFormatter;
-    NSMutableDictionary *_connectionDataMap;
-    int _requestCounter;
 }
 
 + (EEYEORemoteDataStore *)instance {
@@ -69,10 +68,6 @@
         //[_dateFormatter setCalendar:[[NSCalendar alloc] initWithCalendarIdentifier:@"GMT"]];
 
 
-        _requestCounter = 0;
-
-        _connectionDataMap = [[NSMutableDictionary alloc] init];
-
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         if (![userDefaults stringForKey:USER_ID_KEY]) {
             //  TODO
@@ -123,15 +118,18 @@
 - (void)initializeFromRemoteServer {
     @synchronized (self) {
         NSArray *objectTypes = [[NSArray alloc] initWithObjects:@"categories", @"classes", @"students", @"observations", @"photos", nil];
-        [self authenticate:nil];
+        // Force authentication
+        [BaseRESTDelegate authenticateAndRerequest:nil];
         for (NSString *type in objectTypes) {
             NSURL *url = [[NSURL alloc] initWithString:[[self getUserURL] stringByAppendingFormat:@"%@/active", type]];
             NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
             NSURLResponse *response;
             NSError *error;
             NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-            [self processUpdatesFromServer:data];
+            [BaseRESTDelegate processUpdatesFromServer:data];
         }
+
+        //  TODO - eliminate
         EEYEOClassList *list = (EEYEOClassList *) [[EEYEOLocalDataStore instance] create:CLASSLISTENTITY];
         [list setAppUser:[[EEYEOLocalDataStore instance] find:APPUSERENTITY withId:_currentUser]];
         [list setName:@"Create Test"];
@@ -156,92 +154,6 @@
         }
     }
     */
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    //  TODO
-    NSLog(@"Failed with error %@", error);
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    NSHTTPURLResponse *httpurlResponse = (NSHTTPURLResponse *) response;
-    if ([httpurlResponse statusCode] == 201) {
-        NSString *newURL = [[httpurlResponse allHeaderFields] valueForKey:@"Location"];
-    }
-
-    //  only received on authentication failure
-    if ([[response MIMEType] isEqualToString:@"text/html"]) {
-        NSLog(@"Cancelling due to html type");
-        NSURLRequest *currentRequest = [connection currentRequest];
-        [connection cancel];
-        @synchronized (_connectionDataMap) {
-            NSString *key = [[connection currentRequest] valueForHTTPHeaderField:COUNTER_KEY];
-            if ([_connectionDataMap objectForKey:key]) {
-                [_connectionDataMap removeObjectForKey:key];
-            }
-        }
-        [self authenticate:currentRequest];
-    } else {
-        NSMutableData *data = [[NSMutableData alloc] init];
-        @synchronized (_connectionDataMap) {
-            [_connectionDataMap setValue:data forKey:[[connection originalRequest] valueForHTTPHeaderField:COUNTER_KEY]];
-        }
-    }
-}
-
-- (void)authenticate:(NSURLRequest *)currentRequest {
-    NSURL *url = [[NSURL alloc] initWithString:[BASE_REST_URL stringByAppendingString:@"security/login?_spring_security_remember_me=true"]];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-
-    //  TODO
-    NSString *form = @"login=x@x&password=xx&_spring_security_remember_me=true";
-    char const *bytes = [form UTF8String];
-    [request setHTTPBody:[NSData dataWithBytes:bytes length:[form length]]];
-    NSURLResponse *response;
-    NSError *error;
-    NSData *loginData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-    if ([response.MIMEType isEqualToString:@"text/plain"]) {
-        NSString *string = [[NSString alloc] initWithData:loginData encoding:NSUTF8StringEncoding];
-        if ([string isEqualToString:@"SUCCESS"]) {
-            if (currentRequest) {
-                NSLog(@"Login success - resending request");
-                NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:currentRequest delegate:self];
-                if (!connection) {
-                    //  TODO
-                    NSLog(@"Failed");
-                }
-            } else {
-                NSLog(@"Nil currentRequest");
-                return;
-            }
-        } else {
-            //  TODO
-            NSLog(@"Failure");
-        }
-    } else {
-        //  TODO
-        NSLog(@"Got unexpected login mimetype:%@", [response MIMEType]);
-    }
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    NSMutableData *dataStore;
-    @synchronized (self) {
-        dataStore = [_connectionDataMap objectForKey:[[connection originalRequest] valueForHTTPHeaderField:COUNTER_KEY]];
-    }
-    [dataStore appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    NSMutableData *data;
-    @synchronized (self) {
-        NSString *key = [[connection originalRequest] valueForHTTPHeaderField:COUNTER_KEY];
-        data = [_connectionDataMap objectForKey:key];
-        [_connectionDataMap removeObjectForKey:key];
-    }
-    [self processUpdatesFromServer:data];
 }
 
 - (void)saveToServer:(EEYEOIdObject *)object {
@@ -278,7 +190,7 @@
     NSString *form = [[NSString alloc] initWithFormat:@"appUserOwnedObject=%@", [[NSString alloc] initWithData:streamData encoding:NSASCIIStringEncoding]];
     char const *bytes = [form UTF8String];
     [request setHTTPBody:[NSData dataWithBytes:bytes length:[form length]]];
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:[[BaseRESTDelegate alloc] initWithRequest:request]];
     if (!connection) {
         //  TODO
         NSLog(@"Failed");
@@ -288,69 +200,4 @@
 - (void)deleteFromServer:(EEYEODeletedObject *)deleted {
 
 }
-
-- (void)processUpdatesFromServer:(NSData *)data {
-    NSError *error;
-    NSArray *updates = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-    NSLog(@"%@", updates);
-    EEYEOLocalDataStore *localDataStore = [EEYEOLocalDataStore instance];
-    NSDate *lastModTS = [self getLastUpdateFromServerAsNSDate];
-    for (NSDictionary *update in updates) {
-        NSString *entityType = [update objectForKey:JSON_ENTITY];
-        if ([entityType isEqualToString:JAVA_DELETED]) {
-            EEYEODeletedObject *deletedObject = [localDataStore create:DELETEDENTITY];
-            [deletedObject loadFromDictionary:update];
-            EEYEOIdObject *local = [localDataStore find:APPUSEROWNEDENTITY withId:[deletedObject deletedId]];
-            if (local) {
-                NSLog(@"Deleting %@", [deletedObject deletedId]);
-                [localDataStore deleteUpdateFromRemoteStore:local];
-            } else {
-                NSLog(@"Deleted Id %@ not found locally - probably ok", [deletedObject deletedId]);
-            }
-            [localDataStore deleteUpdateFromRemoteStore:deletedObject];
-        } else {
-            NSString *localType = [[EEYEORemoteDataStore javaToIOSEntityMap] valueForKey:entityType];
-            if (!localType) {
-                NSLog(@"Unknown entity type %@", entityType);
-                continue;
-            }
-            NSString *id = [update objectForKey:JSON_ID];
-            EEYEOIdObject *local = [localDataStore findOrCreate:localType withId:id];
-            if (local.dirty) {
-                NSDate *remoteDate = [EEYEOIdObject fromJodaDateTime:[update valueForKey:JSON_MODIFICATIONTS]];
-                NSComparisonResult result = [remoteDate compare:local.modificationTimestampToNSDate];
-                switch (result) {
-                    case NSOrderedAscending:
-                        NSLog(@"Remote more recent - take it");
-                        break;
-                    case NSOrderedDescending:
-                        NSLog(@"Local more recent - skip remote and remark local as dirty");
-                        [localDataStore saveToLocalStore:local];
-                        continue;
-                    case NSOrderedSame:
-                        NSLog(@"Virtually impossible");
-                        break;
-                }
-                //  TODO
-                NSLog(@"Conflict");
-            }
-            [local loadFromDictionary:update];
-            [localDataStore updateFromRemoteStore:local];
-            if ([local isKindOfClass:[EEYEOAppUserOwnedObject class]] && [(EEYEOAppUserOwnedObject *) local archived]) {
-                [localDataStore deleteUpdateFromRemoteStore:local];
-            } else {
-                NSMutableDictionary *rewrite = [[NSMutableDictionary alloc] init];
-                [local writeToDictionary:rewrite];
-                NSLog(@"%@", update);
-                NSLog(@"%@", rewrite);
-            }
-            NSDate *modified = [local modificationTimestampToNSDate];
-            if ([modified compare:lastModTS] == NSOrderedDescending) {
-                lastModTS = modified;
-            }
-        }
-    }
-    [self setLastUpdateFromServerWithNSDate:lastModTS];
-}
-
 @end

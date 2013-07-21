@@ -104,7 +104,7 @@
     [self saveContext:object];
 }
 
-- (EEYEOIdObject *)find:(NSString *)entityType withId:(NSString *)withId {
+- (id)find:(NSString *)entityType withId:(NSString *)withId {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:entityType inManagedObjectContext:context];
     [request setEntity:entityDescription];
@@ -133,13 +133,13 @@
     return [result objectAtIndex:0];
 }
 
-- (EEYEOIdObject *)create:(NSString *)entityType {
+- (id)create:(NSString *)entityType {
     EEYEOIdObject *object = [NSEntityDescription insertNewObjectForEntityForName:entityType inManagedObjectContext:context];
     [object setModificationTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
     return object;
 }
 
-- (EEYEOIdObject *)findOrCreate:(NSString *)entityType withId:(NSString *)withId {
+- (id)findOrCreate:(NSString *)entityType withId:(NSString *)withId {
     id entity = [self find:entityType withId:withId];
     if (!entity) {
         entity = [self create:entityType];
