@@ -54,6 +54,20 @@
     return [super loadFromDictionary:dictionary];
 }
 
+- (void)writeToDictionary:(NSMutableDictionary *)dictionary {
+    [super writeToDictionary:dictionary];
+    [dictionary setValue:[self comment] forKey:JSON_COMMENT];
+    [dictionary setValue:[[NSNumber alloc] initWithBool:[self significant]] forKey:JSON_SIGNIFICANT];
+    [self writeSubobject:[self observable] ToDictionary:dictionary WithKey:JSON_OBSERVATION_SUBJECT];
+    NSMutableArray *categories = [[NSMutableArray alloc] init];
+    for (EEYEOObservationCategory *category in [self categories]) {
+        [self writeSubobject:category ToArray:categories];
+    }
+    [dictionary setValue:categories forKey:JSON_CATEGORIES];
+    [dictionary setValue:[self toJodaLocalDateTime:[self observationTimestampToNSDate]] forKey:JSON_OBSERVATIONTIMESTAMP];
+}
+
+//  TODO - move to base?
 - (NSDate *)fromJodaLocalDateTime:(NSArray *)jodaLocalDateTime {
     NSDateComponents *components = [[NSDateComponents alloc] init];
     NSCalendar *cal = [NSCalendar currentCalendar];
@@ -68,19 +82,7 @@
     return date;
 }
 
-- (void)writeToDictionary:(NSMutableDictionary *)dictionary {
-    [super writeToDictionary:dictionary];
-    [dictionary setValue:[self comment] forKey:JSON_COMMENT];
-    [dictionary setValue:[[NSNumber alloc] initWithBool:[self significant]] forKey:JSON_SIGNIFICANT];
-    [self writeSubobject:[self observable] ToDictionary:dictionary WithKey:JSON_OBSERVATION_SUBJECT];
-    NSMutableArray *categories = [[NSMutableArray alloc] init];
-    for (EEYEOObservationCategory *category in [self categories]) {
-        [self writeSubobject:category ToArray:categories];
-    }
-    [dictionary setValue:categories forKey:JSON_CATEGORIES];
-    [dictionary setValue:[self toJodaLocalDateTime:[self observationTimestampToNSDate]] forKey:JSON_OBSERVATIONTIMESTAMP];
-}
-
+//  TODO - move to base?
 - (NSMutableArray *)toJodaLocalDateTime:(NSDate *)date {
     NSCalendar *cal = [NSCalendar currentCalendar];
     NSDateComponents *comps = [cal components:LOCAL_DATE_TIME_FLAGS fromDate:date];
@@ -95,20 +97,12 @@
     return ts;
 }
 
-- (NSNumber *)observationTimestampToJoda {
-    return [EEYEOIdObject toJodaDateTime:[self observationTimestampToNSDate]];
-}
-
 - (NSDate *)observationTimestampToNSDate {
     return [NSDate dateWithTimeIntervalSince1970:[self observationTimestamp]];
 }
 
 - (void)setObservationTimestampFromNSDate:(NSDate *)date {
     [self setObservationTimestamp:[date timeIntervalSince1970]];
-}
-
-- (void)setObservationTimestampFromJoda:(NSNumber *)millis {
-    [self setObservationTimestampFromNSDate:[EEYEOIdObject fromJodaDateTime:millis]];
 }
 
 - (NSString *)desc {

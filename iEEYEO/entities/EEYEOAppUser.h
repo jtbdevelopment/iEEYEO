@@ -19,8 +19,6 @@ static NSString *const JSON_ACTIVE = @"active";
 
 static NSString *const JSON_EMAIL_ADDRESS = @"emailAddress";
 
-static NSString *const JSON_LASTLOGOUT = @"lastLogout";
-
 @interface EEYEOAppUser : EEYEOIdObject
 
 @property(nonatomic) BOOL activated;
@@ -28,7 +26,6 @@ static NSString *const JSON_LASTLOGOUT = @"lastLogout";
 @property(nonatomic) BOOL admin;
 @property(nonatomic, retain) NSString *emailAddress;
 @property(nonatomic, retain) NSString *firstName;
-@property(nonatomic) NSTimeInterval lastLogout;
 @property(nonatomic, retain) NSString *lastName;
 @property(nonatomic, retain) NSSet *ownedObjects;
 @end

@@ -31,13 +31,9 @@ static const enum NSCalendarUnit LOCAL_DATE_TIME_FLAGS = NSYearCalendarUnit | NS
 @property(nonatomic, retain) NSSet *categories;
 @property(nonatomic, retain) EEYEOObservable *observable;
 
-- (NSNumber *)observationTimestampToJoda;
-
 - (NSDate *)observationTimestampToNSDate;
 
 - (void)setObservationTimestampFromNSDate:(NSDate *)date;
-
-- (void)setObservationTimestampFromJoda:(NSNumber *)millis;
 
 - (NSString *)desc;
 

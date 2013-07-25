@@ -22,6 +22,10 @@ static NSString *const JSON_FIRST_NAME = @"firstName";
 
 static NSString *const JSON_LAST_NAME = @"lastName";
 
+struct NSDateWithMillis {
+    NSDate *date;
+    long millis;
+};
 
 @interface EEYEOIdObject : NSManagedObject
 
