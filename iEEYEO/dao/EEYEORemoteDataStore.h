@@ -6,6 +6,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class BaseRESTDelegate;
 
 static NSString *const BASE_REST_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/";
 static NSString *const BASE_REST_USER_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/users/";
@@ -27,21 +28,22 @@ static NSString *const INITIAL_LAST_UPDATETS = @"2013-01-01T00:00:00";
 static NSString *const COUNTER_KEY = @"iEEYEOCounter";
 
 @interface EEYEORemoteDataStore : NSObject
++ (EEYEORemoteDataStore *)instance;
+
 + (NSDictionary *)javaToIOSEntityMap;
 
 + (NSDictionary *)iosToJavaEntityMap;
 
-+ (EEYEORemoteDataStore *)instance;
+- (void)requeueWorkItem:(BaseRESTDelegate *)delegate;
+
+- (void)completeWorkItem:(BaseRESTDelegate *)delegate;
 
 - (void)setLastUpdateFromServerWithNSDate:(NSDate *)value;
 
-- (void)setLastUpdateFromServer:(NSString *)value;
-
 - (NSDate *)getLastUpdateFromServerAsNSDate;
-
-- (NSString *)getLastUpdateFromServer;
 
 - (void)initializeFromRemoteServer;
 
-- (void)updateFromRemoteServer;
+- (void)resyncWithRemoteServer;
+
 @end

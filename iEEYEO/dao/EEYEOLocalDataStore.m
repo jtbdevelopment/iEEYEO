@@ -6,7 +6,6 @@
 
 #import "EEYEOLocalDataStore.h"
 #import "EEYEOAppUser.h"
-#import "EEYEORemoteDataStore.h"
 #import "EEYEODeletedObject.h"
 #import "EEYEOObservation.h"
 #import "EEYEOObservable.h"
@@ -104,6 +103,26 @@
     [self saveContext:object];
 }
 
+- (NSArray *)getDirtyEntities:(NSString *)entityType {
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:entityType inManagedObjectContext:context];
+    [request setEntity:entityDescription];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"dirty = TRUE"];
+    [request setPredicate:predicate];
+
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"modificationTimestamp" ascending:YES];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    [request setSortDescriptors:sortDescriptors];
+
+    NSError *error = nil;
+    NSArray *result = [context executeFetchRequest:request error:&error];
+    if (error != nil) {
+        NSLog(@"Error finding entityType %@.  Error %@", entityType, [error description]);
+        return nil;
+    }
+    return result;
+}
+
 - (id)find:(NSString *)entityType withId:(NSString *)withId {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:entityType inManagedObjectContext:context];
@@ -159,8 +178,6 @@
     [appUser setModificationTimestampFromNSDate:[NSDate dateWithTimeIntervalSince1970:0]];
     [appUser setLastLogout:[[NSDate dateWithTimeIntervalSince1970:0] timeIntervalSince1970]];
     [self saveToLocalStore:appUser];
-
-    [[EEYEORemoteDataStore instance] initializeFromRemoteServer];
 }
 
 

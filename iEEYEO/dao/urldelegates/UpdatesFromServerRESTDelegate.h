@@ -8,5 +8,5 @@
 #import "BaseRESTDelegate.h"
 
 
-@interface UpdateRESTDelegate : BaseRESTDelegate
+@interface UpdatesFromServerRESTDelegate : BaseRESTDelegate
 @end

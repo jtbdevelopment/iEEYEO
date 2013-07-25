@@ -4,15 +4,16 @@
 //
 
 
-#import "UpdateRESTDelegate.h"
+#import "UpdatesFromServerRESTDelegate.h"
 #import "EEYEORemoteDataStore.h"
 
 
-@implementation UpdateRESTDelegate {
+@implementation UpdatesFromServerRESTDelegate {
 
 }
-+ (NSDate *)processUpdatesFromServer:(NSData *)data {
-    NSData *date = [super processUpdatesFromServer:data];
+
+- (NSDate *)processUpdatesFromServer:(NSData *)data {
+    NSDate *date = [super processUpdatesFromServer:data];
     if (date) {
         [[EEYEORemoteDataStore instance] setLastUpdateFromServerWithNSDate:date];
     }

@@ -10,7 +10,9 @@
 @interface BaseRESTDelegate : NSObject <NSURLConnectionDelegate>
 - (id)initWithRequest:(NSURLRequest *)request;
 
-+ (void)authenticateAndRerequest:(NSURLRequest *)rerequest;
+- (id)getObjectToUpdateWithType:(NSString *)localType AndId:(NSString *)id;
 
-+ (NSDate *)processUpdatesFromServer:(NSData *)data;
+- (void)submitRequest;
+
+- (NSDate *)processUpdatesFromServer:(NSData *)data;
 @end

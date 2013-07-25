@@ -32,13 +32,13 @@
     [[self window] setRootViewController:navigationController];
     [[self window] makeKeyAndVisible];
 
-    [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(remoteSync:) userInfo:nil repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(remoteSync:) userInfo:nil repeats:YES];
     [localDataStore createDummyData];
     return YES;
 }
 
 - (void)remoteSync:(NSTimer *)timer {
-    [[EEYEORemoteDataStore instance] updateFromRemoteServer];
+    [[EEYEORemoteDataStore instance] resyncWithRemoteServer];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

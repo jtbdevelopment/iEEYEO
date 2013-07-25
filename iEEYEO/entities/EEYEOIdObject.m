@@ -33,7 +33,6 @@
 }
 
 - (void)writeToDictionary:(NSMutableDictionary *)dictionary {
-    [dictionary setValue:[[EEYEORemoteDataStore iosToJavaEntityMap] valueForKey:[[self class] description]] forKey:JSON_ENTITY];
     [dictionary setValue:[self id] forKey:JSON_ID];
     [dictionary setValue:[self modificationTimestampToJoda] forKey:JSON_MODIFICATIONTS];
 }

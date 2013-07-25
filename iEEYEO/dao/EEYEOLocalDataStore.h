@@ -46,6 +46,8 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 
 - (void)deleteUpdateFromRemoteStore:(EEYEOIdObject *)object;
 
+- (NSArray *)getDirtyEntities:(NSString *)entityType;
+
 - (id)find:(NSString *)entityType withId:(NSString *)withId;
 
 - (id)create:(NSString *)entityType;
