@@ -6,7 +6,6 @@
         <attribute name="admin" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="emailAddress" attributeType="String" minValueString="1" maxValueString="40" syncable="YES"/>
         <attribute name="firstName" attributeType="String" minValueString="1" maxValueString="50" syncable="YES"/>
-        <attribute name="lastLogout" attributeType="Date" syncable="YES"/>
         <attribute name="lastName" attributeType="String" minValueString="0" maxValueString="100" syncable="YES"/>
         <relationship name="ownedObjects" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EEYEOAppUserOwnedObject" inverseName="appUser" inverseEntity="EEYEOAppUserOwnedObject" syncable="YES"/>
     </entity>
@@ -26,6 +25,7 @@
         <attribute name="dirty" attributeType="Boolean" defaultValueString="NO" indexed="YES" syncable="YES"/>
         <attribute name="id" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="modificationTimestamp" attributeType="Date" indexed="YES" syncable="YES"/>
+        <attribute name="modificationTimestampMillis" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
     </entity>
     <entity name="EEYEOObservable" representedClassName="EEYEOObservable" isAbstract="YES" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
         <relationship name="observations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EEYEOObservation" inverseName="observable" inverseEntity="EEYEOObservation" syncable="YES"/>
@@ -56,11 +56,11 @@
         <relationship name="classLists" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="EEYEOClassList" inverseName="students" inverseEntity="EEYEOClassList" syncable="YES"/>
     </entity>
     <elements>
-        <element name="EEYEOAppUser" positionX="-279" positionY="135" width="128" height="165"/>
+        <element name="EEYEOAppUser" positionX="-279" positionY="135" width="128" height="150"/>
         <element name="EEYEOAppUserOwnedObject" positionX="-225" positionY="332" width="128" height="90"/>
         <element name="EEYEOClassList" positionX="187" positionY="437" width="128" height="75"/>
         <element name="EEYEODeletedObject" positionX="-333" positionY="410" width="128" height="58"/>
-        <element name="EEYEOIdObject" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="EEYEOIdObject" positionX="160" positionY="192" width="128" height="105"/>
         <element name="EEYEOObservable" positionX="-18" positionY="406" width="128" height="60"/>
         <element name="EEYEOObservation" positionX="196" positionY="288" width="128" height="120"/>
         <element name="EEYEOObservationCategory" positionX="-9" positionY="135" width="128" height="90"/>
