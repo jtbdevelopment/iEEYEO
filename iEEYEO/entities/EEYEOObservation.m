@@ -33,23 +33,25 @@
     return self;
 }
 
-- (void)loadFromDictionary:(NSDictionary *)dictionary {
-    [super loadFromDictionary:dictionary];
+- (BOOL)loadFromDictionary:(NSDictionary *)dictionary {
     [self setComment:[dictionary valueForKey:JSON_COMMENT]];
     [self setSignificant:[[dictionary valueForKey:JSON_SIGNIFICANT] boolValue]];
-    //  TODO - error if not found
     EEYEOObservable *observable = [[EEYEOLocalDataStore instance] find:OBSERVABLEENTITY withId:[[dictionary valueForKey:JSON_OBSERVATION_SUBJECT] valueForKey:JSON_ID]];
     if (observable) {
         [self setObservable:observable];
+    } else {
+        return NO;
     }
     for (NSDictionary *category in [dictionary valueForKey:JSON_CATEGORIES]) {
-        //  TODO - error if not found
         EEYEOObservationCategory *value = [[EEYEOLocalDataStore instance] find:CATEGORYENTITY withId:[category valueForKey:JSON_ID]];
         if (value) {
             [self addCategoriesObject:value];
+        } else {
+            return NO;
         }
     }
     [self setObservationTimestampFromNSDate:[self fromJodaLocalDateTime:[dictionary valueForKey:JSON_OBSERVATIONTIMESTAMP]]];
+    return [super loadFromDictionary:dictionary];
 }
 
 - (NSDate *)fromJodaLocalDateTime:(NSArray *)jodaLocalDateTime {

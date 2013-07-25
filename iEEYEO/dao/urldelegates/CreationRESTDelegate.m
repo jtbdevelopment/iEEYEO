@@ -11,7 +11,6 @@
 @implementation CreationRESTDelegate {
 @private
     EEYEOIdObject *_entity;
-
 }
 
 //  TODO - verify presumption that request is for local object

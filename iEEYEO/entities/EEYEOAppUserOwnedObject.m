@@ -15,14 +15,15 @@
 @dynamic appUser;
 @dynamic photos;
 
-- (void)loadFromDictionary:(NSDictionary *)dictionary {
-    [super loadFromDictionary:dictionary];
-    //  TODO - error if not found
+- (BOOL)loadFromDictionary:(NSDictionary *)dictionary {
     EEYEOAppUser *user = [[EEYEOLocalDataStore instance] find:APPUSERENTITY withId:[[dictionary valueForKey:JSON_APPUSER] valueForKey:JSON_ID]];
     if (user) {
         [self setAppUser:user];
+    } else {
+        return NO;
     }
     [self setArchived:[[dictionary valueForKey:JSON_ARCHIVED] boolValue]];
+    return [super loadFromDictionary:dictionary];
 }
 
 - (void)writeToDictionary:(NSMutableDictionary *)dictionary {

@@ -47,7 +47,7 @@ static NSString *const JSON_LAST_NAME = @"lastName";
 
 - (NSString *)desc;
 
-- (void)loadFromDictionary:(NSDictionary *)dictionary;
+- (BOOL)loadFromDictionary:(NSDictionary *)dictionary;
 
 - (void)writeToDictionary:(NSMutableDictionary *)dictionary;
 @end

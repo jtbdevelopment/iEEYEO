@@ -17,9 +17,9 @@
     return [self name];
 }
 
-- (void)loadFromDictionary:(NSDictionary *)dictionary {
-    [super loadFromDictionary:dictionary];
+- (BOOL)loadFromDictionary:(NSDictionary *)dictionary {
     [self setName:[dictionary valueForKey:JSON_DESCRIPTION]];
+    return [super loadFromDictionary:dictionary];
 }
 
 - (void)writeToDictionary:(NSMutableDictionary *)dictionary {

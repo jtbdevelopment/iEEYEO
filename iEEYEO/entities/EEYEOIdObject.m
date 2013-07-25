@@ -27,9 +27,10 @@
     return [self id];
 }
 
-- (void)loadFromDictionary:(NSDictionary *)dictionary {
+- (BOOL)loadFromDictionary:(NSDictionary *)dictionary {
     [self setId:[dictionary valueForKey:JSON_ID]];
     [self setModificationTimestampFromJoda:[dictionary valueForKey:JSON_MODIFICATIONTS]];
+    return YES;
 }
 
 - (void)writeToDictionary:(NSMutableDictionary *)dictionary {

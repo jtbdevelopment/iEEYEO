@@ -169,12 +169,17 @@
                     break;
             }
         }
-        [local loadFromDictionary:update];
-        [localDataStore updateFromRemoteStore:local];
-        if ([local isKindOfClass:[EEYEOAppUserOwnedObject class]] && [(EEYEOAppUserOwnedObject *) local archived]) {
-            [localDataStore deleteUpdateFromRemoteStore:local];
+        if ([local loadFromDictionary:update]) {
+            [localDataStore updateFromRemoteStore:local];
+            if ([local isKindOfClass:[EEYEOAppUserOwnedObject class]] && [(EEYEOAppUserOwnedObject *) local archived]) {
+                [localDataStore deleteUpdateFromRemoteStore:local];
+            }
+            return local;
+        } else {
+            [localDataStore undoChanges];
+            //  TODO - maybe queue for re-processing
+            return nil;
         }
-        return local;
     }
 }
 

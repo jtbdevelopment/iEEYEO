@@ -36,8 +36,7 @@
     [dictionary setValue:classes forKey:JSON_CLASSLISTS];
 }
 
-- (void)loadFromDictionary:(NSDictionary *)dictionary {
-    [super loadFromDictionary:dictionary];
+- (BOOL)loadFromDictionary:(NSDictionary *)dictionary {
     [self setFirstName:[dictionary valueForKey:JSON_FIRST_NAME]];
     [self setLastName:[dictionary valueForKey:JSON_LAST_NAME]];
     for (NSDictionary *classList in [dictionary valueForKey:JSON_CLASSLISTS]) {
@@ -45,9 +44,10 @@
         if (value) {
             [self addClassListsObject:value];
         } else {
-            //  TODO
+            return NO;
         }
     }
+    return [super loadFromDictionary:dictionary];
 }
 
 @end

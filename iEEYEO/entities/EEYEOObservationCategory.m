@@ -14,10 +14,10 @@
 @dynamic shortName;
 @dynamic observations;
 
-- (void)loadFromDictionary:(NSDictionary *)dictionary {
-    [super loadFromDictionary:dictionary];
+- (BOOL)loadFromDictionary:(NSDictionary *)dictionary {
     [self setName:[dictionary valueForKey:JSON_DESCRIPTION]];
     [self setShortName:[dictionary valueForKey:JSON_SHORTNAME]];
+    return [super loadFromDictionary:dictionary];
 }
 
 - (void)writeToDictionary:(NSMutableDictionary *)dictionary {

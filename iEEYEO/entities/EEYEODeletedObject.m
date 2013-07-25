@@ -12,9 +12,9 @@
 
 @dynamic deletedId;
 
-- (void)loadFromDictionary:(NSDictionary *)dictionary {
-    [super loadFromDictionary:dictionary];
+- (BOOL)loadFromDictionary:(NSDictionary *)dictionary {
     [self setDeletedId:[dictionary valueForKey:JSON_DELETED_ID]];
+    return [super loadFromDictionary:dictionary];
 }
 
 - (void)writeToDictionary:(NSMutableDictionary *)dictionary {

@@ -62,9 +62,11 @@
 
 - (void)deleteFromLocalStore:(EEYEOIdObject *)object {
     //  TODO - put on list to send back to remote server
-    if (object.id && object.id.length > 0) {
+    if (object.id && object.id.length > 0 && [object isKindOfClass:[EEYEOAppUserOwnedObject class]] && ![object isKindOfClass:[EEYEODeletedObject class]]) {
         EEYEODeletedObject *deleted = [self create:DELETEDENTITY];
         [deleted setDeletedId:[object id]];
+        [deleted setId:@""];
+        [deleted setAppUser:[(EEYEOAppUserOwnedObject *) object appUser]];
         [self saveToLocalStore:deleted];
     }
     [self deleteUpdateFromRemoteStore:object];
@@ -73,6 +75,10 @@
 - (void)updateFromRemoteStore:(EEYEOIdObject *)object {
     [object setDirty:NO];
     [self saveContext:object];
+}
+
+- (void)undoChanges {
+    [context reset];
 }
 
 - (void)deleteUpdateFromRemoteStore:(EEYEOIdObject *)object {

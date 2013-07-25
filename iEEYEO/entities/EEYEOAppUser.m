@@ -19,8 +19,7 @@
 @dynamic lastName;
 @dynamic ownedObjects;
 
-- (void)loadFromDictionary:(NSDictionary *)dictionary {
-    [super loadFromDictionary:dictionary];
+- (BOOL)loadFromDictionary:(NSDictionary *)dictionary {
     [self setActivated:[[dictionary valueForKey:JSON_ACTIVATED] boolValue]];
     [self setAdmin:[[dictionary valueForKey:JSON_ADMIN] boolValue]];
     [self setActive:[[dictionary valueForKey:JSON_ACTIVE] boolValue]];
@@ -28,6 +27,7 @@
     [self setFirstName:[dictionary valueForKey:JSON_FIRST_NAME]];
     [self setLastName:[dictionary valueForKey:JSON_LAST_NAME]];
     [self setLastLogoutFromJoda:[dictionary valueForKey:JSON_LASTLOGOUT]];
+    return [super loadFromDictionary:dictionary];
 }
 
 - (void)writeToDictionary:(NSMutableDictionary *)dictionary {

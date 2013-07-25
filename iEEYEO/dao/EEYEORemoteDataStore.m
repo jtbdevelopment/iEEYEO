@@ -7,10 +7,9 @@
 #import "EEYEORemoteDataStore.h"
 #import "EEYEOObservationCategory.h"
 #import "EEYEOLocalDataStore.h"
-#import "EEYEODeletedObject.h"
 #import "BaseRESTDelegate.h"
 #import "UpdatesFromServerRESTDelegate.h"
-#import "CreationRESTDelegate.h"
+#import "RESTWriter.h"
 
 
 @implementation EEYEORemoteDataStore {
@@ -20,6 +19,8 @@
 
     NSString *_currentUser;
     NSDateFormatter *_dateFormatter;
+
+    RESTWriter *_restWriter;
 }
 
 + (EEYEORemoteDataStore *)instance {
@@ -73,6 +74,8 @@
 
         _currentWorkItem = nil;
         _workQueue = [[NSMutableArray alloc] init];
+
+        _restWriter = [[RESTWriter alloc] initForRemoteStore:self];
 
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         if (![userDefaults stringForKey:USER_ID_KEY]) {
@@ -134,8 +137,13 @@
     return [BASE_REST_USER_URL stringByAppendingFormat:@"%@/", _currentUser];
 }
 
-- (NSString *)getEntityURL:(EEYEOIdObject *)entity {
-    return [[self getUserURL] stringByAppendingFormat:@"%@/", [entity id]];
+- (NSString *)getEntityURLFromEntity:(EEYEOIdObject *)entity {
+    return [self getEntityURL:[entity id]];
+}
+
+- (NSString *)getEntityURL:(NSString *)id {
+    return [[self getUserURL] stringByAppendingFormat:@"%@/", id];
+
 }
 
 - (NSString *)lastModifiedURL {
@@ -185,89 +193,28 @@
 
 - (void)resyncWithRemoteServer {
     //  TODO - prevent multiple items queued - better?
-    if ([_workQueue count] > 0) {
-        return;
-    }
-    [self updateFromRemoteServer];
-
-    NSArray *objectTypes = [[NSArray alloc] initWithObjects:CATEGORYENTITY, CLASSLISTENTITY, STUDENTENTITY, OBSERVATIONENTITY, PHOTOENTITY, nil];
-    for (NSString *type in objectTypes) {
-        NSArray *dirtyEntities = [[EEYEOLocalDataStore instance] getDirtyEntities:type];
-        for (EEYEOIdObject *entity in dirtyEntities) {
-            [self saveEntityToRemote:entity];
+    @synchronized (self) {
+        if ([_workQueue count] > 0) {
+            return;
         }
+        [self updateFromRemoteServer];
+
+        NSArray *objectTypes = [[NSArray alloc] initWithObjects:CATEGORYENTITY, CLASSLISTENTITY, STUDENTENTITY, OBSERVATIONENTITY, PHOTOENTITY, DELETEDENTITY, nil];
+        for (NSString *type in objectTypes) {
+            NSArray *dirtyEntities = [[EEYEOLocalDataStore instance] getDirtyEntities:type];
+            for (EEYEOIdObject *entity in dirtyEntities) {
+                [_restWriter saveEntityToRemote:entity];
+            }
+        }
+        //  TODO - this actually requests same modified timestamp as previous call - works but a hack
+        [self updateFromRemoteServer];
     }
-    //  TODO - this actually requests same modified timestamp as previous call
-    //  Works but hacky
-    [self updateFromRemoteServer];
 }
 
 - (void)updateFromRemoteServer {
     NSURL *url = [[NSURL alloc] initWithString:[self lastModifiedURL]];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [self addWorkItem:[[UpdatesFromServerRESTDelegate alloc] initWithRequest:request]];
-}
-
-- (void)saveEntityToRemote:(EEYEOIdObject *)object {
-    if ([object isKindOfClass:[EEYEODeletedObject class]]) {
-        return [self deleteEntityToRemote:(EEYEODeletedObject *) object];
-    }
-    if ([[object id] isEqualToString:@""]) {
-        return [self createEntityToRemote:object];
-    }
-    return [self updateEntityToRemote:object];
-}
-
-- (void)updateEntityToRemote:(EEYEOIdObject *)updated {
-    NSURLRequest *request = [self createWriteRequestToRemoteServer:updated method:@"PUT" urlString:[self getEntityURL:updated]];
-    [self addWorkItem:[[BaseRESTDelegate alloc] initWithRequest:request]];
-}
-
-- (void)createEntityToRemote:(EEYEOIdObject *)created {
-    NSURLRequest *request = [self createWriteRequestToRemoteServer:created method:@"POST" urlString:[self getUserURL]];
-    [self addWorkItem:[[CreationRESTDelegate alloc] initWithRequest:request AndEntity:created]];
-}
-
-- (void)deleteEntityToRemote:(EEYEODeletedObject *)deleted {
-    NSURL *url = [[NSURL alloc] initWithString:[self getEntityURL:deleted]];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    [request setHTTPMethod:@"DELETE"];
-
-    [self addWorkItem:[[BaseRESTDelegate alloc] initWithRequest:request]];
-}
-
-- (NSURLRequest *)createWriteRequestToRemoteServer:(EEYEOIdObject *)entity method:(NSString *)method urlString:(NSString *)urlString {
-    NSURL *url = [[NSURL alloc] initWithString:urlString];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    [request setHTTPMethod:method];
-
-    NSMutableDictionary *dictionary = [self getDictionary:entity];
-    [self writeDictionaryAsForm:request dictionary:dictionary forEntity:entity];
-    return request;
-}
-
-- (void)writeDictionaryAsForm:(NSMutableURLRequest *)request dictionary:(NSMutableDictionary *)dictionary forEntity:(EEYEOIdObject *)entity {
-    NSError *error;
-    NSOutputStream *stream = [[NSOutputStream alloc] initToMemory];
-    [stream open];
-    [NSJSONSerialization writeJSONObject:dictionary toStream:stream options:NSJSONWritingPrettyPrinted error:&error];
-    [stream close];
-    NSData *streamData = [stream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
-    NSString *form = [[NSString alloc] initWithFormat:@"appUserOwnedObject=%@", [[NSString alloc] initWithData:streamData encoding:NSASCIIStringEncoding]];
-
-    //  TODO - hack to do with JSON parser requiring entity type being first field
-    NSString *replacement = [[NSString alloc] initWithFormat:@"appUserOwnedObject={ \"entityType\": \"%@\",", [[EEYEORemoteDataStore iosToJavaEntityMap] valueForKey:[[entity class] description]]];
-    form = [form stringByReplacingOccurrencesOfString:@"appUserOwnedObject={" withString:replacement];
-
-    char const *bytes = [form UTF8String];
-    [request setHTTPBody:[NSData dataWithBytes:bytes length:[form length]]];
-}
-
-- (NSMutableDictionary *)getDictionary:(EEYEOIdObject *)entity {
-    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
-    [entity writeToDictionary:dictionary];
-    return dictionary;
 }
 
 @end
