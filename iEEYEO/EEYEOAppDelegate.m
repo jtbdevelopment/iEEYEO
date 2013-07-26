@@ -33,6 +33,7 @@
     [[self window] makeKeyAndVisible];
 
     [localDataStore createDummyData];
+    //  TODO - remove me
     [[EEYEORemoteDataStore instance] initializeFromRemoteServer];
 
     //  TODO - time

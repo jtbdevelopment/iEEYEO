@@ -56,8 +56,6 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
 
 @synthesize observation = _observation;
 
-//  TODO - remove cancel?
-
 @synthesize managedObjectContext = _managedObjectContext;
 
 @synthesize newObservation = _newObservation;

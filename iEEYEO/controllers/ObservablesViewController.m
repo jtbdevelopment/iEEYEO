@@ -23,6 +23,18 @@
 
 @implementation ObservablesViewController
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        if (!_observationsViewController) {
+            self.observationsViewController = [[ObservationsViewController alloc] initWithStyle:UITableViewStyleGrouped];
+            self.observationsViewController.managedObjectContext = self.managedObjectContext;
+        }
+    }
+
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.collectionView registerClass:[ObservableViewCell class] forCellWithReuseIdentifier:OBSERVABLE_CELL];
@@ -30,11 +42,6 @@
     [self setTitle:@"iE-EYE-O"];
     [self.collectionView setBackgroundColor:[Colors cream]];
     [UIView setAnimationsEnabled:NO];
-    //  TODO - probably in init or alloc
-    if (!_observationsViewController) {
-        self.observationsViewController = [[ObservationsViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        self.observationsViewController.managedObjectContext = self.managedObjectContext;
-    }
 }
 
 - (void)didReceiveMemoryWarning {

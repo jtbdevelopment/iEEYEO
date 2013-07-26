@@ -194,7 +194,6 @@
         for (NSDictionary *update in updates) {
             EEYEOIdObject *local = [self processJSONEntity:update];
             if (local) {
-                //  TODO - really need milliseconds
                 NSDateWithMillis *modified = [local modificationTimestampToNSDateWithMillis];
                 if ([modified compare:lastModTS] == NSOrderedDescending) {
                     lastModTS = modified;

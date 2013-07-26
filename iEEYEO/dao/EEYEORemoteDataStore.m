@@ -154,7 +154,6 @@
     return [BASE_REST_USER_URL stringByAppendingFormat:@"%@/ModifiedSince/%@", _currentUser, lastModificationFromServer];
 }
 
-//  TODO - really need this to be at subsecond level for all timestamp fields
 - (void)setLastUpdateFromServerWithNSDateWithMillis:(NSDateWithMillis *)value {
     @synchronized (self) {
         NSDateWithMillis *currentValue = [self getLastUpdateFromServerAsNSDateWithMillis];
