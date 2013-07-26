@@ -6,16 +6,17 @@
 
 #import "UpdatesFromServerRESTDelegate.h"
 #import "EEYEORemoteDataStore.h"
+#import "NSDateWithMillis.h"
 
 
 @implementation UpdatesFromServerRESTDelegate {
 
 }
 
-- (NSDate *)processUpdatesFromServer:(NSData *)data {
-    NSDate *date = [super processUpdatesFromServer:data];
+- (NSDateWithMillis *)processUpdatesFromServer:(NSData *)data {
+    NSDateWithMillis *date = [super processUpdatesFromServer:data];
     if (date) {
-        [[EEYEORemoteDataStore instance] setLastUpdateFromServerWithNSDate:date];
+        [[EEYEORemoteDataStore instance] setLastUpdateFromServerWithNSDateWithMillis:date];
     }
     return date;
 }

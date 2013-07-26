@@ -8,6 +8,7 @@
 #import "EEYEORemoteDataStore.h"
 #import "EEYEOLocalDataStore.h"
 #import "EEYEODeletedObject.h"
+#import "NSDateWithMillis.h"
 
 
 @implementation BaseRESTDelegate {
@@ -154,19 +155,15 @@
         NSString *id = [update objectForKey:JSON_ID];
         EEYEOIdObject *local = [self getObjectToUpdateWithType:localType AndId:id];
         if (local.dirty) {
-            NSDate *remoteDate = [EEYEOIdObject fromJodaDateTime:[update valueForKey:JSON_MODIFICATIONTS]];
-            NSComparisonResult result = [remoteDate compare:local.modificationTimestampToNSDate];
+            NSDateWithMillis *remoteDate = [NSDateWithMillis dateFromJodaTime:[update valueForKey:JSON_MODIFICATIONTS]];
+            NSComparisonResult result = [remoteDate compare:local.modificationTimestampToNSDateWithMillis];
             switch (result) {
+                case NSOrderedSame:
                 case NSOrderedDescending:
-                    NSLog(@"Remote more recent - take it");
                     break;
                 case NSOrderedAscending:
-                    NSLog(@"Local more recent - skip remote and remark local as dirty");
                     [localDataStore saveToLocalStore:local];
                     return nil;
-                case NSOrderedSame:
-                    NSLog(@"Virtually impossible");
-                    break;
             }
         }
         if ([local loadFromDictionary:update]) {
@@ -183,7 +180,7 @@
     }
 }
 
-- (NSDate *)processUpdatesFromServer:(NSData *)data {
+- (NSDateWithMillis *)processUpdatesFromServer:(NSData *)data {
     @synchronized (self) {
         NSError *error;
         id updateUnknown = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
@@ -193,13 +190,12 @@
         } else {
             updates = updateUnknown;
         }
-        NSLog(@"%@", updates);
-        NSDate *lastModTS = [[NSDate alloc] initWithTimeIntervalSince1970:0];
+        NSDateWithMillis *lastModTS = [[NSDateWithMillis alloc] init];
         for (NSDictionary *update in updates) {
             EEYEOIdObject *local = [self processJSONEntity:update];
             if (local) {
                 //  TODO - really need milliseconds
-                NSDate *modified = [local modificationTimestampToNSDate];
+                NSDateWithMillis *modified = [local modificationTimestampToNSDateWithMillis];
                 if ([modified compare:lastModTS] == NSOrderedDescending) {
                     lastModTS = modified;
                 }

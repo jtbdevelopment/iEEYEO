@@ -8,6 +8,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+@class NSDateWithMillis;
+
 static NSString *const JSON_ID = @"id";
 
 static NSString *const JSON_ENTITY = @"entityType";
@@ -22,20 +24,12 @@ static NSString *const JSON_FIRST_NAME = @"firstName";
 
 static NSString *const JSON_LAST_NAME = @"lastName";
 
-struct NSDateWithMillis {
-    NSDate *date;
-    long millis;
-};
-
 @interface EEYEOIdObject : NSManagedObject
 
 @property(nonatomic, retain) NSString *id;
 @property(nonatomic) NSTimeInterval modificationTimestamp;
+@property(nonatomic) int32_t modificationTimestampMillis;
 @property(nonatomic) BOOL dirty;
-
-+ (NSDate *)fromJodaDateTime:(NSNumber *)jodaDateTimeInMilliseconds;
-
-+ (NSNumber *)toJodaDateTime:(NSDate *)dateTime;
 
 - (void)writeSubobject:(id)object ToArray:(NSMutableArray *)array;
 
@@ -43,9 +37,9 @@ struct NSDateWithMillis {
 
 - (NSNumber *)modificationTimestampToJoda;
 
-- (NSDate *)modificationTimestampToNSDate;
+- (NSDateWithMillis *)modificationTimestampToNSDateWithMillis;
 
-- (void)setModificationTimestampFromNSDate:(NSDate *)date;
+- (void)setModificationTimestampFromNSDateWithMillis:(NSDateWithMillis *)date;
 
 - (void)setModificationTimestampFromJoda:(NSNumber *)millis;
 

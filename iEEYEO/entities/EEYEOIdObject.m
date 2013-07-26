@@ -7,20 +7,25 @@
 
 #import "EEYEOIdObject.h"
 #import "EEYEORemoteDataStore.h"
+#import "NSDateWithMillis.h"
 
 
 @implementation EEYEOIdObject
 
 @dynamic id;
 @dynamic modificationTimestamp;
+@dynamic modificationTimestampMillis;
 @dynamic dirty;
 
 - (NSNumber *)modificationTimestampToJoda {
-    return [EEYEOIdObject toJodaDateTime:[self modificationTimestampToNSDate]];
+    return [[self modificationTimestampToNSDateWithMillis] toJodaDateTime];
 }
 
-- (NSDate *)modificationTimestampToNSDate {
-    return [NSDate dateWithTimeIntervalSince1970:[self modificationTimestamp]];
+- (NSDateWithMillis *)modificationTimestampToNSDateWithMillis {
+    NSDateWithMillis *date = [[NSDateWithMillis alloc] init];
+    [date setDate:[NSDate dateWithTimeIntervalSince1970:[self modificationTimestamp]]];
+    [date setMillis:[self modificationTimestampMillis]];
+    return date;
 }
 
 - (NSString *)desc {
@@ -38,20 +43,13 @@
     [dictionary setValue:[self modificationTimestampToJoda] forKey:JSON_MODIFICATIONTS];
 }
 
-- (void)setModificationTimestampFromNSDate:(NSDate *)date {
-    [self setModificationTimestamp:[date timeIntervalSince1970]];
+- (void)setModificationTimestampFromNSDateWithMillis:(NSDateWithMillis *)date {
+    [self setModificationTimestamp:[[date date] timeIntervalSince1970]];
+    [self setModificationTimestampMillis:[date millis]];
 }
 
 - (void)setModificationTimestampFromJoda:(NSNumber *)millis {
-    [self setModificationTimestampFromNSDate:[EEYEOIdObject fromJodaDateTime:millis]];
-}
-
-+ (NSDate *)fromJodaDateTime:(NSNumber *)jodaDateTimeInMilliseconds {
-    return [NSDate dateWithTimeIntervalSince1970:(((double) [jodaDateTimeInMilliseconds longLongValue]) / 1000)];
-}
-
-+ (NSNumber *)toJodaDateTime:(NSDate *)dateTime {
-    return [[NSNumber alloc] initWithUnsignedLongLong:((long long) ([dateTime timeIntervalSince1970] * 1000))];
+    [self setModificationTimestampFromNSDateWithMillis:[NSDateWithMillis dateFromJodaTime:millis]];
 }
 
 - (void)writeSubobject:(id)object ToArray:(NSMutableArray *)array {

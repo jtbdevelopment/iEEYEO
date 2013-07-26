@@ -11,6 +11,7 @@
 #import "EEYEOObservation.h"
 #import "Colors.h"
 #import "ObservationViewController.h"
+#import "NSDateWithMillis.h"
 
 @interface ObservationsViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -68,7 +69,7 @@
     [newObservation setObservable:_observable];
     [newObservation setAppUser:[_observable appUser]];
     [newObservation setObservationTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
-    [newObservation setModificationTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
+    [newObservation setModificationTimestampFromNSDateWithMillis:[NSDateWithMillis dateWithTimeIntervalFromNow:0]];
     [newObservation setId:@""];
     [_observationView setObservation:newObservation];
     [_observationView setManagedObjectContext:_managedObjectContext];

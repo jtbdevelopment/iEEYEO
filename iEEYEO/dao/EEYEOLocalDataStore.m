@@ -13,6 +13,7 @@
 #import "EEYEOClassList.h"
 #import "EEYEOObservationCategory.h"
 #import "EEYEOPhoto.h"
+#import "NSDateWithMillis.h"
 
 
 @implementation EEYEOLocalDataStore {
@@ -23,10 +24,6 @@
 
 - (id)init {
     self = [super init];
-    if (self) {
-
-    }
-
     return self;
 }
 
@@ -48,7 +45,7 @@
 
 - (void)saveToLocalStore:(EEYEOIdObject *)object {
     [object setDirty:YES];
-    [object setModificationTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
+    [object setModificationTimestampFromNSDateWithMillis:[[NSDateWithMillis alloc] init]];
     [self saveContext:object];
 }
 
@@ -61,7 +58,6 @@
 }
 
 - (void)deleteFromLocalStore:(EEYEOIdObject *)object {
-    //  TODO - put on list to send back to remote server
     if (object.id && object.id.length > 0 && [object isKindOfClass:[EEYEOAppUserOwnedObject class]] && ![object isKindOfClass:[EEYEODeletedObject class]]) {
         EEYEODeletedObject *deleted = [self create:DELETEDENTITY];
         [deleted setDeletedId:[object id]];
@@ -160,7 +156,7 @@
 
 - (id)create:(NSString *)entityType {
     EEYEOIdObject *object = [NSEntityDescription insertNewObjectForEntityForName:entityType inManagedObjectContext:context];
-    [object setModificationTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
+    [object setModificationTimestampFromNSDateWithMillis:[NSDateWithMillis dateWithTimeIntervalFromNow:0]];
     return object;
 }
 
@@ -181,8 +177,7 @@
     [appUser setEmailAddress:@"test@test.com"];
     [appUser setFirstName:@"first"];
     [appUser setLastName:@"last"];
-    [appUser setModificationTimestampFromNSDate:[NSDate dateWithTimeIntervalSince1970:0]];
-    [appUser setLastLogout:[[NSDate dateWithTimeIntervalSince1970:0] timeIntervalSince1970]];
+    [appUser setModificationTimestampFromNSDateWithMillis:[[NSDateWithMillis alloc] init]];
     [self saveToLocalStore:appUser];
 }
 

@@ -7,6 +7,7 @@
 #import "DeletionRESTDelegate.h"
 #import "EEYEODeletedObject.h"
 #import "EEYEOLocalDataStore.h"
+#import "NSDateWithMillis.h"
 
 
 @implementation DeletionRESTDelegate {
@@ -22,7 +23,7 @@
     return self;
 }
 
-- (NSDate *)processUpdatesFromServer:(NSData *)data {
+- (NSDateWithMillis *)processUpdatesFromServer:(NSData *)data {
     [[EEYEOLocalDataStore instance] deleteFromLocalStore:_deleted];
     return [super processUpdatesFromServer:data];
 }

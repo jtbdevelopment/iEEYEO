@@ -6,6 +6,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class NSDateWithMillis;
+
 
 @interface BaseRESTDelegate : NSObject <NSURLConnectionDelegate>
 - (id)initWithRequest:(NSURLRequest *)request;
@@ -14,5 +16,5 @@
 
 - (void)submitRequest;
 
-- (NSDate *)processUpdatesFromServer:(NSData *)data;
+- (NSDateWithMillis *)processUpdatesFromServer:(NSData *)data;
 @end

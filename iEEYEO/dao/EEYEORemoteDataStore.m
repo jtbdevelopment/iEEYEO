@@ -10,6 +10,7 @@
 #import "BaseRESTDelegate.h"
 #import "UpdatesFromServerRESTDelegate.h"
 #import "RESTWriter.h"
+#import "NSDateWithMillis.h"
 
 
 @implementation EEYEORemoteDataStore {
@@ -19,6 +20,7 @@
 
     NSString *_currentUser;
     NSDateFormatter *_dateFormatter;
+    NSNumberFormatter *_numberFormatter;
 
     RESTWriter *_restWriter;
 }
@@ -69,6 +71,7 @@
         _dateFormatter = [[NSDateFormatter alloc] init];
         [_dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
 
+        _numberFormatter = [[NSNumberFormatter alloc] init];
         //  TODO??
         //[_dateFormatter setCalendar:[[NSCalendar alloc] initWithCalendarIdentifier:@"GMT"]];
 
@@ -84,8 +87,8 @@
             [userDefaults synchronize];
         }
         _currentUser = [userDefaults stringForKey:USER_ID_KEY];
-        if (![self getLastUpdateFromServer]) {
-            [self setLastUpdateFromServer:INITIAL_LAST_UPDATETS];
+        if ([[self getLastUpdateFromServer] count] == 0) {
+            [self setLastUpdateFromServerWithNSDateWithMillis:[[NSDateWithMillis alloc] init]];
         }
     }
 
@@ -147,35 +150,54 @@
 }
 
 - (NSString *)lastModifiedURL {
-    NSString *lastModificationFromServer = [self getLastUpdateFromServer];
+    NSString *lastModificationFromServer = [self getLastUpdateFromServerAsString];
     return [BASE_REST_USER_URL stringByAppendingFormat:@"%@/ModifiedSince/%@", _currentUser, lastModificationFromServer];
 }
 
 //  TODO - really need this to be at subsecond level for all timestamp fields
-- (void)setLastUpdateFromServerWithNSDate:(NSDate *)value {
+- (void)setLastUpdateFromServerWithNSDateWithMillis:(NSDateWithMillis *)value {
     @synchronized (self) {
-        NSDate *currentValue = [self getLastUpdateFromServerAsNSDate];
+        NSDateWithMillis *currentValue = [self getLastUpdateFromServerAsNSDateWithMillis];
         if ([currentValue compare:value] != NSOrderedAscending) {
-            NSLog(@"Skipping update timestamp of %@ as not greater than %@", value, currentValue);
             return;
         }
-        [self setLastUpdateFromServer:[_dateFormatter stringFromDate:value]];
+        NSMutableArray *strings = [[NSMutableArray alloc] init];
+        [strings addObject:[_dateFormatter stringFromDate:[value date]]];
+        [strings addObject:[_numberFormatter stringFromNumber:[[NSNumber alloc] initWithInt:[value millis]]]];
+        [self setLastUpdateFromServer:strings];
     }
 }
 
-- (void)setLastUpdateFromServer:(NSString *)value {
+- (void)setLastUpdateFromServer:(NSArray *)values {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:value forKey:LAST_MODTS_KEY];
+    [defaults setObject:[values objectAtIndex:0] forKey:LAST_MODTS_KEY];
+    [defaults setObject:[values objectAtIndex:1] forKey:LAST_MODTSMILLIS_KEY];
     [defaults synchronize];
 }
 
-- (NSDate *)getLastUpdateFromServerAsNSDate {
-    NSString *string = [self getLastUpdateFromServer];
-    return [_dateFormatter dateFromString:string];
+- (NSString *)getLastUpdateFromServerAsString {
+    NSDateWithMillis *dateWithMillis = [self getLastUpdateFromServerAsNSDateWithMillis];
+    NSString *string = [_dateFormatter stringFromDate:[dateWithMillis date]];
+    return [string stringByAppendingFormat:@".%03d", [dateWithMillis millis]];
 }
 
-- (NSString *)getLastUpdateFromServer {
-    return [[NSUserDefaults standardUserDefaults] stringForKey:LAST_MODTS_KEY];
+- (NSDateWithMillis *)getLastUpdateFromServerAsNSDateWithMillis {
+    NSArray *strings = [self getLastUpdateFromServer];
+    if ([strings count] > 0) {
+        return [[NSDateWithMillis alloc] initWithNSDate:[_dateFormatter dateFromString:[strings objectAtIndex:0]] AndMillis:[[_numberFormatter numberFromString:[strings objectAtIndex:1]] intValue]];
+    } else {
+        return [[NSDateWithMillis alloc] init];
+    }
+}
+
+- (NSArray *)getLastUpdateFromServer {
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    NSString *value = [[NSUserDefaults standardUserDefaults] stringForKey:LAST_MODTS_KEY];
+    if (value) {
+        [array addObject:value];
+        [array addObject:[[NSUserDefaults standardUserDefaults] stringForKey:LAST_MODTSMILLIS_KEY]];
+    }
+    return array;
 }
 
 + (id)allocWithZone:(NSZone *)zone {
