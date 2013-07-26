@@ -25,7 +25,7 @@
         <attribute name="dirty" attributeType="Boolean" defaultValueString="NO" indexed="YES" syncable="YES"/>
         <attribute name="id" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="modificationTimestamp" attributeType="Date" indexed="YES" syncable="YES"/>
-        <attribute name="modificationTimestampMillis" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="modificationTimestampMillis" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
     </entity>
     <entity name="EEYEOObservable" representedClassName="EEYEOObservable" isAbstract="YES" parentEntity="EEYEOAppUserOwnedObject" syncable="YES">
         <relationship name="observations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EEYEOObservation" inverseName="observable" inverseEntity="EEYEOObservation" syncable="YES"/>
