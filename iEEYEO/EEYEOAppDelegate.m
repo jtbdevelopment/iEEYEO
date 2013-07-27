@@ -11,8 +11,13 @@
 #import "ObservablesViewController.h"
 #import "ObservablesViewLayout.h"
 #import "EEYEORemoteDataStore.h"
+#import "KeychainItemWrapper.h"
+#import "SettingsViewController.h"
 
-@implementation EEYEOAppDelegate
+@implementation EEYEOAppDelegate {
+@private
+    KeychainItemWrapper *_accountWrapper;
+}
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -24,6 +29,9 @@
     [localDataStore setContext:self.managedObjectContext];
     [localDataStore setModel:self.managedObjectModel];
 
+    _accountWrapper = [[KeychainItemWrapper alloc] initWithIdentifier:@"UserAccount" accessGroup:nil];
+    [_accountWrapper resetKeychainItem];
+
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     ObservablesViewLayout *studentsViewLayout = [[ObservablesViewLayout alloc] init];
     ObservablesViewController *studentsViewController = [[ObservablesViewController alloc] initWithCollectionViewLayout:studentsViewLayout];
@@ -32,12 +40,15 @@
     [[self window] setRootViewController:navigationController];
     [[self window] makeKeyAndVisible];
 
-    [localDataStore createDummyData];
     //  TODO - remove me
-    [[EEYEORemoteDataStore instance] initializeFromRemoteServer];
+    [localDataStore createDummyData];
 
-    //  TODO - time
-    [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(remoteSync:) userInfo:nil repeats:YES];
+    if (![_accountWrapper objectForKey:(__bridge id) kSecAttrAccount] || ![_accountWrapper objectForKey:(__bridge id) kSecValueData]) {
+        [navigationController pushViewController:[[SettingsViewController alloc] init] animated:NO];
+    } else {
+        //  TODO - time
+        [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(remoteSync:) userInfo:nil repeats:YES];
+    }
     return YES;
 }
 

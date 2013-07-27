@@ -39,7 +39,7 @@
     [_data setLength:0];
 }
 
-- (void)authenticate {
+- (BOOL)authenticate {
     NSURL *url = [[NSURL alloc] initWithString:[BASE_REST_URL stringByAppendingString:@"security/login?_spring_security_remember_me=true"]];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"POST"];

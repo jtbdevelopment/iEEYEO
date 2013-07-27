@@ -10,6 +10,7 @@
 @class EEYEOIdObject;
 @class NSDateWithMillis;
 
+//  TODO - config these
 static NSString *const BASE_REST_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/";
 static NSString *const BASE_REST_USER_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/users/";
 

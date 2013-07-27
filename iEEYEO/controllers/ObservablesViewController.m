@@ -11,6 +11,7 @@
 #import "EEYEOStudent.h"
 #import "ObservationsViewController.h"
 #import "Colors.h"
+#import "SettingsViewController.h"
 
 @interface ObservablesViewController ()
 - (void)configureCell:(ObservableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -20,6 +21,7 @@
 //  TODO - show classlists?
 //  TODO - add observable  ?
 //  TODO - add search filter?
+//  TODO - add student or class list
 
 @implementation ObservablesViewController
 
@@ -29,11 +31,26 @@
     [self setClearsSelectionOnViewWillAppear:NO];
     [self setTitle:@"iE-EYE-O"];
     [self.collectionView setBackgroundColor:[Colors cream]];
+
+    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(showSettings:)];
+    self.navigationItem.leftBarButtonItem = settingsButton;
+
+    //  TODO
+//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addObservable:)];
+//    self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:self.editButtonItem, addButton, nil];
+
     [UIView setAnimationsEnabled:NO];
     if (!_observationsViewController) {
         self.observationsViewController = [[ObservationsViewController alloc] initWithStyle:UITableViewStyleGrouped];
         self.observationsViewController.managedObjectContext = self.managedObjectContext;
     }
+}
+
+- (void)showSettings:(id)sender {
+    [[self navigationController] pushViewController:[[SettingsViewController alloc] init] animated:YES];
+}
+
+- (void)addObservable:(id)sender {
 }
 
 - (void)didReceiveMemoryWarning {
@@ -78,6 +95,7 @@
 
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
+    //  TODO - support classlist
     NSEntityDescription *entity = [NSEntityDescription entityForName:STUDENTENTITY inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 
