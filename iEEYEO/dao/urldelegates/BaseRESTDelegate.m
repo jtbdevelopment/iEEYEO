@@ -29,8 +29,6 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    //  TODO - check
-    NSLog(@"Failed with error %@", error);
     [[EEYEORemoteDataStore instance] requeueWorkItem:self];
 }
 
@@ -40,13 +38,8 @@
 }
 
 - (BOOL)authenticate {
-    //  TODO
-    NSString *userId = @"x@x";
-    NSString *password = @"xx";
-
-    BOOL authenticated = [self authenticateConnection:userId password:password AndBaseURL:[[EEYEOLocalDataStore instance] website]];
+    BOOL authenticated = [self authenticateConnection:[[EEYEOLocalDataStore instance] login] password:[[EEYEOLocalDataStore instance] password] AndBaseURL:[[EEYEOLocalDataStore instance] website]];
     if (authenticated && _request) {
-        NSLog(@"Login success - resending request");
         [self submitRequest];
     }
     return authenticated;
@@ -111,9 +104,7 @@
                 NSURL *newURL = [[NSURL alloc] initWithString:location];
                 _request = [[NSURLRequest alloc] initWithURL:newURL];
                 NSURLConnection *redirect = [NSURLConnection connectionWithRequest:_request delegate:self];
-                if (redirect) {
-                    NSLog(@"201 redirect to %@", newURL);
-                } else {
+                if (!redirect) {
                     //  TODO - check this logic
                     [[EEYEORemoteDataStore instance] requeueWorkItem:self];
                     NSLog(@"201 redirect to %@ failed", newURL);
@@ -149,10 +140,7 @@
         [deletedObject loadFromDictionary:update];
         EEYEOIdObject *local = [localDataStore find:APPUSEROWNEDENTITY withId:[deletedObject deletedId]];
         if (local) {
-            NSLog(@"Deleting %@", [deletedObject deletedId]);
             [localDataStore deleteUpdateFromRemoteStore:local];
-        } else {
-            NSLog(@"Deleted Id %@ not found locally - probably ok", [deletedObject deletedId]);
         }
         [localDataStore deleteUpdateFromRemoteStore:deletedObject];
         return local;
