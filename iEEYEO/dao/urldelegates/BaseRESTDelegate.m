@@ -40,13 +40,26 @@
 }
 
 - (BOOL)authenticate {
-    NSURL *url = [[NSURL alloc] initWithString:[BASE_REST_URL stringByAppendingString:@"security/login?_spring_security_remember_me=true"]];
+    //  TODO
+    NSString *userId = @"x@x";
+    NSString *password = @"xx";
+
+    BOOL authenticated = [BaseRESTDelegate authenticateConnection:userId password:password AndBaseURL:BASE_REST_URL];
+    if (authenticated && _request) {
+        NSLog(@"Login success - resending request");
+        [self submitRequest];
+    }
+    return authenticated;
+}
+
++ (BOOL)authenticateConnection:(NSString *)userId password:(NSString *)password AndBaseURL:(NSString *)baseURL {
+    BOOL authenticated = NO;
+    NSURL *url = [[NSURL alloc] initWithString:[baseURL stringByAppendingString:@"security/login?_spring_security_remember_me=true"]];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
 
-    //  TODO
-    NSString *form = @"login=x@x&password=xx&_spring_security_remember_me=true";
+    NSString *form = [NSString stringWithFormat:@"login=%@&password=%@&_spring_security_remember_me=true", userId, password];
     char const *bytes = [form UTF8String];
     [request setHTTPBody:[NSData dataWithBytes:bytes length:[form length]]];
     NSURLResponse *response;
@@ -55,19 +68,16 @@
     if ([response.MIMEType isEqualToString:@"text/plain"]) {
         NSString *string = [[NSString alloc] initWithData:loginData encoding:NSUTF8StringEncoding];
         if ([string isEqualToString:@"SUCCESS"]) {
-            if (_request) {
-                NSLog(@"Login success - resending request");
-                [self submitRequest];
-            }
+            authenticated = YES;
         } else {
             //  TODO - check this
             NSLog(@"Failure");
-
         }
     } else {
         //  TODO
         NSLog(@"Got unexpected login mimetype:%@", [response MIMEType]);
     }
+    return authenticated;
 }
 
 - (void)submitRequest {

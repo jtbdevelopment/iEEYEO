@@ -48,6 +48,8 @@ static NSString *const JAVA_DELETED = @"com.jtbdevelopment.e_eye_o.entities.Dele
 
 - (void)setLastUpdateFromServerWithNSDateWithMillis:(NSDateWithMillis *)value;
 
+- (NSString *)getLastUpdateFromServerAsString;
+
 - (NSDateWithMillis *)getLastUpdateFromServerAsNSDateWithMillis;
 
 - (void)initializeFromRemoteServer;

@@ -14,10 +14,12 @@
 #import "KeychainItemWrapper.h"
 #import "SettingsViewController.h"
 
+
 @implementation EEYEOAppDelegate {
 @private
     KeychainItemWrapper *_accountWrapper;
 }
+static NSTimer *timer;
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -43,13 +45,23 @@
     //  TODO - remove me
     [localDataStore createDummyData];
 
-    if (![_accountWrapper objectForKey:(__bridge id) kSecAttrAccount] || ![_accountWrapper objectForKey:(__bridge id) kSecValueData]) {
+    if ([[_accountWrapper objectForKey:(__bridge id) kSecAttrAccount] isEqualToString:@""] || [[_accountWrapper objectForKey:(__bridge id) kSecValueData] isEqualToString:@""]) {
         [navigationController pushViewController:[[SettingsViewController alloc] init] animated:NO];
     } else {
-        //  TODO - time
-        [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(remoteSync:) userInfo:nil repeats:YES];
+        [EEYEOAppDelegate resetTimer];
     }
     return YES;
+}
+
++ (void)resetTimer {
+    @synchronized (self) {
+        if (timer) {
+            [timer invalidate];
+            timer = nil;
+        }
+        //  TODO - time
+        timer = [NSTimer scheduledTimerWithTimeInterval:(1 * 60 * 60) target:self selector:@selector(remoteSync:) userInfo:nil repeats:YES];
+    }
 }
 
 - (void)remoteSync:(NSTimer *)timer {

@@ -6,6 +6,9 @@
 //
 
 #import "SettingsViewController.h"
+#import "EEYEOLocalDataStore.h"
+#import "EEYEORemoteDataStore.h"
+#import "BaseRESTDelegate.h"
 
 @interface SettingsViewController ()
 
@@ -45,9 +48,21 @@
     [_refreshStepper setMinimumValue:1.0];
     [_refreshStepper setStepValue:1.0];
 
-    //  TODO - real defaults/recovery
-    [_refreshFrequency setText:@"2"];
-    [_refreshStepper setValue:2.0];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self loadValues];
+
+}
+
+- (void)loadValues {
+//  TODO - real defaults/recovery
+    [_refreshStepper setValue:1.0];
+    [self refreshChange:nil];
+
+    [_localDirty setText:[NSString stringWithFormat:@"%d", [[[EEYEOLocalDataStore instance] getDirtyEntities:APPUSEROWNEDENTITY] count]]];
+    [_lastServerTS setText:[[EEYEORemoteDataStore instance] getLastUpdateFromServerAsString]];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -56,15 +71,23 @@
 }
 
 - (IBAction)refreshChange:(id)sender {
-    [_refreshFrequency setText:[NSString stringWithFormat:@"%d Hours", (int) _refreshStepper.value]];
+    [_refreshFrequency setText:[NSString stringWithFormat:@"%d Hours`", (int) _refreshStepper.value]];
 }
 
 - (IBAction)testConnection:(id)sender {
-
+    //  TODO - base
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Authentication" message:@"Worked!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    if ([BaseRESTDelegate authenticateConnection:[_login text] password:[_password text] AndBaseURL:BASE_REST_URL]) {
+        [alertView setMessage:@"Connected Successfully"];
+    } else {
+        [alertView setMessage:@"Failed.  Please try again."];
+    }
+    [alertView show];
 }
 
 - (IBAction)resync:(id)sender {
-
+    [[EEYEORemoteDataStore instance] resyncWithRemoteServer];
+    [self loadValues];
 }
 
 - (IBAction)reset:(id)sender {
