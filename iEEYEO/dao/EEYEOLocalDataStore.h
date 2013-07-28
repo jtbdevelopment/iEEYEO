@@ -38,7 +38,21 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 
 + (EEYEOLocalDataStore *)instance;
 
+- (void)setLogin:(NSString *)login;
+
+- (NSString *)login;
+
+- (void)setPassword:(NSString *)password;
+
+- (NSString *)password;
+
+- (void)setWebsite:(NSString *)url;
+
+- (NSString *)website;
+
 - (void)saveToLocalStore:(EEYEOIdObject *)object;
+
+- (void)clearAllItems;
 
 - (void)deleteFromLocalStore:(EEYEOIdObject *)object;
 
@@ -50,11 +64,14 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 
 - (NSArray *)getDirtyEntities:(NSString *)entityType;
 
+- (NSArray *)getEntitiesOfType:(NSString *)entityType WithPredicate:(NSPredicate *)predicate;
+
+- (id)findAppUserWithEmailAddress:(NSString *)emailAddress;
+
 - (id)find:(NSString *)entityType withId:(NSString *)withId;
 
 - (id)create:(NSString *)entityType;
 
 - (id)findOrCreate:(NSString *)entityType withId:(NSString *)withId;
 
-- (void)createDummyData;
 @end

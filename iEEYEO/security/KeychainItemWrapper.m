@@ -184,6 +184,7 @@ Keychain API expects as a validly constructed container class.
     [keychainItemData setObject:@"" forKey:(__bridge id) kSecAttrAccount];
     [keychainItemData setObject:@"" forKey:(__bridge id) kSecAttrLabel];
     [keychainItemData setObject:@"" forKey:(__bridge id) kSecAttrDescription];
+    [keychainItemData setObject:@"" forKey:(__bridge id) kSecAttrService];
 
     // Default data for keychain item.
     [keychainItemData setObject:@"" forKey:(__bridge id) kSecValueData];

@@ -7,16 +7,23 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsViewController : UIViewController
+@interface SettingsViewController : UIViewController <UIAlertViewDelegate>
 
-@property(nonatomic, retain) IBOutlet UILabel *status;
 @property(nonatomic, retain) IBOutlet UILabel *refreshFrequency;
+@property(nonatomic, retain) IBOutlet UILabel *local;
 @property(nonatomic, retain) IBOutlet UILabel *localDirty;
 @property(nonatomic, retain) IBOutlet UILabel *lastServerTS;
+@property(nonatomic, retain) IBOutlet UILabel *lastResyncTS;
 @property(nonatomic, retain) IBOutlet UITextField *login;
 @property(nonatomic, retain) IBOutlet UITextField *password;
 @property(nonatomic, retain) IBOutlet UITextField *website;
 @property(nonatomic, retain) IBOutlet UIStepper *refreshStepper;
+
+@property(nonatomic, retain) IBOutlet UIButton *editConnections;
+@property(nonatomic, retain) IBOutlet UIButton *resyncButton;
+@property(nonatomic, retain) IBOutlet UIButton *resetButton;
+
+- (IBAction)enableEditing:(id)sender;
 
 - (IBAction)refreshChange:(id)sender;
 
@@ -26,5 +33,4 @@
 
 - (IBAction)reset:(id)sender;
 
-- (IBAction)done:(id)sender;
 @end

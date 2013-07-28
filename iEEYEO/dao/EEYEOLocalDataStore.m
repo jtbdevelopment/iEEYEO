@@ -14,10 +14,12 @@
 #import "EEYEOObservationCategory.h"
 #import "EEYEOPhoto.h"
 #import "NSDateWithMillis.h"
+#import "KeychainItemWrapper.h"
 
 
 @implementation EEYEOLocalDataStore {
-
+@private
+    KeychainItemWrapper *_accountWrapper;
 }
 
 @synthesize model, context;
@@ -37,10 +39,39 @@
     @synchronized (self) {
         if (_instance == nil) {
             _instance = [[super allocWithZone:nil] init];
+            [_instance setAccountWrapper:[[KeychainItemWrapper alloc] initWithIdentifier:@"UserAccount" accessGroup:nil]];
         }
     }
 
     return _instance;
+}
+
+- (void)setAccountWrapper:(KeychainItemWrapper *)accountWrapper {
+    _accountWrapper = accountWrapper;
+}
+
+- (void)setLogin:(NSString *)login {
+    [_accountWrapper setObject:login forKey:(__bridge id) kSecAttrAccount];
+}
+
+- (NSString *)login {
+    return [_accountWrapper objectForKey:(__bridge id) kSecAttrAccount];
+}
+
+- (void)setPassword:(NSString *)password {
+    [_accountWrapper setObject:password forKey:(__bridge id) kSecValueData];
+}
+
+- (NSString *)password {
+    return [_accountWrapper objectForKey:(__bridge id) kSecValueData];
+}
+
+- (void)setWebsite:(NSString *)url {
+    [_accountWrapper setObject:url forKey:(__bridge id) kSecAttrService];
+}
+
+- (NSString *)website {
+    return [_accountWrapper objectForKey:(__bridge id) kSecAttrService];
 }
 
 - (void)saveToLocalStore:(EEYEOIdObject *)object {
@@ -53,7 +84,22 @@
     NSError *error = nil;
     [context save:&error];
     if (error != nil) {
-        NSLog(@"Error saving entity %@ with desc %@.  Error %@", [object class], [object objectID], [error description]);
+        if (object) {
+            NSLog(@"Error saving entity %@ with desc %@.  Error %@", [object class], [object objectID], [error description]);
+        } else {
+            NSLog(@"Error saving context.  Error %@", [error description]);
+        }
+    }
+}
+
+- (void)clearAllItems {
+    NSArray *objectTypes = [[NSArray alloc] initWithObjects:DELETEDENTITY, PHOTOENTITY, OBSERVATIONENTITY, STUDENTENTITY, CLASSLISTENTITY, CATEGORYENTITY, nil];
+    for (NSString *type in objectTypes) {
+        NSArray *entities = [self getEntitiesOfType:type WithPredicate:nil];
+        for (EEYEOIdObject *object in entities) {
+            [context deleteObject:object];
+            [self saveContext:object];
+        }
     }
 }
 
@@ -106,10 +152,15 @@
 }
 
 - (NSArray *)getDirtyEntities:(NSString *)entityType {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"dirty = TRUE"];
+    return [self getEntitiesOfType:entityType WithPredicate:predicate];
+
+}
+
+- (NSArray *)getEntitiesOfType:(NSString *)entityType WithPredicate:(NSPredicate *)predicate {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:entityType inManagedObjectContext:context];
     [request setEntity:entityDescription];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"dirty = TRUE"];
     [request setPredicate:predicate];
 
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"modificationTimestamp" ascending:YES];
@@ -123,6 +174,35 @@
         return nil;
     }
     return result;
+}
+
+- (id)findAppUserWithEmailAddress:(NSString *)emailAddress {
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:APPUSERENTITY inManagedObjectContext:context];
+    [request setEntity:entityDescription];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"emailAddress = %@", emailAddress];
+    [request setPredicate:predicate];
+
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    [request setSortDescriptors:sortDescriptors];
+
+    NSError *error = nil;
+    NSArray *result = [context executeFetchRequest:request error:&error];
+    if (error != nil) {
+        NSLog(@"Error finding appuser with email %@.  Error %@", emailAddress, [error description]);
+        return nil;
+    }
+    if (result == nil || [result count] == 0) {
+        return nil;
+    }
+    if ([result count] > 1) {
+        NSLog(@"Error finding user with email %@.  Found more than 1 - %d", emailAddress, [result count]);
+        for (EEYEOIdObject *object in result) {
+            NSLog(@"%@ %@", object.objectID, object.description);
+        }
+    }
+    return [result objectAtIndex:0];
 }
 
 - (id)find:(NSString *)entityType withId:(NSString *)withId {
@@ -168,18 +248,5 @@
     }
     return entity;
 }
-
-//  TODO - get rid of me
-- (void)createDummyData {
-    EEYEOAppUser *appUser = [self findOrCreate:APPUSERENTITY withId:@"4028810e3f0758cf013f075939790000"];
-    [appUser setActivated:YES];
-    [appUser setActive:YES];
-    [appUser setEmailAddress:@"test@test.com"];
-    [appUser setFirstName:@"first"];
-    [appUser setLastName:@"last"];
-    [appUser setModificationTimestampFromNSDateWithMillis:[[NSDateWithMillis alloc] init]];
-    [self saveToLocalStore:appUser];
-}
-
 
 @end

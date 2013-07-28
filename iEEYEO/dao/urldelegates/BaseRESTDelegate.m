@@ -44,7 +44,7 @@
     NSString *userId = @"x@x";
     NSString *password = @"xx";
 
-    BOOL authenticated = [BaseRESTDelegate authenticateConnection:userId password:password AndBaseURL:BASE_REST_URL];
+    BOOL authenticated = [self authenticateConnection:userId password:password AndBaseURL:[[EEYEOLocalDataStore instance] website]];
     if (authenticated && _request) {
         NSLog(@"Login success - resending request");
         [self submitRequest];
@@ -52,7 +52,7 @@
     return authenticated;
 }
 
-+ (BOOL)authenticateConnection:(NSString *)userId password:(NSString *)password AndBaseURL:(NSString *)baseURL {
+- (BOOL)authenticateConnection:(NSString *)userId password:(NSString *)password AndBaseURL:(NSString *)baseURL {
     BOOL authenticated = NO;
     NSURL *url = [[NSURL alloc] initWithString:[baseURL stringByAppendingString:@"security/login?_spring_security_remember_me=true"]];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];

@@ -12,7 +12,7 @@
 @interface BaseRESTDelegate : NSObject <NSURLConnectionDelegate>
 - (id)initWithRequest:(NSURLRequest *)request;
 
-+ (BOOL)authenticateConnection:(NSString *)userId password:(NSString *)password AndBaseURL:(NSString *)baseURL;
+- (BOOL)authenticateConnection:(NSString *)userId password:(NSString *)password AndBaseURL:(NSString *)baseURL;
 
 - (id)getObjectToUpdateWithType:(NSString *)localType AndId:(NSString *)id;
 

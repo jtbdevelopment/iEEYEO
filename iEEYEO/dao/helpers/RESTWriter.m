@@ -37,17 +37,17 @@
 }
 
 - (void)updateEntityToRemote:(EEYEOIdObject *)updated {
-    NSURLRequest *request = [self createWriteRequestToRemoteServer:updated method:@"PUT" urlString:[_instance getEntityURLFromEntity:updated]];
+    NSURLRequest *request = [self createWriteRequestToRemoteServer:updated method:@"PUT" urlString:[_instance entityURLForObject:updated]];
     [_instance addWorkItem:[[BaseRESTDelegate alloc] initWithRequest:request]];
 }
 
 - (void)createEntityToRemote:(EEYEOIdObject *)created {
-    NSURLRequest *request = [self createWriteRequestToRemoteServer:created method:@"POST" urlString:[_instance getUserURL]];
+    NSURLRequest *request = [self createWriteRequestToRemoteServer:created method:@"POST" urlString:[_instance userURL]];
     [_instance addWorkItem:[[CreationRESTDelegate alloc] initWithRequest:request AndEntity:created]];
 }
 
 - (void)deleteEntityToRemote:(EEYEODeletedObject *)deleted {
-    NSURL *url = [[NSURL alloc] initWithString:[_instance getEntityURL:[deleted deletedId]]];
+    NSURL *url = [[NSURL alloc] initWithString:[_instance entityURLForId:[deleted deletedId]]];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"DELETE"];
 

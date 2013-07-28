@@ -11,15 +11,11 @@
 #import "ObservablesViewController.h"
 #import "ObservablesViewLayout.h"
 #import "EEYEORemoteDataStore.h"
-#import "KeychainItemWrapper.h"
 #import "SettingsViewController.h"
 
 
 @implementation EEYEOAppDelegate {
-@private
-    KeychainItemWrapper *_accountWrapper;
 }
-static NSTimer *timer;
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -31,9 +27,6 @@ static NSTimer *timer;
     [localDataStore setContext:self.managedObjectContext];
     [localDataStore setModel:self.managedObjectModel];
 
-    _accountWrapper = [[KeychainItemWrapper alloc] initWithIdentifier:@"UserAccount" accessGroup:nil];
-    [_accountWrapper resetKeychainItem];
-
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     ObservablesViewLayout *studentsViewLayout = [[ObservablesViewLayout alloc] init];
     ObservablesViewController *studentsViewController = [[ObservablesViewController alloc] initWithCollectionViewLayout:studentsViewLayout];
@@ -42,30 +35,12 @@ static NSTimer *timer;
     [[self window] setRootViewController:navigationController];
     [[self window] makeKeyAndVisible];
 
-    //  TODO - remove me
-    [localDataStore createDummyData];
-
-    if ([[_accountWrapper objectForKey:(__bridge id) kSecAttrAccount] isEqualToString:@""] || [[_accountWrapper objectForKey:(__bridge id) kSecValueData] isEqualToString:@""]) {
+    if ([[localDataStore login] length] == 0 || [[localDataStore password] length] == 0 || [[localDataStore website] length] == 0 || [localDataStore findAppUserWithEmailAddress:[localDataStore login]] == nil) {
         [navigationController pushViewController:[[SettingsViewController alloc] init] animated:NO];
     } else {
-        [EEYEOAppDelegate resetTimer];
+        [[EEYEORemoteDataStore instance] startRemoteSyncs];
     }
     return YES;
-}
-
-+ (void)resetTimer {
-    @synchronized (self) {
-        if (timer) {
-            [timer invalidate];
-            timer = nil;
-        }
-        //  TODO - time
-        timer = [NSTimer scheduledTimerWithTimeInterval:(1 * 60 * 60) target:self selector:@selector(remoteSync:) userInfo:nil repeats:YES];
-    }
-}
-
-- (void)remoteSync:(NSTimer *)timer {
-    [[EEYEORemoteDataStore instance] resyncWithRemoteServer];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
