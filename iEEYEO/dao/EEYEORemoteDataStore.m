@@ -335,7 +335,7 @@
     for (NSString *type in objectTypes) {
         NSURL *url = [[NSURL alloc] initWithString:[[self userURL] stringByAppendingFormat:@"%@/active", type]];
         NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
-        [self addWorkItem:[[BaseRESTDelegate alloc] initWithRequest:request]];
+        [self addWorkItem:[[UpdatesFromServerRESTDelegate alloc] initWithRequest:request]];
     }
 
     [self setLastUpdateFromServerWithNSDateWithMillis:[[NSDateWithMillis alloc] init]];

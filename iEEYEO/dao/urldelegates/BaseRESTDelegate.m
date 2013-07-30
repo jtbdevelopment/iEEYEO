@@ -126,13 +126,10 @@
 }
 
 - (id)processJSONEntity:(NSDictionary *)update {
-    //  TODO - this works under a couple of assumptions which are wrong
+    //  TODO - this works under an assumptions which are wrong
     //    a.  That there are no active entities linked to archived entities
     //         (i.e. no active observation on an archived student)
     //         not always true with current server
-    //    b.  Server implements true rss style feed where all updates come in proper order
-    //         (i.e. user creates observation, creates photo for observation and then modifies observation comes as 3 updates)
-    //         not true with current server
     EEYEOLocalDataStore *localDataStore = [EEYEOLocalDataStore instance];
     NSString *entityType = [update objectForKey:JSON_ENTITY];
     if ([entityType isEqualToString:JAVA_DELETED]) {
