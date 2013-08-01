@@ -14,6 +14,8 @@
 #import "EEYEOLocalDataStore.h"
 #import "ObservationTimestampPickerViewController.h"
 #import "ObservablePickerViewController.h"
+#import "EEYEOPhoto.h"
+#import "ThumbnailImageCell.h"
 
 //  TODO - make this all look a heck of lot nicer
 //  TODO - look into custom inputs for setting fields instead of more screens
@@ -43,9 +45,12 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     NSMutableArray *_observable;
     NSMutableArray *_observationTimestamp;
     NSMutableSet *_categories;
+    NSMutableArray *_thumbnailImages;
+    NSMutableArray *_fullImages;
     NSManagedObjectContext *_managedObjectContext;
     BOOL _newObservation;
     ChildPopping _childPopping;
+    UICollectionView *_images;
 }
 
 @synthesize commentField = _commentField;
@@ -60,6 +65,8 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
 
 @synthesize newObservation = _newObservation;
 
+@synthesize images = _images;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -68,6 +75,8 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
         [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm"];
         _observable = [[NSMutableArray alloc] init];
         _observationTimestamp = [[NSMutableArray alloc] init];
+        _thumbnailImages = [[NSMutableArray alloc] init];
+        _fullImages = [[NSMutableArray alloc] init];
         _childPopping = None;
     }
     return self;
@@ -80,6 +89,8 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [[self observableField] setBackgroundColor:[Colors darkBrown]];
     [self significantField].thumbTintColor = [Colors darkBrown];
     [self significantField].onTintColor = [Colors darkBrown];
+    [[self images] setDataSource:self];
+    [[self images] registerClass:[ThumbnailImageCell class] forCellWithReuseIdentifier:THUMBNAIL_CELL];
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)];
     UIBarButtonItem *resetButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemUndo target:self action:@selector(reset:)];
     doneButton.title = @"Done";
@@ -152,7 +163,18 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     _categories = [[NSMutableSet alloc] init];
     [_categories addObjectsFromArray:[[_observation categories] allObjects]];
     [_observationTimestamp setObject:[observation observationTimestampToNSDate] atIndexedSubscript:0];
+    [_thumbnailImages removeAllObjects];
+    [_fullImages removeAllObjects];
+    for (EEYEOPhoto *photo in [observation photos]) {
+        UIImage *thumbnailImage = [photo thumbnailImage];
+        UIImage *fullImage = [photo image];
+        if (thumbnailImage && fullImage) {
+            [_thumbnailImages addObject:thumbnailImage];
+            [_fullImages addObject:fullImage];
+        }
+    }
     [[self navigationItem] setTitle:[_observation desc]];
+    [_images reloadData];
 }
 
 - (void)reset:(id)sender {
@@ -191,6 +213,17 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [picker setTimestamp:_observationTimestamp];
     _childPopping = Timestamp;
     [self.navigationController pushViewController:picker animated:YES];
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return [_thumbnailImages count];
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    ThumbnailImageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:THUMBNAIL_CELL forIndexPath:indexPath];
+
+    [cell setImage:[_thumbnailImages objectAtIndex:[indexPath indexAtPosition:1]]];
+    return cell;
 }
 
 

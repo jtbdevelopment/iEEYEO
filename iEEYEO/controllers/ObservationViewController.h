@@ -9,13 +9,16 @@
 
 @class EEYEOObservation;
 
-@interface ObservationViewController : UIViewController
+static NSString *const THUMBNAIL_CELL = @"ThumbnailCell";
+
+@interface ObservationViewController : UIViewController <UICollectionViewDataSource>
 @property(strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property(nonatomic, retain) IBOutlet UITextView *commentField;
 @property(nonatomic, retain) IBOutlet UIButton *observableField;
 @property(nonatomic, retain) IBOutlet UIButton *categoriesField;
 @property(nonatomic, retain) IBOutlet UIButton *timestampField;
 @property(nonatomic, retain) IBOutlet UISwitch *significantField;
+@property(nonatomic, retain) IBOutlet UICollectionView *images;
 @property(nonatomic) BOOL newObservation;
 
 @property(nonatomic, strong) EEYEOObservation *observation;

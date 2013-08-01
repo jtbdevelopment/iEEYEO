@@ -47,8 +47,7 @@
         [map setValue:CATEGORYENTITY forKey:JAVA_CATEGORY];
         [map setValue:STUDENTENTITY forKey:JAVA_STUDENT];
         [map setValue:CLASSLISTENTITY forKey:JAVA_CLASSLIST];
-        //  TODO - support photos
-//        [map setValue:PHOTOENTITY forKey:JAVA_PHOTO];
+        [map setValue:PHOTOENTITY forKey:JAVA_PHOTO];
         [map setValue:APPUSERENTITY forKey:JAVA_USER];
         map = [[NSDictionary alloc] initWithDictionary:map];
     }

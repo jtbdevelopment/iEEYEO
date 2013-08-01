@@ -20,6 +20,10 @@ static NSString *const JSON_APPUSER = @"appUser";
 @property(nonatomic) BOOL archived;
 @property(nonatomic, retain) EEYEOAppUser *appUser;
 @property(nonatomic, retain) NSSet *photos;
+
+- (NSDate *)fromJodaLocalDateTime:(NSArray *)jodaLocalDateTime;
+
+- (NSMutableArray *)toJodaLocalDateTime:(NSDate *)date;
 @end
 
 @interface EEYEOAppUserOwnedObject (CoreDataGeneratedAccessors)
