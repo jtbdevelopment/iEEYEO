@@ -38,10 +38,39 @@
     [self setTimestamp:[date timeIntervalSince1970]];
 }
 
+- (UIImage *)resizeImage:(UIImage *)inImage withMaxEdge:(int)maxEdge {
+    CGFloat originalHeight = inImage.size.height;
+    CGFloat originalWidth = inImage.size.width;
+    CGFloat newHeight;
+    CGFloat newWidth;
+    if (originalHeight > originalWidth) {
+        if (originalHeight <= maxEdge) {
+            return inImage;
+        }
+        newHeight = maxEdge;
+        newWidth = (newHeight / originalHeight) * originalWidth;
+    } else {
+        if (originalWidth <= maxEdge) {
+            return inImage;
+        }
+        newWidth = maxEdge;
+        newHeight = (newWidth / originalWidth) * originalHeight;
+    }
+
+    CGRect rect = CGRectMake(0.0, 0.0, newWidth, newHeight);
+    UIGraphicsBeginImageContext(rect.size);
+    [inImage drawInRect:rect];
+    UIImage *outImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return outImage;
+}
+
 - (void)setImageFromImage:(UIImage *)image {
-    [self setImageData:UIImageJPEGRepresentation(image, 1.0)];
-    //  TODO
-    [self setMimeType:@"image/jpeg"];
+    static int MAX_THUMBNAIL_SIZE = 150;
+    static int MAX_IMAGE_SIZE = 1024;
+    [self setImageData:UIImageJPEGRepresentation([self resizeImage:image withMaxEdge:MAX_IMAGE_SIZE], 1.0)];
+    [self setMimeType:@"image/png"];
+    [self setThumbnailImageFromData:UIImageJPEGRepresentation([self resizeImage:image withMaxEdge:MAX_THUMBNAIL_SIZE], 1.0)];
 }
 
 - (UIImage *)thumbnailImage {
@@ -54,8 +83,6 @@
 - (void)setImageFromData:(NSData *)data {
     [self setImageData:data];
     _image = nil;
-    //  TODO - scale
-    [self setThumbnailImageFromData:[self imageData]];
 }
 
 - (void)setThumbnailImageFromData:(NSData *)data {
@@ -73,8 +100,8 @@
     } else {
         return NO;
     }
-    [self setImageFromData:[NSData dataFromBase64String:[dictionary objectForKey:JSON_IMAGEDATA]]];
-    [self setThumbnailImageFromData:[NSData dataFromBase64String:[dictionary objectForKey:@"thumbnailImageData"]]];
+    [self setImageFromData:[NSData dataFromBase64String:[self base64FromURL:[dictionary objectForKey:JSON_IMAGEDATA]]]];
+    [self setThumbnailImageFromData:[NSData dataFromBase64String:[self base64FromURL:[dictionary objectForKey:JSON_THUMBNAILIMAGEDATE]]]];
 
     return [super loadFromDictionary:dictionary];
 }
@@ -85,7 +112,16 @@
     [self writeSubobject:[self photoFor] ToDictionary:dictionary WithKey:JSON_PHOTOFOR];
     [dictionary setObject:[self toJodaLocalDateTime:[self timestampToNSDate]] forKey:JSON_TIMESTAMP];
     [dictionary setObject:[self name] forKey:JSON_DESCRIPTION];
-    [dictionary setObject:[[self imageData] base64EncodedStringWithSeparateLines:0] forKey:JSON_IMAGEDATA];
+
+    [dictionary setObject:[[self imageData] base64EncodedStringWithSeparateLines:NO] forKey:JSON_IMAGEDATA];
 }
 
+//  TODO - this - better
+//  Server using url safe variant
+- (NSString *)base64FromURL:(NSString *)string {
+    string = [string stringByReplacingOccurrencesOfString:@"-" withString:@"+"];
+    string = [string stringByReplacingOccurrencesOfString:@"_" withString:@"/"];
+    string = [string stringByReplacingOccurrencesOfString:@"," withString:@"="];
+    return string;
+}
 @end

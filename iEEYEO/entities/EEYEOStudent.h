@@ -3,7 +3,6 @@
 //  iEEYEO
 //
 //  Created by Joseph Buscemi on 7/16/13.
-//  Copyright (c) 2013 jtbdevelopment. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

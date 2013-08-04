@@ -19,6 +19,8 @@ static NSString *const JSON_TIMESTAMP = @"timestamp";
 
 static NSString *const JSON_IMAGEDATA = @"imageData";
 
+static NSString *const JSON_THUMBNAILIMAGEDATE = @"thumbnailImageData";
+
 @interface EEYEOPhoto : EEYEOAppUserOwnedObject
 
 @property(nonatomic, retain) NSString *name;

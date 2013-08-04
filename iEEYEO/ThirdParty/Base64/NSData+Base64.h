@@ -3,6 +3,7 @@
 //  base64
 //
 //  Very modestly changed to:
+//     URL safe encoding - replacing +/= with -_,
 //     work within ARC
 //     reformat
 //
@@ -26,6 +27,10 @@
 //
 
 #import <Foundation/Foundation.h>
+
+//  JTB
+//static const char EQUALS = '=';
+static const char EQUALS = ',';
 
 void *NewBase64Decode(
         const char *inputBuffer,

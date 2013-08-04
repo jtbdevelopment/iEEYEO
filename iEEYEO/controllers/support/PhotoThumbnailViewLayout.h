@@ -7,6 +7,5 @@
 #import <Foundation/Foundation.h>
 
 
-@interface ObservablesViewLayout : UICollectionViewFlowLayout
-
+@interface PhotoThumbnailViewLayout : UICollectionViewFlowLayout
 @end

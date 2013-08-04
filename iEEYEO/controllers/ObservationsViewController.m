@@ -70,7 +70,6 @@
     [newObservation setAppUser:[_observable appUser]];
     [newObservation setObservationTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
     [newObservation setModificationTimestampFromNSDateWithMillis:[NSDateWithMillis dateWithTimeIntervalFromNow:0]];
-    [newObservation setId:@""];
     [_observationView setObservation:newObservation];
     [_observationView setManagedObjectContext:_managedObjectContext];
     [_observationView setNewObservation:YES];

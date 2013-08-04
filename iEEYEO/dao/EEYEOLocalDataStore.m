@@ -107,7 +107,6 @@
     if (object.id && object.id.length > 0 && [object isKindOfClass:[EEYEOAppUserOwnedObject class]] && ![object isKindOfClass:[EEYEODeletedObject class]]) {
         EEYEODeletedObject *deleted = [self create:DELETEDENTITY];
         [deleted setDeletedId:[object id]];
-        [deleted setId:@""];
         [deleted setAppUser:[(EEYEOAppUserOwnedObject *) object appUser]];
         [self saveToLocalStore:deleted];
     }
@@ -237,6 +236,7 @@
 - (id)create:(NSString *)entityType {
     EEYEOIdObject *object = [NSEntityDescription insertNewObjectForEntityForName:entityType inManagedObjectContext:context];
     [object setModificationTimestampFromNSDateWithMillis:[NSDateWithMillis dateWithTimeIntervalFromNow:0]];
+    [object setId:@""];
     return object;
 }
 

@@ -11,7 +11,7 @@
 
 static NSString *const THUMBNAIL_CELL = @"ThumbnailCell";
 
-@interface ObservationViewController : UIViewController <UICollectionViewDataSource>
+@interface ObservationViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UIPopoverControllerDelegate>
 @property(strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property(nonatomic, retain) IBOutlet UITextView *commentField;
 @property(nonatomic, retain) IBOutlet UIButton *observableField;
@@ -19,6 +19,8 @@ static NSString *const THUMBNAIL_CELL = @"ThumbnailCell";
 @property(nonatomic, retain) IBOutlet UIButton *timestampField;
 @property(nonatomic, retain) IBOutlet UISwitch *significantField;
 @property(nonatomic, retain) IBOutlet UICollectionView *images;
+@property(nonatomic, retain) IBOutlet UIBarButtonItem *cameraButton;
+
 @property(nonatomic) BOOL newObservation;
 
 @property(nonatomic, strong) EEYEOObservation *observation;
@@ -34,4 +36,11 @@ static NSString *const THUMBNAIL_CELL = @"ThumbnailCell";
 - (IBAction)reset:(id)sender;
 
 - (void)done:(id)sender;
+
+- (IBAction)trash:(id)sender;
+
+- (IBAction)camera:(id)sender;
+
+- (IBAction)photos:(id)sender;
+
 @end
