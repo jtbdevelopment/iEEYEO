@@ -58,6 +58,10 @@
     return [_accountWrapper objectForKey:(__bridge id) kSecAttrAccount];
 }
 
+- (EEYEOAppUser *)appUser {
+    return [self findAppUserWithEmailAddress:[self login]];
+}
+
 - (void)setPassword:(NSString *)password {
     [_accountWrapper setObject:password forKey:(__bridge id) kSecValueData];
 }
@@ -107,7 +111,7 @@
     if (object.id && object.id.length > 0 && [object isKindOfClass:[EEYEOAppUserOwnedObject class]] && ![object isKindOfClass:[EEYEODeletedObject class]]) {
         EEYEODeletedObject *deleted = [self create:DELETEDENTITY];
         [deleted setDeletedId:[object id]];
-        [deleted setAppUser:[(EEYEOAppUserOwnedObject *) object appUser]];
+        [deleted setAppUser:[[EEYEOLocalDataStore instance] appUser]];
         [self saveToLocalStore:deleted];
     }
     [self deleteUpdateFromRemoteStore:object];

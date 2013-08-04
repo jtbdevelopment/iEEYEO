@@ -67,7 +67,7 @@
 - (void)addObservation:(id)sender {
     EEYEOObservation *newObservation = [[EEYEOLocalDataStore instance] create:OBSERVATIONENTITY];
     [newObservation setObservable:_observable];
-    [newObservation setAppUser:[_observable appUser]];
+    [newObservation setAppUser:[[EEYEOLocalDataStore instance] appUser]];
     [newObservation setObservationTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
     [newObservation setModificationTimestampFromNSDateWithMillis:[NSDateWithMillis dateWithTimeIntervalFromNow:0]];
     [_observationView setObservation:newObservation];

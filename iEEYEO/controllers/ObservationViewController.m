@@ -314,7 +314,7 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [photo setImageFromImage:image];
     [photo setName:[NSString stringWithFormat:@"Photo %d", [[[NSDateWithMillis dateWithTimeIntervalFromNow:0] toJodaDateTime] intValue]]];
     [photo setTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
-    [photo setAppUser:[_observation appUser]];
+    [photo setAppUser:[[EEYEOLocalDataStore instance] appUser]];
     [_newPhotos addObject:photo];
     [_photos addObject:photo];
     [_images reloadData];

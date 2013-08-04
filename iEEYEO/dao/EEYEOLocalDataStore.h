@@ -9,6 +9,7 @@
 
 @class EEYEOIdObject;
 @class EEYEORemoteDataStore;
+@class EEYEOAppUser;
 
 
 static NSString *const APPUSERENTITY = @"EEYEOAppUser";
@@ -39,6 +40,8 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 + (EEYEOLocalDataStore *)instance;
 
 - (void)setLogin:(NSString *)login;
+
+- (EEYEOAppUser *)appUser;
 
 - (NSString *)login;
 
