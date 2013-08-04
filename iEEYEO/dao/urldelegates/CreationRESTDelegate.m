@@ -6,11 +6,15 @@
 
 #import "CreationRESTDelegate.h"
 #import "EEYEOIdObject.h"
+#import "RESTWriter.h"
+#import "EEYEOLocalDataStore.h"
 
 
 @implementation CreationRESTDelegate {
 @private
     EEYEOIdObject *_entity;
+    RESTWriter *_writer;
+    NSMutableURLRequest *_request;
 }
 
 //  TODO - verify presumption that request is for local object
@@ -18,10 +22,21 @@
     return _entity;
 }
 
-- (id)initWithRequest:(NSURLRequest *)request AndEntity:(EEYEOIdObject *)entity {
+- (void)submitRequest {
+    //  On creates, if we have multiple create, form initially created may not have ids for related objects
+    //  This forces rewrites.
+    //  This class and super are pointing to same request.
+    [[EEYEOLocalDataStore instance] refreshObject:_entity];
+    [_writer writeDictionaryAsForm:_request dictionary:[_writer getDictionary:_entity] forEntity:_entity];
+    [super submitRequest];
+}
+
+- (id)initWithRequest:(NSMutableURLRequest *)request AndEntity:(EEYEOIdObject *)entity AndWriter:(RESTWriter *)writer {
     self = [super initWithRequest:request];
     if (self) {
+        _request = request;
         _entity = entity;
+        _writer = writer;
     }
 
     return self;

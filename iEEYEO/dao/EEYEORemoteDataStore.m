@@ -358,7 +358,6 @@
         }
         [self updateFromRemoteServer];
 
-        //  TODO - blows up when observation and photo created inside one sync list - photo does not have id of obs yet
         NSArray *objectTypes = [[NSArray alloc] initWithObjects:CATEGORYENTITY, CLASSLISTENTITY, STUDENTENTITY, OBSERVATIONENTITY, PHOTOENTITY, DELETEDENTITY, nil];
         for (NSString *type in objectTypes) {
             NSArray *dirtyEntities = [[EEYEOLocalDataStore instance] getDirtyEntities:type];

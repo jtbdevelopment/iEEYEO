@@ -8,8 +8,8 @@
 #import "BaseRESTDelegate.h"
 
 @class EEYEOIdObject;
-
+@class RESTWriter;
 
 @interface CreationRESTDelegate : BaseRESTDelegate
-- (id)initWithRequest:(NSURLRequest *)request AndEntity:(EEYEOIdObject *)entity;
+- (id)initWithRequest:(NSMutableURLRequest *)request AndEntity:(EEYEOIdObject *)entity AndWriter:(RESTWriter *)writer;
 @end

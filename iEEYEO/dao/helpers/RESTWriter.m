@@ -17,6 +17,7 @@
 @private
     EEYEORemoteDataStore *_instance;
 }
+
 - (id)initForRemoteStore:(EEYEORemoteDataStore *)instance {
     self = [super init];
     if (self) {
@@ -43,7 +44,7 @@
 
 - (void)createEntityToRemote:(EEYEOIdObject *)created {
     NSURLRequest *request = [self createWriteRequestToRemoteServer:created method:@"POST" urlString:[_instance userURL]];
-    [_instance addWorkItem:[[CreationRESTDelegate alloc] initWithRequest:request AndEntity:created]];
+    [_instance addWorkItem:[[CreationRESTDelegate alloc] initWithRequest:request AndEntity:created AndWriter:self]];
 }
 
 - (void)deleteEntityToRemote:(EEYEODeletedObject *)deleted {
@@ -60,8 +61,7 @@
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     [request setHTTPMethod:method];
 
-    NSMutableDictionary *dictionary = [self getDictionary:entity];
-    [self writeDictionaryAsForm:request dictionary:dictionary forEntity:entity];
+    [self writeDictionaryAsForm:request dictionary:[self getDictionary:entity] forEntity:entity];
     return request;
 }
 

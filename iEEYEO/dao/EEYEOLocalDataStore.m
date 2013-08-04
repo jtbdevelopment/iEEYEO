@@ -126,6 +126,10 @@
     [context reset];
 }
 
+- (void)refreshObject:(EEYEOIdObject *)entity {
+    [context refreshObject:entity mergeChanges:NO];
+}
+
 - (void)deleteUpdateFromRemoteStore:(EEYEOIdObject *)object {
     if ([object isKindOfClass:[EEYEOAppUserOwnedObject class]]) {
         EEYEOAppUserOwnedObject *owned = (EEYEOAppUserOwnedObject *) object;

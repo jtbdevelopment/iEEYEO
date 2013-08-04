@@ -14,4 +14,8 @@
 - (id)initForRemoteStore:(EEYEORemoteDataStore *)instance;
 
 - (void)saveEntityToRemote:(EEYEOIdObject *)object;
+
+- (void)writeDictionaryAsForm:(NSMutableURLRequest *)request dictionary:(NSMutableDictionary *)dictionary forEntity:(EEYEOIdObject *)entity;
+
+- (NSMutableDictionary *)getDictionary:(EEYEOIdObject *)entity;
 @end
