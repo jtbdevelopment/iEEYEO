@@ -43,7 +43,7 @@
 }
 
 - (void)createEntityToRemote:(EEYEOIdObject *)created {
-    NSURLRequest *request = [self createWriteRequestToRemoteServer:created method:@"POST" urlString:[_instance userURL]];
+    NSMutableURLRequest *request = [self createWriteRequestToRemoteServer:created method:@"POST" urlString:[_instance userURL]];
     [_instance addWorkItem:[[CreationRESTDelegate alloc] initWithRequest:request AndEntity:created AndWriter:self]];
 }
 
@@ -55,7 +55,7 @@
     [_instance addWorkItem:[[DeletionRESTDelegate alloc] initWithDeletedObject:deleted AndRequest:request]];
 }
 
-- (NSURLRequest *)createWriteRequestToRemoteServer:(EEYEOIdObject *)entity method:(NSString *)method urlString:(NSString *)urlString {
+- (NSMutableURLRequest *)createWriteRequestToRemoteServer:(EEYEOIdObject *)entity method:(NSString *)method urlString:(NSString *)urlString {
     NSURL *url = [[NSURL alloc] initWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
