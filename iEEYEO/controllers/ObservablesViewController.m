@@ -58,14 +58,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-    ObservableViewCell *cell = (ObservableViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
-    [cell setHighlighted:NO];
-}
-
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    ObservableViewCell *cell = (ObservableViewCell *) [collectionView cellForItemAtIndexPath:indexPath];
-    [cell setHighlighted:YES];
     [_observationsViewController setObservable:[_fetchedResultsController objectAtIndexPath:indexPath]];
     [[self navigationController] pushViewController:_observationsViewController animated:YES];
 }

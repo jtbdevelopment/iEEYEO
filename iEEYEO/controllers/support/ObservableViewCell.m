@@ -58,20 +58,9 @@
         [self.contentView addSubview:bottom];
     }
 
-    [self setHighlighted:NO];
-
-}
-
-- (void)setHighlighted:(BOOL)highlighted {
-    UIColor *color;
-    if (highlighted) {
-        color = [Colors forestGreen];
-    } else {
-        color = [Colors darkBrown];
-    }
-    [top setBackgroundColor:color];
+    [top setBackgroundColor:[Colors darkBrown]];
     if (bottom) {
-        [bottom setBackgroundColor:color];
+        [bottom setBackgroundColor:[Colors darkBrown]];
     }
 }
 
