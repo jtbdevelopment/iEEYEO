@@ -22,7 +22,7 @@
     KeychainItemWrapper *_accountWrapper;
 }
 
-@synthesize model, context;
+@synthesize context;
 
 - (id)init {
     self = [super init];

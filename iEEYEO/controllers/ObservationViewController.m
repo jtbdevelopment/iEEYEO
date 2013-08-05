@@ -69,8 +69,6 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
 
 @synthesize managedObjectContext = _managedObjectContext;
 
-@synthesize newObservation = _newObservation;
-
 @synthesize images = _images;
 
 @synthesize cameraButton = _cameraButton;

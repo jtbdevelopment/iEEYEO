@@ -39,7 +39,7 @@
     return self;
 }
 
-- (void)setObservable:(EEYEOStudent *)observable {
+- (void)setObservable:(EEYEOObservable *)observable {
     _observable = observable;
     _fetchedResultsController = nil;
     [[self tableView] reloadData];
@@ -72,7 +72,6 @@
     [newObservation setModificationTimestampFromNSDateWithMillis:[NSDateWithMillis dateWithTimeIntervalFromNow:0]];
     [_observationView setObservation:newObservation];
     [_observationView setManagedObjectContext:_managedObjectContext];
-    [_observationView setNewObservation:YES];
     [self.navigationController pushViewController:_observationView animated:YES];
 }
 
@@ -127,7 +126,6 @@
     EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [_observationView setObservation:observation];
     [_observationView setManagedObjectContext:_managedObjectContext];
-    [_observationView setNewObservation:NO];
     [self.navigationController pushViewController:_observationView animated:YES];
 }
 

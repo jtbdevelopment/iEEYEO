@@ -26,10 +26,6 @@
     return self;
 }
 
-- (IBAction)trash:(id)sender {
-
-}
-
 - (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
     if ([self isHighlighted]) {

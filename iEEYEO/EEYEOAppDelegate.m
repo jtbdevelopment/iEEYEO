@@ -25,7 +25,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     EEYEOLocalDataStore *localDataStore = [EEYEOLocalDataStore instance];
     [localDataStore setContext:self.managedObjectContext];
-    [localDataStore setModel:self.managedObjectModel];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     ObservablesViewLayout *studentsViewLayout = [[ObservablesViewLayout alloc] init];

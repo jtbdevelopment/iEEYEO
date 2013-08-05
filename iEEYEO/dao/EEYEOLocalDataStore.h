@@ -35,7 +35,6 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 }
 
 @property(nonatomic, retain) NSManagedObjectContext *context;
-@property(nonatomic, retain) NSManagedObjectModel *model;
 
 + (EEYEOLocalDataStore *)instance;
 
