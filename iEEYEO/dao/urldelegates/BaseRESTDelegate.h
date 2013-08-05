@@ -10,6 +10,8 @@
 
 
 @interface BaseRESTDelegate : NSObject <NSURLConnectionDelegate>
+@property(nonatomic) int retries;
+
 - (id)initWithRequest:(NSURLRequest *)request;
 
 - (BOOL)authenticateConnection:(NSString *)userId password:(NSString *)password AndBaseURL:(NSString *)baseURL;

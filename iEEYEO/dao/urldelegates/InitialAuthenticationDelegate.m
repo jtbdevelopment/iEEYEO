@@ -27,7 +27,6 @@
             [self processUpdatesFromServer:userData];
             return YES;
         }
-        //  TODO
         return NO;
     }
     return NO;

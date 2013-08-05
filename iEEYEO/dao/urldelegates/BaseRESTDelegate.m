@@ -16,13 +16,18 @@
     NSMutableData *_data;
     NSURLResponse *_response;
     NSURLRequest *_request;
+@private
+    int _retries;
 }
+
+@synthesize retries = _retries;
 
 - (id)initWithRequest:(NSURLRequest *)request {
     self = [super init];
     if (self) {
         _data = [[NSMutableData alloc] init];
         _request = request;
+        _retries = 0;
     }
 
     return self;
@@ -63,12 +68,10 @@
         if ([string isEqualToString:@"SUCCESS"]) {
             authenticated = YES;
         } else {
-            //  TODO - check this
-            NSLog(@"Failure");
+            [[EEYEORemoteDataStore instance] requeueWorkItem:self];
         }
     } else {
-        //  TODO
-        NSLog(@"Got unexpected login mimetype:%@", [response MIMEType]);
+        [[EEYEORemoteDataStore instance] requeueWorkItem:self];
     }
     return authenticated;
 }
@@ -76,9 +79,7 @@
 - (void)submitRequest {
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:_request delegate:self];
     if (!connection) {
-        //  TODO - check this
         [[EEYEORemoteDataStore instance] requeueWorkItem:self];
-        NSLog(@"Failed");
     }
 }
 
@@ -90,8 +91,6 @@
     if ([[_response MIMEType] isEqualToString:@"text/html"]) {
         NSString *html = [[NSString alloc] initWithData:_data encoding:NSUTF8StringEncoding];
         if ([html rangeOfString:@"javascript"].location == NSNotFound) {
-            //  TODO - check
-            NSLog(@"Unexpected response:  %@", html);
             [[EEYEORemoteDataStore instance] requeueWorkItem:self];
         } else {
             [self authenticate];
@@ -105,9 +104,7 @@
                 _request = [[NSURLRequest alloc] initWithURL:newURL];
                 NSURLConnection *redirect = [NSURLConnection connectionWithRequest:_request delegate:self];
                 if (!redirect) {
-                    //  TODO - check this logic
                     [[EEYEORemoteDataStore instance] requeueWorkItem:self];
-                    NSLog(@"201 redirect to %@ failed", newURL);
                 }
                 return;
             }
@@ -144,7 +141,6 @@
     } else {
         NSString *localType = [[EEYEORemoteDataStore javaToIOSEntityMap] valueForKey:entityType];
         if (!localType) {
-            NSLog(@"Unknown entity type %@", entityType);
             return nil;
         }
         NSString *id = [update objectForKey:JSON_ID];

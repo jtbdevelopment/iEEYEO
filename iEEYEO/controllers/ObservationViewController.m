@@ -21,7 +21,6 @@
 
 //  TODO - make this all look a heck of lot nicer
 //  TODO - look into custom inputs for setting fields instead of more screens
-//  TODO - photos
 
 @interface ObservationViewController ()
 @end

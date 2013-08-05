@@ -12,6 +12,7 @@
 #import "RESTWriter.h"
 #import "NSDateWithMillis.h"
 #import "EEYEOAppUser.h"
+#import "Reachability.h"
 
 
 @implementation EEYEORemoteDataStore {
@@ -25,7 +26,15 @@
     RESTWriter *_restWriter;
 
     NSTimer *_timer;
+
+    Reachability __weak *_reachability;
+
+    BOOL _networkAvailable;
 }
+
+@synthesize networkAvailable = _networkAvailable;
+
+@synthesize reachability = _reachability;
 
 + (EEYEORemoteDataStore *)instance {
     static EEYEORemoteDataStore *_instance = nil;
@@ -84,15 +93,28 @@
 
         _timer = nil;
 
-        if ([[self lastUpdateFromServer] count] == 0) {
-            [self setLastUpdateFromServerWithNSDateWithMillis:[[NSDateWithMillis alloc] init]];
-        }
-        if ([[self lastServerResync] count] == 0) {
-            [self setLastServerResyncWithNSDateWithMillis:[[NSDateWithMillis alloc] init]];
-        }
-        if ([self refreshFrequency] == 0) {
-            [self setRefreshFrequency:4];
-        }
+        _networkAvailable = NO;
+
+        _reachability = [Reachability reachabilityWithHostname:@"www.e-eye-o.com"];
+        [_reachability setReachableOnWWAN:NO];
+        _reachability.reachableBlock = ^(Reachability *reach) {
+            [self setNetworkAvailable:YES];
+            [self addWorkItem:nil];
+        };
+        _reachability.unreachableBlock = ^(Reachability *reach) {
+            [self setNetworkAvailable:NO];
+        };
+        [_reachability startNotifier];
+    };
+
+    if ([[self lastUpdateFromServer] count] == 0) {
+        [self setLastUpdateFromServerWithNSDateWithMillis:[[NSDateWithMillis alloc] init]];
+    }
+    if ([[self lastServerResync] count] == 0) {
+        [self setLastServerResyncWithNSDateWithMillis:[[NSDateWithMillis alloc] init]];
+    }
+    if ([self refreshFrequency] == 0) {
+        [self setRefreshFrequency:4];
     }
 
     return self;
@@ -126,8 +148,7 @@
         if (_timer) {
             return;
         }
-        //  TODO - time
-        _timer = [NSTimer scheduledTimerWithTimeInterval:([self refreshFrequency] * 60 * 60) target:self selector:@selector(remoteSyncTimer:) userInfo:nil repeats:YES];
+        _timer = [NSTimer scheduledTimerWithTimeInterval:([self refreshFrequency] * 3600) target:self selector:@selector(remoteSyncTimer:) userInfo:nil repeats:YES];
     }
 }
 
@@ -142,8 +163,7 @@
 
 
 - (NSString *)getCurrentUserID {
-    EEYEOLocalDataStore *localDataStore = [EEYEOLocalDataStore instance];
-    EEYEOAppUser *appUser = [localDataStore findAppUserWithEmailAddress:[localDataStore login]];
+    EEYEOAppUser *appUser = [[EEYEOLocalDataStore instance] appUser];
     if (appUser) {
         return [appUser id];
     }
@@ -151,12 +171,17 @@
 }
 
 - (void)requeueWorkItem:(BaseRESTDelegate *)delegate {
-    //  TODO - infinite loop check
     @synchronized (self) {
         if (delegate != _currentWorkItem) {
             NSLog(@"Current work item not same as completed - how did this happen");
         }
-        [_workQueue insertObject:delegate atIndex:0];
+        if ([delegate retries] < MAX_RETRIES) {
+            [delegate setRetries:([delegate retries] + 1)];
+            [_workQueue insertObject:delegate atIndex:0];
+            [NSThread sleepForTimeInterval:SLEEP_TIME];
+        } else {
+            NSLog(@"Request has been tried max times already - skipping");
+        }
         [self submitNextWorkItem];
     }
 }
@@ -173,7 +198,9 @@
 
 - (void)addWorkItem:(BaseRESTDelegate *)delegate {
     @synchronized (self) {
-        [_workQueue addObject:delegate];
+        if (delegate) {
+            [_workQueue addObject:delegate];
+        }
         if (!_currentWorkItem) {
             [self submitNextWorkItem];
         }
@@ -183,8 +210,11 @@
 //  Expected to be called from function that is already synchronized
 - (void)submitNextWorkItem {
     _currentWorkItem = nil;
-    //  TODO - check internet access
-    //  TODO - add something to kick off requests periodically if no internet
+
+    if (!_networkAvailable) {
+        return;
+    }
+
     if ([_workQueue count] > 0) {
         _currentWorkItem = [_workQueue objectAtIndex:0];
         [_workQueue removeObjectAtIndex:0];

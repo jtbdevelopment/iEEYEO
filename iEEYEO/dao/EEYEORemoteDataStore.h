@@ -9,6 +9,7 @@
 @class BaseRESTDelegate;
 @class EEYEOIdObject;
 @class NSDateWithMillis;
+@class Reachability;
 
 static NSString *const LAST_MODTS_KEY = @"LAST_SERVER_MODTS";
 static NSString *const LAST_MODTSMILLIS_KEY = @"LAST_SERVER_MODTSMILLIS";
@@ -25,7 +26,15 @@ static NSString *const JAVA_DELETED = @"com.jtbdevelopment.e_eye_o.entities.Dele
 
 static NSString *const REFRESH_FREQUENCY_KEY = @"REFRESH_FREQUENCY";
 
+static const int MAX_RETRIES = 5;
+
+static const float SLEEP_TIME = 30.0;
+
 @interface EEYEORemoteDataStore : NSObject
+@property BOOL networkAvailable;
+@property(nonatomic, weak) Reachability *reachability;
+
+
 + (EEYEORemoteDataStore *)instance;
 
 + (NSDictionary *)javaToIOSEntityMap;
