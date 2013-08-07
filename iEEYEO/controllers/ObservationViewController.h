@@ -11,7 +11,7 @@
 
 static NSString *const THUMBNAIL_CELL = @"ThumbnailCell";
 
-@interface ObservationViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UIPopoverControllerDelegate>
+@interface ObservationViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UIPopoverControllerDelegate, UINavigationControllerDelegate>
 @property(strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property(nonatomic, retain) IBOutlet UITextView *commentField;
 @property(nonatomic, retain) IBOutlet UIButton *observableField;

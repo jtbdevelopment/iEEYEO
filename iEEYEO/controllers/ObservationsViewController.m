@@ -12,6 +12,7 @@
 #import "Colors.h"
 #import "ObservationViewController.h"
 #import "NSDateWithMillis.h"
+#import "EEYEOPhoto.h"
 
 @interface ObservationsViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -102,8 +103,12 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        NSSet *photos = [[NSSet alloc] initWithSet:[observation photos]];
+        for (EEYEOPhoto *photo in photos) {
+            [[EEYEOLocalDataStore instance] deleteFromLocalStore:photo];
+        }
+        [observation removePhotos:photos];
         [[EEYEOLocalDataStore instance] deleteFromLocalStore:observation];
-        //[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
     }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view

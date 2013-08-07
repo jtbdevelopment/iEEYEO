@@ -157,6 +157,12 @@
     [self startTimer];
 }
 
+- (void)resubmitTimer:(NSTimer *)timer {
+    @synchronized (self) {
+        [self submitNextWorkItem];
+    }
+}
+
 - (void)remoteSyncTimer:(NSTimer *)timer {
     [self resyncWithRemoteServer];
 }
@@ -178,7 +184,7 @@
         if ([delegate retries] < MAX_RETRIES) {
             [delegate setRetries:([delegate retries] + 1)];
             [_workQueue insertObject:delegate atIndex:0];
-            [NSThread sleepForTimeInterval:SLEEP_TIME];
+            [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(resubmitTimer:) userInfo:nil repeats:NO];
         } else {
             NSLog(@"Request has been tried max times already - skipping");
         }
@@ -211,9 +217,12 @@
 - (void)submitNextWorkItem {
     _currentWorkItem = nil;
 
+#if TARGET_IPHONE_SIMULATOR
+#else
     if (!_networkAvailable) {
         return;
     }
+#endif
 
     if ([_workQueue count] > 0) {
         _currentWorkItem = [_workQueue objectAtIndex:0];
@@ -367,7 +376,7 @@
         [self addWorkItem:[[UpdatesFromServerRESTDelegate alloc] initWithRequest:request]];
     }
 
-    [self setLastUpdateFromServerWithNSDateWithMillis:[[NSDateWithMillis alloc] init]];
+    //[self setLastUpdateFromServerWithNSDateWithMillis:[[NSDateWithMillis alloc] init]];
 }
 
 - (void)initializeUsersFromRemoteServer {
@@ -396,7 +405,7 @@
             }
         }
         //  TODO - this actually requests same modified timestamp as previous call - works but a hack
-        [self updateFromRemoteServer];
+//        [self updateFromRemoteServer];
     }
 }
 

@@ -11,5 +11,9 @@
 @class RESTWriter;
 
 @interface CreationRESTDelegate : BaseRESTDelegate
+@property(nonatomic, strong) EEYEOIdObject *entity;
+@property(nonatomic, strong) RESTWriter *writer;
+@property(nonatomic, strong) NSMutableURLRequest *request;
+
 - (id)initWithRequest:(NSMutableURLRequest *)request AndEntity:(EEYEOIdObject *)entity AndWriter:(RESTWriter *)writer;
 @end
