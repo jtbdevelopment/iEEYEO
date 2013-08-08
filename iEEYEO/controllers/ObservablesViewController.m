@@ -80,6 +80,14 @@
     [cell setObservable:observable];
 }
 
+- (NSString *)entityType {
+    return @"";
+}
+
+- (NSArray *)sortDescriptors {
+    return nil;
+}
+
 //  TODO - should this be here?  Or add to dao?
 - (NSFetchedResultsController *)fetchedResultsController {
     if (_fetchedResultsController != nil) {
@@ -88,16 +96,13 @@
 
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
-    //  TODO - support classlist
-    NSEntityDescription *entity = [NSEntityDescription entityForName:STUDENTENTITY inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:[self entityType] inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 
     [fetchRequest setFetchBatchSize:20];
 
     //  TODO - better sort
-    NSSortDescriptor *sortDescriptorFN = [[NSSortDescriptor alloc] initWithKey:@"firstName" ascending:YES];
-    NSSortDescriptor *sortDescriptorLN = [[NSSortDescriptor alloc] initWithKey:@"lastName" ascending:YES];
-    NSArray *sortDescriptors = @[sortDescriptorFN, sortDescriptorLN];
+    NSArray *sortDescriptors = [self sortDescriptors];
 
     [fetchRequest setSortDescriptors:sortDescriptors];
 
@@ -115,6 +120,7 @@
 
     return _fetchedResultsController;
 }
+
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     [self.collectionView reloadData];

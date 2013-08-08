@@ -12,6 +12,7 @@
 #import "ObservablesViewLayout.h"
 #import "EEYEORemoteDataStore.h"
 #import "SettingsViewController.h"
+#import "StudentsViewController.h"
 
 
 @implementation EEYEOAppDelegate {
@@ -28,7 +29,7 @@
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     ObservablesViewLayout *studentsViewLayout = [[ObservablesViewLayout alloc] init];
-    ObservablesViewController *studentsViewController = [[ObservablesViewController alloc] initWithCollectionViewLayout:studentsViewLayout];
+    StudentsViewController *studentsViewController = [[StudentsViewController alloc] initWithCollectionViewLayout:studentsViewLayout];
     studentsViewController.managedObjectContext = self.managedObjectContext;
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:studentsViewController];
     [[self window] setRootViewController:navigationController];
