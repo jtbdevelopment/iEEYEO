@@ -13,6 +13,7 @@
 #import "EEYEORemoteDataStore.h"
 #import "SettingsViewController.h"
 #import "StudentsViewController.h"
+#import "ClassListsViewController.h"
 
 
 @implementation EEYEOAppDelegate {
@@ -30,13 +31,21 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     ObservablesViewLayout *studentsViewLayout = [[ObservablesViewLayout alloc] init];
     StudentsViewController *studentsViewController = [[StudentsViewController alloc] initWithCollectionViewLayout:studentsViewLayout];
-    studentsViewController.managedObjectContext = self.managedObjectContext;
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:studentsViewController];
-    [[self window] setRootViewController:navigationController];
+    UINavigationController *studentNavigation = [[UINavigationController alloc] initWithRootViewController:studentsViewController];
+    ClassListsViewController *classListsViewController = [[ClassListsViewController alloc] initWithCollectionViewLayout:studentsViewLayout];
+    UINavigationController *classesNavigation = [[UINavigationController alloc] initWithRootViewController:classListsViewController];
+    UITabBarController *tabViewController = [[UITabBarController alloc] init];
+    SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];
+    NSArray *controllers = [[NSArray alloc] initWithObjects:studentNavigation, classesNavigation, settingsViewController, nil];
+    [tabViewController setViewControllers:controllers];
+
+    [[self window] setRootViewController:tabViewController];
     [[self window] makeKeyAndVisible];
 
+    [[studentNavigation tabBarItem] setTitle:[studentsViewController name]];
+    [[classesNavigation tabBarItem] setTitle:[classListsViewController name]];
     if ([[localDataStore login] length] == 0 || [[localDataStore password] length] == 0 || [[localDataStore website] length] == 0 || [localDataStore findAppUserWithEmailAddress:[localDataStore login]] == nil) {
-        [navigationController pushViewController:[[SettingsViewController alloc] init] animated:NO];
+        [tabViewController setSelectedIndex:2];
     } else {
         [[EEYEORemoteDataStore instance] startRemoteSyncs];
     }

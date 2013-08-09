@@ -11,6 +11,10 @@
 @implementation StudentsViewController {
 
 }
+- (NSString *)name {
+    return @"Students";
+}
+
 - (NSArray *)sortDescriptors {
     NSSortDescriptor *sortDescriptorFN = [[NSSortDescriptor alloc] initWithKey:@"firstName" ascending:YES];
     NSSortDescriptor *sortDescriptorLN = [[NSSortDescriptor alloc] initWithKey:@"lastName" ascending:YES];

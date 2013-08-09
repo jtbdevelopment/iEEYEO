@@ -15,6 +15,6 @@ static NSString *const OBSERVABLE_CELL = @"ObservableCell";
 
 @property(strong, nonatomic) ObservationsViewController *observationsViewController;
 @property(strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
-@property(strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
+- (NSString *)name;
 @end

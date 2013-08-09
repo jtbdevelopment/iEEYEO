@@ -41,6 +41,9 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        if ([self tabBarItem]) {
+            [[self tabBarItem] setTitle:@"Settings"];
+        }
     }
     return self;
 }
@@ -50,7 +53,7 @@
     [_refreshStepper setMaximumValue:24.0];
     [_refreshStepper setMinimumValue:1.0];
     [_refreshStepper setStepValue:1.0];
-
+    [self setTitle:@"Settings"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

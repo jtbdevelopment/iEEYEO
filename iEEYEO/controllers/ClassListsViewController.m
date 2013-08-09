@@ -11,6 +11,10 @@
 @implementation ClassListsViewController {
 
 }
+- (NSString *)name {
+    return @"Classes";
+}
+
 - (NSArray *)sortDescriptors {
     NSSortDescriptor *sortDescriptorN = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
     NSArray *sortDescriptors = @[sortDescriptorN];

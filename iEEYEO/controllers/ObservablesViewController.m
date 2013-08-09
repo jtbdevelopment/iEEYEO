@@ -11,7 +11,7 @@
 #import "EEYEOStudent.h"
 #import "ObservationsViewController.h"
 #import "Colors.h"
-#import "SettingsViewController.h"
+#import "ObservablesViewLayout.h"
 
 @interface ObservablesViewController ()
 - (void)configureCell:(ObservableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -24,16 +24,33 @@
 //  TODO - add student or class list
 
 @implementation ObservablesViewController
+- (NSString *)name {
+    return @"Fred";
+
+}
+
+- (id)initWithCollectionViewLayout:(UICollectionViewLayout *)layout {
+    if (!layout) {
+        layout = [[ObservablesViewLayout alloc] init];
+    }
+    self = [super initWithCollectionViewLayout:layout];
+    if (self) {
+        if ([self tabBarItem]) {
+            [[self tabBarItem] setTitle:[self name]];
+        }
+        [self.parentViewController setTitle:[self name]];
+    }
+
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.collectionView registerClass:[ObservableViewCell class] forCellWithReuseIdentifier:OBSERVABLE_CELL];
     [self setClearsSelectionOnViewWillAppear:NO];
-    [self setTitle:@"iE-EYE-O"];
+    [self.parentViewController setTitle:[self name]];
     [self.collectionView setBackgroundColor:[Colors cream]];
 
-    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(showSettings:)];
-    self.navigationItem.leftBarButtonItem = settingsButton;
 
     //  TODO
 //    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addObservable:)];
@@ -42,12 +59,8 @@
     [UIView setAnimationsEnabled:NO];
     if (!_observationsViewController) {
         self.observationsViewController = [[ObservationsViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        self.observationsViewController.managedObjectContext = self.managedObjectContext;
+        self.observationsViewController.managedObjectContext = [[EEYEOLocalDataStore instance] context];
     }
-}
-
-- (void)showSettings:(id)sender {
-    [[self navigationController] pushViewController:[[SettingsViewController alloc] init] animated:YES];
 }
 
 - (void)addObservable:(id)sender {
@@ -80,11 +93,11 @@
     [cell setObservable:observable];
 }
 
-- (NSString *)entityType {
-    return @"";
+- (NSArray *)sortDescriptors {
+    return nil;
 }
 
-- (NSArray *)sortDescriptors {
+- (NSString * const)entityType {
     return nil;
 }
 
@@ -96,7 +109,7 @@
 
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
-    NSEntityDescription *entity = [NSEntityDescription entityForName:[self entityType] inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:[self entityType] inManagedObjectContext:[[EEYEOLocalDataStore instance] context]];
     [fetchRequest setEntity:entity];
 
     [fetchRequest setFetchBatchSize:20];
@@ -106,7 +119,7 @@
 
     [fetchRequest setSortDescriptors:sortDescriptors];
 
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[EEYEOLocalDataStore instance] context] sectionNameKeyPath:nil cacheName:@"Master"];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
 
