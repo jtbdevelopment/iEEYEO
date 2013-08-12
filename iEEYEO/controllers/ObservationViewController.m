@@ -103,7 +103,6 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [super viewDidLoad];
     [self view].backgroundColor = [Colors cream];
     [self commentField].backgroundColor = [UIColor whiteColor];
-    [[self observableField] setBackgroundColor:[Colors darkBrown]];
     [self significantField].thumbTintColor = [Colors darkBrown];
     [self significantField].onTintColor = [Colors darkBrown];
     [[self images] setDataSource:self];
