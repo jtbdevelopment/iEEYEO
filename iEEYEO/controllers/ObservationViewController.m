@@ -242,6 +242,7 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
         for (EEYEOPhoto *created in _newPhotos) {
             [[EEYEOLocalDataStore instance] deleteFromLocalStore:created];
         }
+        [[EEYEOLocalDataStore instance] deleteFromLocalStore:_observation];
     }
 }
 
