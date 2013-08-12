@@ -46,8 +46,10 @@
     [[classesNavigation tabBarItem] setTitle:[classListsViewController name]];
     NSString *studentTabIcon = [[NSBundle mainBundle] pathForResource:@"usertab" ofType:@"png"];
     NSString *classTabIcon = [[NSBundle mainBundle] pathForResource:@"classestab" ofType:@"png"];
+    NSString *settingsIcon = [[NSBundle mainBundle] pathForResource:@"apple-script" ofType:@"png"];
     [[studentNavigation tabBarItem] setImage:[UIImage imageWithContentsOfFile:studentTabIcon]];
     [[classesNavigation tabBarItem] setImage:[UIImage imageWithContentsOfFile:classTabIcon]];
+    [[settingsViewController tabBarItem] setImage:[UIImage imageWithContentsOfFile:settingsIcon]];
     if ([[localDataStore login] length] == 0 || [[localDataStore password] length] == 0 || [[localDataStore website] length] == 0 || [localDataStore findAppUserWithEmailAddress:[localDataStore login]] == nil) {
         [tabViewController setSelectedIndex:2];
     } else {
