@@ -218,7 +218,7 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     _commentField.text = [_observation comment];
 }
 
-- (void)setObservation:(EEYEOObservation *)observation {
+- (void)setObservation:(EEYEOObservation *)observation AndIsNew:(BOOL)isNew {
     _observation = observation;
     [_observable setObject:observation.observable atIndexedSubscript:0];
     _categories = [[NSMutableSet alloc] init];
@@ -228,6 +228,7 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [_photos addObjectsFromArray:[[observation photos] allObjects]];
     [[self navigationItem] setTitle:[_observation desc]];
     [_images reloadData];
+    _newObservation = isNew;
 }
 
 - (void)reset:(id)sender {
@@ -242,7 +243,9 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
         for (EEYEOPhoto *created in _newPhotos) {
             [[EEYEOLocalDataStore instance] deleteFromLocalStore:created];
         }
-        [[EEYEOLocalDataStore instance] deleteFromLocalStore:_observation];
+        if (_observation && _newObservation) {
+            [[EEYEOLocalDataStore instance] deleteFromLocalStore:_observation];
+        }
     }
 }
 
@@ -266,6 +269,7 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [_newPhotos removeAllObjects];
     [_deletedPhotos removeAllObjects];
     [[EEYEOLocalDataStore instance] saveToLocalStore:_observation];
+    _newObservation = NO;
     [[self navigationController] popViewControllerAnimated:YES];
 }
 

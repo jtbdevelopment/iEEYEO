@@ -23,7 +23,7 @@ static NSString *const THUMBNAIL_CELL = @"ThumbnailCell";
 
 @property(nonatomic, strong) EEYEOObservation *observation;
 
-- (void)setObservation:(EEYEOObservation *)observation;
+- (void)setObservation:(EEYEOObservation *)observation AndIsNew:(BOOL)isNew;
 
 - (IBAction)editObservable:(id)sender;
 

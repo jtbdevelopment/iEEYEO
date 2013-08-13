@@ -71,7 +71,7 @@
     [newObservation setAppUser:[[EEYEOLocalDataStore instance] appUser]];
     [newObservation setObservationTimestampFromNSDate:[NSDate dateWithTimeIntervalSinceNow:0]];
     [newObservation setModificationTimestampFromNSDateWithMillis:[NSDateWithMillis dateWithTimeIntervalFromNow:0]];
-    [_observationView setObservation:newObservation];
+    [_observationView setObservation:newObservation AndIsNew:YES];
     [_observationView setManagedObjectContext:_managedObjectContext];
     [self.navigationController pushViewController:_observationView animated:YES];
 }
@@ -129,7 +129,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [_observationView setObservation:observation];
+    [_observationView setObservation:observation AndIsNew:NO];
     [_observationView setManagedObjectContext:_managedObjectContext];
     [self.navigationController pushViewController:_observationView animated:YES];
 }
