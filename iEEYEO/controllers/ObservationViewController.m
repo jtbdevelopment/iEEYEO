@@ -133,7 +133,6 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
         [_cameraButton setEnabled:NO];
     }
 
-    [[self cameraButton] setEnabled:NO];
     switch (_childPopping) {
         case None:
             [self updateCommentField];
