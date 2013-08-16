@@ -113,7 +113,7 @@
         NSArray *sortDescriptors = [self sortDescriptors];
         [fetchRequest setSortDescriptors:sortDescriptors];
 
-        _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[EEYEOLocalDataStore instance] context] sectionNameKeyPath:nil cacheName:@"Master"];
+        _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[EEYEOLocalDataStore instance] context] sectionNameKeyPath:nil cacheName:[self entityType]];
         [_fetchedResultsController setDelegate:self];
 
         NSError *error = nil;
