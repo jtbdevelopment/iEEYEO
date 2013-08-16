@@ -14,20 +14,19 @@
 #import "NSDateWithMillis.h"
 #import "EEYEOPhoto.h"
 
-@interface ObservationsViewController ()
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
-@end
-
-//  TODO - highlight color?
 //  TODO - search filter?
 @implementation ObservationsViewController {
 @private
     EEYEOObservable *_observable;
     NSDateFormatter *_dateFormatter;
     ObservationViewController *_observationView;
+    NSFetchedResultsController *_fetchedResultsController;
+    NSManagedObjectContext *_managedObjectContext;
 }
 
 @synthesize observable = _observable;
+@synthesize fetchedResultsController = _fetchedResultsController;
+@synthesize managedObjectContext = _managedObjectContext;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
@@ -54,10 +53,10 @@
     self.clearsSelectionOnViewWillAppear = NO;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addObservation:)];
-    self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:self.editButtonItem, addButton, nil];
+    [[self navigationItem] setRightBarButtonItems:[NSArray arrayWithObjects:self.editButtonItem, addButton, nil]];
 
-    self.tableView.backgroundColor = [Colors cream];
-    self.tableView.separatorColor = [Colors darkBrown];
+    [self tableView].backgroundColor = [Colors cream];
+    [self tableView].separatorColor = [Colors darkBrown];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -73,17 +72,17 @@
     [newObservation setModificationTimestampFromNSDateWithMillis:[NSDateWithMillis dateWithTimeIntervalFromNow:0]];
     [_observationView setObservation:newObservation AndIsNew:YES];
     [_observationView setManagedObjectContext:_managedObjectContext];
-    [self.navigationController pushViewController:_observationView animated:YES];
+    [[self navigationController] pushViewController:_observationView animated:YES];
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return [[self.fetchedResultsController sections] count];
+    return [[[self fetchedResultsController] sections] count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[[self.fetchedResultsController sections] objectAtIndex:section] numberOfObjects];
+    return [[[[self fetchedResultsController] sections] objectAtIndex:section] numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -93,10 +92,10 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
-
-    // Configure the cell...
-    [self configureCell:cell atIndexPath:indexPath];
-
+    EEYEOObservation *observation = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    cell.detailTextLabel.text = [_dateFormatter stringFromDate:[observation observationTimestampToNSDate]];
+    cell.textLabel.text = [observation comment];
+    cell.selectedBackgroundView.backgroundColor = [Colors forestGreen];
     return cell;
 }
 
@@ -137,52 +136,42 @@
 #pragma mark - Fetched results controller
 
 - (NSFetchedResultsController *)fetchedResultsController {
-    if (_fetchedResultsController != nil) {
-        return _fetchedResultsController;
-    }
+    @synchronized (self) {
+        if (_fetchedResultsController != nil) {
+            return _fetchedResultsController;
+        }
 
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:OBSERVATIONENTITY inManagedObjectContext:self.managedObjectContext];
-    [fetchRequest setEntity:entity];
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
-    // Set the batch size to a suitable number.
-    [fetchRequest setFetchBatchSize:20];
+        [fetchRequest setFetchBatchSize:20];
 
-    NSSortDescriptor *sortDescriptorOTS = [[NSSortDescriptor alloc] initWithKey:@"observationTimestamp" ascending:NO];
-    NSArray *sortDescriptors = @[sortDescriptorOTS];
-    [fetchRequest setSortDescriptors:sortDescriptors];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:OBSERVATIONENTITY inManagedObjectContext:self.managedObjectContext];
+        [fetchRequest setEntity:entity];
 
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"observable.id = %@", [[self observable] id]];
-    [fetchRequest setPredicate:predicate];
+        NSSortDescriptor *sortDescriptorOTS = [[NSSortDescriptor alloc] initWithKey:@"observationTimestamp" ascending:NO];
+        NSArray *sortDescriptors = @[sortDescriptorOTS];
+        [fetchRequest setSortDescriptors:sortDescriptors];
 
-    // Edit the section name key path and cache name if appropriate.
-    // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-    aFetchedResultsController.delegate = self;
-    self.fetchedResultsController = aFetchedResultsController;
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"observable.id = %@", [[self observable] id]];
+        [fetchRequest setPredicate:predicate];
 
-    NSError *error = nil;
-    if (![self.fetchedResultsController performFetch:&error]) {
-        // Replace this implementation with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
+        _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        [_fetchedResultsController setDelegate:self];
+
+        NSError *error = nil;
+        if (![self.fetchedResultsController performFetch:&error]) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
     }
 
     return _fetchedResultsController;
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    // In the simplest, most efficient, case, reload the table view.
     [self.tableView reloadData];
-}
-
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    EEYEOObservation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.detailTextLabel.text = [_dateFormatter stringFromDate:[observation observationTimestampToNSDate]];
-    cell.textLabel.text = [observation comment];
-    cell.selectedBackgroundView.backgroundColor = [Colors forestGreen];
 }
 
 @end
