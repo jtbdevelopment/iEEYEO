@@ -21,15 +21,15 @@
 @private
     ObservationsViewController *_observationsViewController;
     NSFetchedResultsController *_fetchedResultsController;
+    UICollectionView *_collectionView;
 }
+
 @synthesize observationsViewController = _observationsViewController;
 @synthesize fetchedResultsController = _fetchedResultsController;
+@synthesize collectionView = _collectionView;
 
-- (id)initWithCollectionViewLayout:(UICollectionViewLayout *)layout {
-    if (!layout) {
-        layout = [[ObservablesViewLayout alloc] init];
-    }
-    self = [super initWithCollectionViewLayout:layout];
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         if ([self tabBarItem]) {
             [[self tabBarItem] setTitle:[self name]];
@@ -42,11 +42,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[self collectionView] setCollectionViewLayout:[[ObservablesViewLayout alloc] init]];
     [self.collectionView registerClass:[ObservableViewCell class] forCellWithReuseIdentifier:OBSERVABLE_CELL];
-    [self setClearsSelectionOnViewWillAppear:NO];
     [self.parentViewController setTitle:[self name]];
     [self.collectionView setBackgroundColor:[Colors cream]];
-
+    [[self collectionView] setDataSource:self];
+    [[self collectionView] setDelegate:self];
 
     //  TODO
 //    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addObservable:)];
@@ -73,7 +74,8 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [[[[self fetchedResultsController] sections] objectAtIndex:section] numberOfObjects];
+    NSUInteger i = [[[[self fetchedResultsController] sections] objectAtIndex:section] numberOfObjects];
+    return i;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -113,7 +115,7 @@
         NSArray *sortDescriptors = [self sortDescriptors];
         [fetchRequest setSortDescriptors:sortDescriptors];
 
-        _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[EEYEOLocalDataStore instance] context] sectionNameKeyPath:nil cacheName:[self entityType]];
+        _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[EEYEOLocalDataStore instance] context] sectionNameKeyPath:nil cacheName:nil];
         [_fetchedResultsController setDelegate:self];
 
         NSError *error = nil;
@@ -127,7 +129,6 @@
 
     return _fetchedResultsController;
 }
-
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     [[self collectionView] reloadData];

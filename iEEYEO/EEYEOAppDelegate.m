@@ -9,7 +9,6 @@
 
 #import "EEYEOLocalDataStore.h"
 #import "ObservablesViewController.h"
-#import "ObservablesViewLayout.h"
 #import "EEYEORemoteDataStore.h"
 #import "SettingsViewController.h"
 #import "StudentsViewController.h"
@@ -29,10 +28,9 @@
     [localDataStore setContext:self.managedObjectContext];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    ObservablesViewLayout *studentsViewLayout = [[ObservablesViewLayout alloc] init];
-    StudentsViewController *studentsViewController = [[StudentsViewController alloc] initWithCollectionViewLayout:studentsViewLayout];
+    StudentsViewController *studentsViewController = [[StudentsViewController alloc] init];
     UINavigationController *studentNavigation = [[UINavigationController alloc] initWithRootViewController:studentsViewController];
-    ClassListsViewController *classListsViewController = [[ClassListsViewController alloc] initWithCollectionViewLayout:studentsViewLayout];
+    ClassListsViewController *classListsViewController = [[ClassListsViewController alloc] init];
     UINavigationController *classesNavigation = [[UINavigationController alloc] initWithRootViewController:classListsViewController];
     UITabBarController *tabViewController = [[UITabBarController alloc] init];
     SettingsViewController *settingsViewController = [[SettingsViewController alloc] init];

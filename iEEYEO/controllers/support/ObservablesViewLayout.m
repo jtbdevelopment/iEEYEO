@@ -21,7 +21,6 @@
     return self;
 }
 
-
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)oldBounds {
     return YES;
 }
@@ -30,7 +29,6 @@
     NSArray *array = [super layoutAttributesForElementsInRect:rect];
     return array;
 }
-
 
 - (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity {
     CGFloat offsetAdjustment = MAXFLOAT;

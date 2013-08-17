@@ -11,8 +11,9 @@
 
 static NSString *const OBSERVABLE_CELL = @"ObservableCell";
 
-@interface ObservablesViewController : UICollectionViewController <NSFetchedResultsControllerDelegate>
+@interface ObservablesViewController : UIViewController <NSFetchedResultsControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 
+@property(nonatomic, retain) IBOutlet UICollectionView *collectionView;
 @property(strong, nonatomic) ObservationsViewController *observationsViewController;
 @property(strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
