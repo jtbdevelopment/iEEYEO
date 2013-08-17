@@ -68,7 +68,7 @@
 - (void)setImageFromImage:(UIImage *)image {
     static int MAX_THUMBNAIL_SIZE = 150;
     static int MAX_IMAGE_SIZE = 1024;
-    [self setImageData:UIImageJPEGRepresentation([self resizeImage:image withMaxEdge:MAX_IMAGE_SIZE], 1.0)];
+    [self setImageData:UIImageJPEGRepresentation([self resizeImage:image withMaxEdge:MAX_IMAGE_SIZE], 0.5)];
     [self setMimeType:@"image/png"];
     [self setThumbnailImageFromData:UIImageJPEGRepresentation([self resizeImage:image withMaxEdge:MAX_THUMBNAIL_SIZE], 1.0)];
 }
