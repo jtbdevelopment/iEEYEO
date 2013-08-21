@@ -10,6 +10,7 @@
 #import "EEYEORemoteDataStore.h"
 #import "BaseRESTDelegate.h"
 #import "InitialAuthenticationDelegate.h"
+#import "Colors.h"
 
 @interface SettingsViewController ()
 
@@ -54,6 +55,7 @@
     [_refreshStepper setMinimumValue:1.0];
     [_refreshStepper setStepValue:1.0];
     [_editConnections setTitle:CHANGE_CONNECTION forState:UIControlStateNormal];
+    [[self view] setBackgroundColor:[Colors cream]];
     [self setTitle:@"Settings"];
 }
 
