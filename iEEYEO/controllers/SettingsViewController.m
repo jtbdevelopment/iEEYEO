@@ -53,6 +53,7 @@
     [_refreshStepper setMaximumValue:24.0];
     [_refreshStepper setMinimumValue:1.0];
     [_refreshStepper setStepValue:1.0];
+    [_editConnections setTitle:CHANGE_CONNECTION forState:UIControlStateNormal];
     [self setTitle:@"Settings"];
 }
 
@@ -75,13 +76,18 @@
     [_login setText:[localDataStore login]];
     [_password setText:[localDataStore password]];
 
-    if ([[localDataStore login] length] == 0 || [[localDataStore password] length] == 0 || [[localDataStore website] length] == 0 || [localDataStore findAppUserWithEmailAddress:[localDataStore login]] == nil) {
+    if ([SettingsViewController forceConnectionSettings]) {
         [self enableEditing:nil];
     } else {
         [self disableEditing];
     }
     [self loadLocalStoreValues];
     _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(refreshTimer:) userInfo:nil repeats:YES];
+}
+
++ (BOOL)forceConnectionSettings {
+    EEYEOLocalDataStore *localDataStore = [EEYEOLocalDataStore instance];
+    return [[localDataStore login] length] == 0 || [[localDataStore password] length] == 0 || [[localDataStore website] length] == 0 || [localDataStore findAppUserWithEmailAddress:[localDataStore login]] == nil;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -103,7 +109,7 @@
 
 - (void)disableEditing {
     [_editConnections setEnabled:YES];
-    [_editConnections setTitle:@"Change Connection Details" forState:UIControlStateNormal];
+    [_editConnections setTitle:CHANGE_CONNECTION forState:UIControlStateNormal];
     [_resetButton setEnabled:YES];
     [_resyncButton setEnabled:YES];
     [_refreshStepper setEnabled:YES];
@@ -115,12 +121,37 @@
 }
 
 - (IBAction)enableEditing:(id)sender {
+    static NSString *uneditedLogin, *uneditedPassword, *uneditedWebSite;
+
+    if (sender == nil || [[[_editConnections titleLabel] text] isEqual:CHANGE_CONNECTION]) {
+        uneditedLogin = [_login text];
+        uneditedPassword = [_password text];
+        uneditedWebSite = [_website text];
+        [self activateEditing:sender];
+    } else {
+        [_login setText:uneditedLogin];
+        [_website setText:uneditedWebSite];
+        [_password setText:uneditedPassword];
+        if ([SettingsViewController forceConnectionSettings]) {
+            [self enableEditing:nil];
+        } else {
+            [self disableEditing];
+        }
+    }
+}
+
+- (void)activateEditing:(id)sender {
     [[EEYEORemoteDataStore instance] haltRemoteSyncs];
     [_login setEnabled:YES];
     [_password setEnabled:YES];
     [_website setEnabled:YES];
-    [_editConnections setEnabled:NO];
-    [_editConnections setTitle:@"Press Test To Complete" forState:UIControlStateNormal];
+    if (sender) {
+        [_editConnections setEnabled:YES];
+        [_editConnections setTitle:CANCEL_OR_TEST_CONNECTION forState:UIControlStateNormal];
+    } else {
+        [_editConnections setEnabled:NO];
+        [_editConnections setTitle:TEST_CONNECTION_ONLY forState:UIControlStateNormal];
+    }
     [_resetButton setEnabled:NO];
     [_resyncButton setEnabled:NO];
     [_refreshStepper setEnabled:NO];
@@ -142,7 +173,7 @@
     if ([delegate authenticateConnection:[_login text] password:[_password text] AndBaseURL:[_website text]]) {
         [alertView setMessage:@"Connected Successfully.  Resycning data..."];
         [alertView show];
-        if ([[_login text] isEqualToString:originalLogin] && [[_website text] isEqualToString:originalWebsite]) {
+        if ([[_login text] isEqualToString:originalLogin] && [[_website text] isEqualToString:originalWebsite] && ![[[_editConnections titleLabel] text] isEqualToString:TEST_CONNECTION_ONLY]) {
             [[EEYEORemoteDataStore instance] resyncWithRemoteServer];
         } else {
             [alertView setMessage:@"Connected Successfully.  New or changed user or website.  Resetting data..."];

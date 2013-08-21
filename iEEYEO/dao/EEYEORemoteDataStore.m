@@ -185,6 +185,7 @@
             [delegate setRetries:([delegate retries] + 1)];
             [_workQueue insertObject:delegate atIndex:0];
             [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(resubmitTimer:) userInfo:nil repeats:NO];
+            return;
         } else {
             NSLog(@"Request has been tried max times already - skipping");
         }
