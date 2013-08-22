@@ -1765,7 +1765,6 @@
 							<reference ref="922861046"/>
 							<reference ref="1073486926"/>
 							<reference ref="462482747"/>
-							<reference ref="506728742"/>
 							<reference ref="551470403"/>
 							<reference ref="324454883"/>
 							<reference ref="45499855"/>
@@ -1782,6 +1781,7 @@
 							<reference ref="405400552"/>
 							<reference ref="1034370339"/>
 							<reference ref="585871778"/>
+							<reference ref="506728742"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>

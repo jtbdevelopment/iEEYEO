@@ -4,6 +4,7 @@
 //
 
 
+#import <QuartzCore/QuartzCore.h>
 #import "ObservableViewCell.h"
 #import "Colors.h"
 #import "EEYEOObservable.h"
@@ -13,55 +14,25 @@
 
 @implementation ObservableViewCell {
 @private
-    UILabel *top;
-    UILabel *bottom;
+    UILabel *label;
 }
 
 - (void)setObservable:(EEYEOObservable *)observable {
-    CGFloat height = self.frame.size.height;
-    CGFloat width = self.frame.size.width;
-    CGFloat halfHeight = height / 2;
-    NSString *topText;
-    NSString *bottomText;
+    label = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, self.frame.size.height)];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = [UIColor blackColor];
+    label.font = [UIFont boldSystemFontOfSize:20.0];
     if ([observable isKindOfClass:[EEYEOClassList class]]) {
-
-        topText = [(EEYEOClassList *) observable desc];
-        bottomText = @"";
+        label.text = [(EEYEOClassList *) observable desc];
     } else if ([observable isKindOfClass:[EEYEOStudent class]]) {
-        topText = [(EEYEOStudent *) observable firstName];
-        bottomText = [(EEYEOStudent *) observable lastName];
+        label.text = [[(EEYEOStudent *) observable firstName] stringByAppendingFormat:@"\r%@", [(EEYEOStudent *) observable lastName]];
     } else {
-        topText = @"Unknown!";
-        bottomText = @"";
+        label.text = @"Unknown!";
     }
-    if ([bottomText isEqualToString:@""]) {
-        top = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, width, height)];
-        top.textAlignment = NSTextAlignmentCenter;
-        top.textColor = [UIColor blackColor];
-        top.font = [UIFont boldSystemFontOfSize:20.0];
-        top.text = topText;
-        bottom = nil;
-        [self.contentView addSubview:top];
-    } else {
-        top = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, width, halfHeight)];
-        top.textAlignment = NSTextAlignmentCenter;
-        top.textColor = [UIColor blackColor];
-        top.font = [UIFont boldSystemFontOfSize:20.0];
-        top.text = topText;
-
-        bottom = [[UILabel alloc] initWithFrame:CGRectMake(0.0, halfHeight, width, halfHeight)];
-        bottom.textAlignment = NSTextAlignmentCenter;
-        bottom.textColor = [UIColor blackColor];
-        bottom.font = [UIFont boldSystemFontOfSize:20.0];
-        bottom.text = bottomText;
-        [self.contentView addSubview:top];
-        [self.contentView addSubview:bottom];
-    }
-
-    [top setBackgroundColor:[Colors darkBrown]];
-    if (bottom) {
-        [bottom setBackgroundColor:[Colors darkBrown]];
-    }
+    [self.contentView addSubview:label];
+    label.layer.cornerRadius = 10.0;
+    label.numberOfLines = 2;
+    [label setBackgroundColor:[Colors darkBrown]];
 }
 
 @end
