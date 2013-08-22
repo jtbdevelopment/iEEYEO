@@ -21,8 +21,6 @@ static NSString *const THUMBNAIL_CELL = @"ThumbnailCell";
 @property(nonatomic, retain) IBOutlet UICollectionView *images;
 @property(nonatomic, retain) IBOutlet UIBarButtonItem *cameraButton;
 
-@property(nonatomic, strong) EEYEOObservation *observation;
-
 - (void)setObservation:(EEYEOObservation *)observation AndIsNew:(BOOL)isNew;
 
 - (IBAction)editObservable:(id)sender;

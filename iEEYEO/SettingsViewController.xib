@@ -489,9 +489,9 @@
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MQA</bytes>
 						</object>
-						<object class="NSColor" key="IBUINormalTitleColor">
+						<object class="NSColor" key="IBUINormalTitleColor" id="298479902">
 							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
+							<bytes key="NSRGB">MCAwIDAAA</bytes>
 						</object>
 						<object class="NSColor" key="IBUINormalTitleShadowColor" id="1008437190">
 							<int key="NSColorSpace">3</int>
@@ -522,10 +522,7 @@
 						<int key="IBUIButtonType">1</int>
 						<string key="IBUINormalTitle">Edit Connection Settings</string>
 						<reference key="IBUIHighlightedTitleColor" ref="120829981"/>
-						<object class="NSColor" key="IBUINormalTitleColor">
-							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
-						</object>
+						<reference key="IBUINormalTitleColor" ref="298479902"/>
 						<reference key="IBUINormalTitleShadowColor" ref="1008437190"/>
 						<reference key="IBUIFontDescription" ref="1047026656"/>
 						<reference key="IBUIFont" ref="515387198"/>
@@ -536,7 +533,6 @@
 						<string key="NSFrame">{{20, 583}, {728, 44}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -545,10 +541,7 @@
 						<int key="IBUIButtonType">1</int>
 						<string key="IBUINormalTitle">Complete Reset From Server</string>
 						<reference key="IBUIHighlightedTitleColor" ref="120829981"/>
-						<object class="NSColor" key="IBUINormalTitleColor">
-							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
-						</object>
+						<reference key="IBUINormalTitleColor" ref="298479902"/>
 						<reference key="IBUINormalTitleShadowColor" ref="1008437190"/>
 						<reference key="IBUIFontDescription" ref="1047026656"/>
 						<reference key="IBUIFont" ref="515387198"/>
@@ -568,10 +561,7 @@
 						<int key="IBUIButtonType">1</int>
 						<string key="IBUINormalTitle">Resync Now</string>
 						<reference key="IBUIHighlightedTitleColor" ref="120829981"/>
-						<object class="NSColor" key="IBUINormalTitleColor">
-							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
-						</object>
+						<reference key="IBUINormalTitleColor" ref="298479902"/>
 						<reference key="IBUINormalTitleShadowColor" ref="1008437190"/>
 						<reference key="IBUIFontDescription" ref="1047026656"/>
 						<reference key="IBUIFont" ref="515387198"/>

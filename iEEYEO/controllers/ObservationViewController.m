@@ -30,7 +30,8 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     None,
     Observable,
     Categories,
-    Timestamp
+    Timestamp,
+    Image
 };
 
 @implementation ObservationViewController {
@@ -56,7 +57,7 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     UIBarButtonItem *_cameraButton;
 
     UIImagePickerController *_imagePicker;
-    UIPopoverController *_imagePopover;
+    UIPopoverController *popover;
 }
 
 @synthesize commentField = _commentField;
@@ -64,8 +65,6 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
 @synthesize categoriesField = _categoriesField;
 @synthesize timestampField = _timestampField;
 @synthesize significantField = _significantField;
-
-@synthesize observation = _observation;
 
 @synthesize managedObjectContext = _managedObjectContext;
 
@@ -150,6 +149,8 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
         case Timestamp:
             [self updateTimestampField];
             break;
+        case Image:
+            break;
     }
     _childPopping = None;
 }
@@ -169,7 +170,28 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-    _imagePopover = nil;
+    switch (_childPopping) {
+        case None:
+            [self updateCommentField];
+            [self updateSignificantField];
+            [self updateTimestampField];
+            [self updateCategoriesField];
+            [self updateObservableField];
+            break;
+        case Observable:
+            [self updateObservableField];
+            break;
+        case Categories:
+            [self updateCategoriesField];
+            break;
+        case Timestamp:
+            [self updateTimestampField];
+            break;
+        case Image:
+            break;
+    }
+    _childPopping = None;
+    popover = nil;
 }
 
 - (IBAction)camera:(id)sender {
@@ -183,10 +205,11 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
 }
 
 - (void)popoverPhotos:(id)sender {
-    if (!_imagePopover) {
-        _imagePopover = [[UIPopoverController alloc] initWithContentViewController:_imagePicker];
-        [_imagePopover setDelegate:self];
-        [_imagePopover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    if (!popover) {
+        popover = [[UIPopoverController alloc] initWithContentViewController:_imagePicker];
+        [popover setDelegate:self];
+        _childPopping = Image;
+        [popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     }
 }
 
@@ -231,7 +254,7 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
 }
 
 - (void)reset:(id)sender {
-    [self setObservation:_observation];
+    [self setObservation:_observation AndIsNew:_newObservation];
     [self viewWillAppear:NO];
 }
 
@@ -277,7 +300,12 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     controller.managedObjectContext = [[EEYEOLocalDataStore instance] context];
     controller.observable = _observable;
     _childPopping = Observable;
-    [self.navigationController pushViewController:controller animated:YES];
+    popover = nil;
+    popover = [[UIPopoverController alloc] initWithContentViewController:controller];
+    [popover setDelegate:self];
+    CGSize size = CGSizeMake(350, 216);
+    [popover setPopoverContentSize:size animated:YES];
+    [popover presentPopoverFromRect:((UIView *) sender).frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
 }
 
 - (IBAction)editCategories:(id)sender {
@@ -285,14 +313,25 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     categoryPickerViewController.managedObjectContext = [[EEYEOLocalDataStore instance] context];
     categoryPickerViewController.selectedCategories = _categories;
     _childPopping = Categories;
-    [self.navigationController pushViewController:categoryPickerViewController animated:YES];
+    popover = nil;
+    popover = [[UIPopoverController alloc] initWithContentViewController:categoryPickerViewController];
+    [popover setDelegate:self];
+
+    CGSize size = CGSizeMake(250, 400);
+    [popover setPopoverContentSize:size animated:YES];
+    [popover presentPopoverFromRect:((UIView *) sender).frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionLeft animated:YES];
 }
 
 - (IBAction)editTimestamp:(id)sender {
     ObservationTimestampPickerViewController *picker = [[ObservationTimestampPickerViewController alloc] init];
     [picker setTimestamp:_observationTimestamp];
     _childPopping = Timestamp;
-    [self.navigationController pushViewController:picker animated:YES];
+    popover = nil;
+    popover = [[UIPopoverController alloc] initWithContentViewController:picker];
+    [popover setDelegate:self];
+    CGSize size = CGSizeMake(350, 216);
+    [popover setPopoverContentSize:size animated:YES];
+    [popover presentPopoverFromRect:((UIView *) sender).frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionRight animated:YES];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -318,8 +357,8 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [_newPhotos addObject:photo];
     [_photos addObject:photo];
     [_images reloadData];
-    [_imagePopover dismissPopoverAnimated:YES];
-    _imagePopover = nil;
+    [popover dismissPopoverAnimated:YES];
+    popover = nil;
 }
 
 
