@@ -52,7 +52,8 @@
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addObservable:)];
     UIBarButtonItem *deleteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteObservable:)];
     UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editObservable:)];
-    self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:addButton, editButton, deleteButton, nil];
+//  TODO - make buttons work
+//    self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:addButton, editButton, deleteButton, nil];
 
     [UIView setAnimationsEnabled:NO];
     if (!_observationsViewController) {
