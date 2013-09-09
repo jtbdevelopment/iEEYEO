@@ -84,7 +84,6 @@
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
 
-    //  TODO - sort
     NSSortDescriptor *sortDescriptorOTS = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:NO];
     NSArray *sortDescriptors = @[sortDescriptorOTS];
     [fetchRequest setSortDescriptors:sortDescriptors];

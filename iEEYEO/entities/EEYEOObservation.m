@@ -50,7 +50,7 @@
             return NO;
         }
     }
-    [self setObservationTimestampFromNSDate:[self fromJodaLocalDateTime:[dictionary valueForKey:JSON_OBSERVATIONTIMESTAMP]]];
+    [self setObservationTimestampFromNSDate:[EEYEOIdObject fromJodaLocalDateTime:[dictionary valueForKey:JSON_OBSERVATIONTIMESTAMP]]];
     return [super loadFromDictionary:dictionary];
 }
 
@@ -64,7 +64,7 @@
         [self writeSubobject:category ToArray:categories];
     }
     [dictionary setValue:categories forKey:JSON_CATEGORIES];
-    [dictionary setValue:[self toJodaLocalDateTime:[self observationTimestampToNSDate]] forKey:JSON_OBSERVATIONTIMESTAMP];
+    [dictionary setValue:[EEYEOIdObject toJodaLocalDateTime:[self observationTimestampToNSDate]] forKey:JSON_OBSERVATIONTIMESTAMP];
 }
 
 - (NSDate *)observationTimestampToNSDate {

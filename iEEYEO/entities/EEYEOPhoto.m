@@ -93,7 +93,7 @@
 - (BOOL)loadFromDictionary:(NSDictionary *)dictionary {
     [self setMimeType:[dictionary objectForKey:JSON_MIMETYPE]];
     [self setName:[dictionary objectForKey:JSON_DESCRIPTION]];
-    [self setTimestamp:[[self fromJodaLocalDateTime:[dictionary objectForKey:JSON_TIMESTAMP]] timeIntervalSince1970]];
+    [self setTimestamp:[[EEYEOIdObject fromJodaLocalDateTime:[dictionary objectForKey:JSON_TIMESTAMP]] timeIntervalSince1970]];
     EEYEOAppUserOwnedObject *photoFor = [[EEYEOLocalDataStore instance] find:APPUSEROWNEDENTITY withId:[[dictionary valueForKey:JSON_PHOTOFOR] valueForKey:JSON_ID]];
     if (photoFor) {
         [self setPhotoFor:photoFor];
@@ -110,7 +110,7 @@
     [super writeToDictionary:dictionary];
     [dictionary setObject:[self mimeType] forKey:JSON_MIMETYPE];
     [self writeSubobject:[self photoFor] ToDictionary:dictionary WithKey:JSON_PHOTOFOR];
-    [dictionary setObject:[self toJodaLocalDateTime:[self timestampToNSDate]] forKey:JSON_TIMESTAMP];
+    [dictionary setObject:[EEYEOIdObject toJodaLocalDateTime:[self timestampToNSDate]] forKey:JSON_TIMESTAMP];
     [dictionary setObject:[self name] forKey:JSON_DESCRIPTION];
 
     [dictionary setObject:[[self imageData] base64EncodedStringWithSeparateLines:NO] forKey:JSON_IMAGEDATA];

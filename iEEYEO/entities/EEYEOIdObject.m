@@ -5,7 +5,7 @@
 //  Copyright (c) 2013 jtbdevelopment. All rights reserved.
 //
 
-#import "EEYEOIdObject.h"
+#import "EEYEOObservation.h"
 #import "EEYEORemoteDataStore.h"
 #import "NSDateWithMillis.h"
 
@@ -16,6 +16,34 @@
 @dynamic modificationTimestamp;
 @dynamic modificationTimestampMillis;
 @dynamic dirty;
+
++ (NSDate *)fromJodaLocalDateTime:(NSArray *)jodaLocalDateTime {
+    NSDateComponents *components = [[NSDateComponents alloc] init];
+    NSCalendar *cal = [NSCalendar currentCalendar];
+    [components setCalendar:cal];
+    [components setYear:[[jodaLocalDateTime objectAtIndex:0] integerValue]];
+    [components setMonth:[[jodaLocalDateTime objectAtIndex:1] integerValue]];
+    [components setDay:[[jodaLocalDateTime objectAtIndex:2] integerValue]];
+    [components setHour:[[jodaLocalDateTime objectAtIndex:3] integerValue]];
+    [components setMinute:[[jodaLocalDateTime objectAtIndex:4] integerValue]];
+    [components setSecond:[[jodaLocalDateTime objectAtIndex:5] integerValue]];
+    NSDate *date = [cal dateFromComponents:components];
+    return date;
+}
+
++ (NSMutableArray *)toJodaLocalDateTime:(NSDate *)date {
+    NSCalendar *cal = [NSCalendar currentCalendar];
+    NSDateComponents *comps = [cal components:LOCAL_DATE_TIME_FLAGS fromDate:date];
+    NSMutableArray *ts = [[NSMutableArray alloc] init];
+    [ts addObject:[[NSNumber alloc] initWithInt:[comps year]]];
+    [ts addObject:[[NSNumber alloc] initWithInt:[comps month]]];
+    [ts addObject:[[NSNumber alloc] initWithInt:[comps day]]];
+    [ts addObject:[[NSNumber alloc] initWithInt:[comps hour]]];
+    [ts addObject:[[NSNumber alloc] initWithInt:[comps minute]]];
+    [ts addObject:[[NSNumber alloc] initWithInt:[comps second]]];
+    [ts addObject:[[NSNumber alloc] initWithInt:0]];
+    return ts;
+}
 
 - (NSNumber *)modificationTimestampToJoda {
     return [[self modificationTimestampToNSDateWithMillis] toJodaDateTime];

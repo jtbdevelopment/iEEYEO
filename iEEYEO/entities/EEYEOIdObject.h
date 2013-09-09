@@ -31,6 +31,10 @@ static NSString *const JSON_LAST_NAME = @"lastName";
 @property(nonatomic) int32_t modificationTimestampMillis;
 @property(nonatomic) BOOL dirty;
 
++ (NSDate *)fromJodaLocalDateTime:(NSArray *)jodaLocalDateTime;
+
++ (NSMutableArray *)toJodaLocalDateTime:(NSDate *)date;
+
 - (void)writeSubobject:(id)object ToArray:(NSMutableArray *)array;
 
 - (void)writeSubobject:(id)object ToDictionary:(NSMutableDictionary *)dictionary WithKey:(NSString *)key;
