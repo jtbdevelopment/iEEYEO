@@ -58,7 +58,7 @@
 - (NSMutableURLRequest *)createWriteRequestToRemoteServer:(EEYEOIdObject *)entity method:(NSString *)method urlString:(NSString *)urlString {
     NSURL *url = [[NSURL alloc] initWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setHTTPMethod:method];
 
     [self writeDictionaryAsForm:request dictionary:[self getDictionary:entity] forEntity:entity];
@@ -75,7 +75,7 @@
     NSString *form = [[NSString alloc] initWithFormat:@"appUserOwnedObject=%@", [[NSString alloc] initWithData:streamData encoding:NSASCIIStringEncoding]];
 
     //  TODO - hack to do with JSON parser requiring entity type being first field
-    NSString *replacement = [[NSString alloc] initWithFormat:@"appUserOwnedObject={ \"entityType\": \"%@\",", [[EEYEORemoteDataStore iosToJavaEntityMap] valueForKey:[[entity class] description]]];
+    NSString *replacement = [[NSString alloc] initWithFormat:@"{ \"entityType\": \"%@\",", [[EEYEORemoteDataStore iosToJavaEntityMap] valueForKey:[[entity class] description]]];
     form = [form stringByReplacingOccurrencesOfString:@"appUserOwnedObject={" withString:replacement];
 
     char const *bytes = [form UTF8String];
