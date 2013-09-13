@@ -84,7 +84,10 @@
         [self disableEditing];
     }
     [self loadLocalStoreValues];
-    _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(refreshTimer:) userInfo:nil repeats:YES];
+    if (_timer) {
+        [_timer invalidate];
+    }
+    _timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(refreshTimer:) userInfo:nil repeats:YES];
 }
 
 + (BOOL)forceConnectionSettings {
