@@ -100,8 +100,8 @@
     } else {
         return NO;
     }
-    [self setImageFromData:[NSData dataFromBase64String:[self base64FromURL:[dictionary objectForKey:JSON_IMAGEDATA]]]];
-    [self setThumbnailImageFromData:[NSData dataFromBase64String:[self base64FromURL:[dictionary objectForKey:JSON_THUMBNAILIMAGEDATE]]]];
+    [self setImageFromData:[NSData dataFromBase64String:[dictionary objectForKey:JSON_IMAGEDATA]]];
+    [self setThumbnailImageFromData:[NSData dataFromBase64String:[dictionary objectForKey:JSON_THUMBNAILIMAGEDATE]]];
 
     return [super loadFromDictionary:dictionary];
 }
@@ -116,12 +116,4 @@
     [dictionary setObject:[[self imageData] base64EncodedStringWithSeparateLines:NO] forKey:JSON_IMAGEDATA];
 }
 
-//  TODO - this - better
-//  Server using url safe variant
-- (NSString *)base64FromURL:(NSString *)string {
-    string = [string stringByReplacingOccurrencesOfString:@"-" withString:@"+"];
-    string = [string stringByReplacingOccurrencesOfString:@"_" withString:@"/"];
-    string = [string stringByReplacingOccurrencesOfString:@"," withString:@"="];
-    return string;
-}
 @end

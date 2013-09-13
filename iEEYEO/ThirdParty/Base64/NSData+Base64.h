@@ -29,8 +29,7 @@
 #import <Foundation/Foundation.h>
 
 //  JTB
-//static const char EQUALS = '=';
-static const char EQUALS = ',';
+static const char EQUALS = '=';
 
 void *NewBase64Decode(
         const char *inputBuffer,
