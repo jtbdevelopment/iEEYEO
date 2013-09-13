@@ -405,8 +405,6 @@
                 [_restWriter saveEntityToRemote:entity];
             }
         }
-        //  TODO - this actually requests same modified timestamp as previous call - works but a hack
-//        [self updateFromRemoteServer];
     }
 }
 
