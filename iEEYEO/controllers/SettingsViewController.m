@@ -64,16 +64,8 @@
     [_refreshStepper setValue:[[EEYEORemoteDataStore instance] refreshFrequency]];
     [self refreshChange:nil];
 
-#if TARGET_IPHONE_SIMULATOR
-    static NSString *const DEFAULT_REST_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/";
-#else
-    static NSString *const DEFAULT_REST_URL = @"http://www.e-eye-o.com/REST/";
-#endif
     EEYEOLocalDataStore *localDataStore = [EEYEOLocalDataStore instance];
     NSString *url = [localDataStore website];
-    if ([url isEqualToString:@""]) {
-        url = DEFAULT_REST_URL;
-    }
     [_website setText:url];
     [_login setText:[localDataStore login]];
     [_password setText:[localDataStore password]];

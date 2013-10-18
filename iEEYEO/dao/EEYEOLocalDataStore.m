@@ -75,7 +75,26 @@
 }
 
 - (NSString *)website {
-    return [_accountWrapper objectForKey:(__bridge id) kSecAttrService];
+#if TARGET_IPHONE_SIMULATOR
+    //static NSString *const DEFAULT_REST_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/";
+    static NSString *const DEFAULT_REST_URL = @"https://Josephs-MacBook-Pro.local:8443/REST/v2/";
+    static NSString *const OLD_DEFAULT_REST_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/";
+#else
+    static NSString *const DEFAULT_REST_URL = @"http://www.e-eye-o.com/REST/";
+    //static NSString *const DEFAULT_REST_URL = @"https://www.e-eye-o.com/REST/v2/";
+    static NSString *const OLD_DEFAULT_REST_URL = @"http://www.e-eye-o.com/REST/";
+#endif
+
+    NSString *url = [_accountWrapper objectForKey:(__bridge id) kSecAttrService];
+    if ([url isEqualToString:@""]) {
+        url = DEFAULT_REST_URL;
+    }
+    //  TODO - eliminate this at some point
+    if ([url isEqualToString:OLD_DEFAULT_REST_URL]) {
+        url = DEFAULT_REST_URL;
+        [self setWebsite:DEFAULT_REST_URL];
+    }
+    return url;
 }
 
 - (void)saveToLocalStore:(EEYEOIdObject *)object {

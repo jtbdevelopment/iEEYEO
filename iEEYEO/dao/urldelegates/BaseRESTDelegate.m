@@ -10,6 +10,12 @@
 #import "EEYEODeletedObject.h"
 #import "NSDateWithMillis.h"
 
+#if TARGET_IPHONE_SIMULATOR
+@interface NSURLRequest(Private)
++(void)setAllowsAnyHTTPSCertificate:(BOOL)inAllow forHost:(NSString *)inHost;
+@end
+#endif
+
 
 @implementation BaseRESTDelegate {
 @protected
@@ -56,6 +62,11 @@
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+
+#if TARGET_IPHONE_SIMULATOR
+    NSString *host = [url host];
+    [NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:host];
+#endif
 
     NSString *form = [NSString stringWithFormat:@"login=%@&password=%@&_spring_security_remember_me=true", userId, password];
     char const *bytes = [form UTF8String];
