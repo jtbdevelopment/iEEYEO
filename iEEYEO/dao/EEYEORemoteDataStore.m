@@ -89,7 +89,7 @@
         _currentWorkItem = nil;
         _workQueue = [[NSMutableArray alloc] init];
 
-        _restWriter = [[RESTWriter alloc] initForRemoteStore:self];
+        _restWriter = [[RESTWriter alloc] initWithRemoteStore:self];
 
         _timer = nil;
 

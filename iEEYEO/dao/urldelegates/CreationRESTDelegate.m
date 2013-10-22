@@ -8,6 +8,7 @@
 #import "EEYEOIdObject.h"
 #import "RESTWriter.h"
 #import "EEYEOLocalDataStore.h"
+#import "EntityToDictionaryHelper.h"
 
 
 @implementation CreationRESTDelegate {
@@ -31,7 +32,7 @@
     //  This forces rewrites.
     //  This class and super are pointing to same request.
     [[EEYEOLocalDataStore instance] refreshObject:_entity];
-    [_writer writeDictionaryAsForm:_request dictionary:[_writer getDictionary:_entity] forEntity:_entity];
+    [EntityToDictionaryHelper writeEntity:_entity ToForm:_request];
     [super submitRequest];
 }
 

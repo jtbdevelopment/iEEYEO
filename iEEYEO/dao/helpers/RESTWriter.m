@@ -11,6 +11,7 @@
 #import "BaseRESTDelegate.h"
 #import "CreationRESTDelegate.h"
 #import "DeletionRESTDelegate.h"
+#import "EntityToDictionaryHelper.h"
 
 
 @implementation RESTWriter {
@@ -18,7 +19,7 @@
     EEYEORemoteDataStore *_instance;
 }
 
-- (id)initForRemoteStore:(EEYEORemoteDataStore *)instance {
+- (id)initWithRemoteStore:(EEYEORemoteDataStore *)instance {
     self = [super init];
     if (self) {
         _instance = instance;
@@ -61,31 +62,10 @@
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setHTTPMethod:method];
 
-    [self writeDictionaryAsForm:request dictionary:[self getDictionary:entity] forEntity:entity];
+    [EntityToDictionaryHelper writeEntity:entity ToForm:request];
     return request;
 }
 
-- (void)writeDictionaryAsForm:(NSMutableURLRequest *)request dictionary:(NSMutableDictionary *)dictionary forEntity:(EEYEOIdObject *)entity {
-    NSError *error;
-    NSOutputStream *stream = [[NSOutputStream alloc] initToMemory];
-    [stream open];
-    [NSJSONSerialization writeJSONObject:dictionary toStream:stream options:NSJSONWritingPrettyPrinted error:&error];
-    [stream close];
-    NSData *streamData = [stream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
-    NSString *form = [[NSString alloc] initWithFormat:@"appUserOwnedObject=%@", [[NSString alloc] initWithData:streamData encoding:NSASCIIStringEncoding]];
 
-    //  TODO - hack to do with JSON parser requiring entity type being first field
-    NSString *replacement = [[NSString alloc] initWithFormat:@"{ \"entityType\": \"%@\",", [[EEYEORemoteDataStore iosToJavaEntityMap] valueForKey:[[entity class] description]]];
-    form = [form stringByReplacingOccurrencesOfString:@"appUserOwnedObject={" withString:replacement];
-
-    char const *bytes = [form UTF8String];
-    [request setHTTPBody:[NSData dataWithBytes:bytes length:[form length]]];
-}
-
-- (NSMutableDictionary *)getDictionary:(EEYEOIdObject *)entity {
-    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
-    [entity writeToDictionary:dictionary];
-    return dictionary;
-}
 
 @end
