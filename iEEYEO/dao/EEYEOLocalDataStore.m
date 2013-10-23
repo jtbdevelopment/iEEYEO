@@ -80,7 +80,7 @@
     static NSString *const DEFAULT_REST_URL = @"https://Josephs-MacBook-Pro.local:8443/REST/v2/";
     static NSString *const OLD_DEFAULT_REST_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/";
 #else
-    static NSString *const DEFAULT_REST_URL = @"http://www.e-eye-o.com/REST/";
+    static NSString *const DEFAULT_REST_URL = @"http://www.e-eye-o.com/";
     //static NSString *const DEFAULT_REST_URL = @"https://www.e-eye-o.com/REST/v2/";
     static NSString *const OLD_DEFAULT_REST_URL = @"http://www.e-eye-o.com/REST/";
 #endif

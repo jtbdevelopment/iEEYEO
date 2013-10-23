@@ -51,6 +51,8 @@ static const float SLEEP_TIME = 30.0;
 
 - (void)resetTimer;
 
+- (NSString *)getCurrentUserID;
+
 - (void)requeueWorkItem:(BaseRESTDelegate *)delegate;
 
 - (void)completeWorkItem:(BaseRESTDelegate *)delegate;

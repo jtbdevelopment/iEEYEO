@@ -6,8 +6,8 @@
 
 #import "InitialAuthenticationHelper.h"
 #import "EEYEOLocalDataStore.h"
-#import "EEYEORemoteDataStore.h"
 #import "RemoteStoreUpdateProcessor.h"
+#import "UserDataRequest.h"
 
 
 @implementation InitialAuthenticationHelper
@@ -18,10 +18,12 @@
         [localDataStore setLogin:userId];
         [localDataStore setPassword:password];
         [localDataStore setWebsite:baseURL];
-        NSURLRequest *users = [[EEYEORemoteDataStore instance] generateUserLoadRequest];
+
         NSURLResponse *response;
         NSError *error;
-        NSData *userData = [NSURLConnection sendSynchronousRequest:users returningResponse:&response error:&error];
+
+        NSURLRequest *userRequest = [[[UserDataRequest alloc] init] createRequest];
+        NSData *userData = [NSURLConnection sendSynchronousRequest:userRequest returningResponse:&response error:&error];
         if ([[response MIMEType] isEqualToString:@"application/json"]) {
             NSError *error;
             id updateUnknown = [NSJSONSerialization JSONObjectWithData:userData options:kNilOptions error:&error];
