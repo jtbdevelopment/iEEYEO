@@ -4,15 +4,15 @@
 //
 
 
-#import "DeleteRequest.h"
+#import "RequestDelete.h"
 #import "EEYEOIdObject.h"
 #import "EEYEODeletedObject.h"
 
 
-@implementation DeleteRequest {
+@implementation RequestDelete {
 
 }
-- (NSURLRequest *)createRequest {
+- (NSURLRequest *)createNSURLRequest {
     NSURL *url = [[NSURL alloc] initWithString:[self restEntityIdURL:[(EEYEODeletedObject *) [self entity] deletedId]]];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"DELETE"];

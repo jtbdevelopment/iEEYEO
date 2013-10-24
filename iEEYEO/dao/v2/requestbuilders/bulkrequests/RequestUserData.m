@@ -4,13 +4,13 @@
 //
 
 
-#import "UserDataRequest.h"
+#import "RequestUserData.h"
 
 
-@implementation UserDataRequest {
+@implementation RequestUserData {
 
 }
-- (NSURLRequest *)createRequest {
+- (NSURLRequest *)createNSURLRequest {
     NSURL *url = [[NSURL alloc] initWithString:[self restBaseURL]];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     return request;

@@ -5,10 +5,8 @@
 
 
 #import <Foundation/Foundation.h>
+#import "EntityRelatedRequest.h"
 
 
-@interface BaseRequest : NSObject
-- (NSString *)restBaseURL;
-
-- (NSURLRequest *)createRequest;
+@interface RequestCreate : EntityRelatedRequest
 @end

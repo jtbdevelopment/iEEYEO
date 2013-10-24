@@ -4,14 +4,14 @@
 //
 
 
-#import "UpdateRequest.h"
+#import "RequestUpdate.h"
 #import "EEYEOIdObject.h"
 
 
-@implementation UpdateRequest {
+@implementation RequestUpdate {
 
 }
-- (NSURLRequest *)createRequest {
+- (NSURLRequest *)createNSURLRequest {
     return [self createRequestToServer:[self entity] method:@"PUT" urlString:[self restEntityIdURL:[[self entity] id]]];
 }
 @end

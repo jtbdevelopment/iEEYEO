@@ -5,8 +5,8 @@
 
 
 #import <Foundation/Foundation.h>
-#import "ReauthenticationHelper.h"
+#import "EntityRelatedRequest.h"
 
 
-@interface InitialAuthenticationHelper : ReauthenticationHelper
+@interface RequestUpdate : EntityRelatedRequest
 @end

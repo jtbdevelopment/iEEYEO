@@ -5,8 +5,8 @@
 
 
 #import <Foundation/Foundation.h>
-#import "EntityRequest.h"
+#import "EntityRelatedRequest.h"
 
 
-@interface UpdateRequest : EntityRequest
+@interface RequestDelete : EntityRelatedRequest
 @end

@@ -68,7 +68,9 @@ static NSString *const OBSERVABLEENTITY = @"EEYEOObservable";
 
 - (NSArray *)getDirtyEntities:(NSString *)entityType;
 
-- (NSArray *)getEntitiesOfType:(NSString *)entityType WithPredicate:(NSPredicate *)predicate;
+- (EEYEOIdObject *)getNextDirtyEntityOfType:(NSString *)entityType;
+
+- (NSArray *)getEntitiesOfType:(NSString *)entityType WithPredicate:(NSPredicate *)predicate WithFetchLimit:(NSUInteger)fetchLimit;
 
 - (id)findAppUserWithEmailAddress:(NSString *)emailAddress;
 

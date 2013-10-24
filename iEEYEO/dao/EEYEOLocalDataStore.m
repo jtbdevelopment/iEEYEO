@@ -118,7 +118,7 @@
 - (void)clearAllItems {
     NSArray *objectTypes = [[NSArray alloc] initWithObjects:DELETEDENTITY, PHOTOENTITY, OBSERVATIONENTITY, STUDENTENTITY, CLASSLISTENTITY, CATEGORYENTITY, nil];
     for (NSString *type in objectTypes) {
-        NSArray *entities = [self getEntitiesOfType:type WithPredicate:nil];
+        NSArray *entities = [self getEntitiesOfType:type WithPredicate:nil WithFetchLimit:0];
         for (EEYEOIdObject *object in entities) {
             [context deleteObject:object];
             [self saveContext:object];
@@ -179,15 +179,24 @@
 
 - (NSArray *)getDirtyEntities:(NSString *)entityType {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"dirty = TRUE"];
-    return [self getEntitiesOfType:entityType WithPredicate:predicate];
-
+    return [self getEntitiesOfType:entityType WithPredicate:predicate WithFetchLimit:0];
 }
 
-- (NSArray *)getEntitiesOfType:(NSString *)entityType WithPredicate:(NSPredicate *)predicate {
+- (EEYEOIdObject *)getNextDirtyEntityOfType:(NSString *)entityType {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"dirty = TRUE"];
+    NSArray *results = [self getEntitiesOfType:entityType WithPredicate:predicate WithFetchLimit:1];
+    if (results == nil || [results count] == 0) {
+        return nil;
+    }
+    return [results objectAtIndex:0];
+}
+
+- (NSArray *)getEntitiesOfType:(NSString *)entityType WithPredicate:(NSPredicate *)predicate WithFetchLimit:(NSUInteger)fetchLimit {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:entityType inManagedObjectContext:context];
     [request setEntity:entityDescription];
     [request setPredicate:predicate];
+    [request setFetchLimit:fetchLimit];
 
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"modificationTimestamp" ascending:YES];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];

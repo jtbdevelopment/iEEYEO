@@ -4,21 +4,24 @@
 //
 
 
-#import "BaseRequest.h"
+#import "EEYEORemoteDataStore.h"
+#import "EntityRelatedRequest.h"
 #import "EEYEOLocalDataStore.h"
 
 
-@implementation BaseRequest {
-
-}
+@implementation RequestBuilder
 
 - (NSString *)restBaseURL {
     //  TODO - more efficient
     return [[[EEYEOLocalDataStore instance] website] stringByAppendingFormat:@"REST/v2/users/"];
 }
 
-- (NSURLRequest *)createRequest {
+- (NSURLRequest *)createNSURLRequest {
     return nil;
+}
+
+- (NSString *)restUserURL {
+    return [[self restBaseURL] stringByAppendingFormat:@"%@/", [[EEYEORemoteDataStore instance] getCurrentUserID]];
 }
 
 @end

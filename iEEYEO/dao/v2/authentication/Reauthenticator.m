@@ -4,10 +4,15 @@
 //
 
 
-#import "ReauthenticationHelper.h"
+#import "Reauthenticator.h"
+#import "EEYEOLocalDataStore.h"
 
 
-@implementation ReauthenticationHelper
+@implementation Reauthenticator
+
++ (BOOL)reauthenticate {
+    return [self authenticateUser:[[EEYEOLocalDataStore instance] login] WithPassword:[[EEYEOLocalDataStore instance] password] AndBaseURL:[[EEYEOLocalDataStore instance] website]];
+}
 
 + (BOOL)authenticateUser:(NSString *)userId WithPassword:(NSString *)password AndBaseURL:(NSString *)baseURL {
     NSURL *url = [[NSURL alloc] initWithString:[baseURL stringByAppendingString:@"security/login?_spring_security_remember_me=true"]];

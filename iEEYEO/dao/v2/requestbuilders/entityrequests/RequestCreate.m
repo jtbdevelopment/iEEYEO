@@ -4,13 +4,13 @@
 //
 
 
-#import "CreateRequest.h"
+#import "RequestCreate.h"
 
 
-@implementation CreateRequest {
+@implementation RequestCreate {
 
 }
-- (NSURLRequest *)createRequest {
+- (NSURLRequest *)createNSURLRequest {
     return [self createRequestToServer:[self entity] method:@"POST" urlString:[self restUserURL]];
 }
 

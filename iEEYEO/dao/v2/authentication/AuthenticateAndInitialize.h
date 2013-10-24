@@ -5,8 +5,8 @@
 
 
 #import <Foundation/Foundation.h>
-#import "EntityRequest.h"
+#import "Reauthenticator.h"
 
 
-@interface DeleteRequest : EntityRequest
+@interface AuthenticateAndInitialize : Reauthenticator
 @end

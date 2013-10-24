@@ -5,8 +5,8 @@
 
 
 #import <Foundation/Foundation.h>
-#import "BaseRequest.h"
+#import "RequestBuilder.h"
 
 
-@interface UserDataRequest : BaseRequest
+@interface RequestUserData : RequestBuilder
 @end

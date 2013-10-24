@@ -4,14 +4,13 @@
 //
 
 
-#import "EntityRequest.h"
+#import "EntityRelatedRequest.h"
 #import "EEYEOIdObject.h"
 #import "EntityToDictionaryHelper.h"
 #import "EEYEOLocalDataStore.h"
-#import "EEYEORemoteDataStore.h"
 
 
-@implementation EntityRequest {
+@implementation EntityRelatedRequest {
 @private
     EEYEOIdObject *_entity;
 }
@@ -26,10 +25,6 @@
 
 }
 
-- (NSString *)restUserURL {
-    return [[self restBaseURL] stringByAppendingFormat:@"%@/", [[EEYEORemoteDataStore instance] getCurrentUserID]];
-}
-
 - (NSString *)restEntityIdURL:(NSString *)id {
     return [[self restUserURL] stringByAppendingFormat:@"%@/", id];
 
@@ -38,6 +33,9 @@
 - (NSURLRequest *)createRequestToServer:(EEYEOIdObject *)entity method:(NSString *)method urlString:(NSString *)urlString {
     //  If there are multiple requests queued, related ids may not have initially been available
     //  Refresh from DB before sending
+    //
+    //  TODO - deal with changes/deletes in interim
+    //
     [[EEYEOLocalDataStore instance] refreshObject:[self entity]];
 
     NSURL *url = [[NSURL alloc] initWithString:urlString];

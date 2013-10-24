@@ -93,7 +93,7 @@
 }
 
 - (void)loadLocalStoreValues {
-    [_local setText:[NSString stringWithFormat:@"%d", [[[EEYEOLocalDataStore instance] getEntitiesOfType:APPUSEROWNEDENTITY WithPredicate:nil] count]]];
+    [_local setText:[NSString stringWithFormat:@"%d", [[[EEYEOLocalDataStore instance] getEntitiesOfType:APPUSEROWNEDENTITY WithPredicate:nil WithFetchLimit:0] count]]];
     [_localDirty setText:[NSString stringWithFormat:@"%d", [[[EEYEOLocalDataStore instance] getDirtyEntities:APPUSEROWNEDENTITY] count]]];
     [_lastServerTS setText:[[EEYEORemoteDataStore instance] lastUpdateFromServerAsString]];
     [_lastResyncTS setText:[[EEYEORemoteDataStore instance] lastServerResyncAsString]];

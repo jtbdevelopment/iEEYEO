@@ -5,17 +5,15 @@
 
 
 #import <Foundation/Foundation.h>
-#import "BaseRequest.h"
+#import "RequestBuilder.h"
 
 @class EEYEOIdObject;
 
 
-@interface EntityRequest : BaseRequest
+@interface EntityRelatedRequest : RequestBuilder
 @property(nonatomic, retain) EEYEOIdObject *entity;
 
 - (id)initForEntity:(EEYEOIdObject *)entity;
-
-- (NSString *)restUserURL;
 
 - (NSString *)restEntityIdURL:(NSString *)id1;
 

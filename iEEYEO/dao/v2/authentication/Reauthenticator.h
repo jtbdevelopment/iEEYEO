@@ -7,6 +7,8 @@
 #import <Foundation/Foundation.h>
 
 
-@interface ReauthenticationHelper : NSObject
+@interface Reauthenticator : NSObject
++ (BOOL)reauthenticate;
+
 + (BOOL)authenticateUser:(NSString *)userId WithPassword:(NSString *)password AndBaseURL:(NSString *)baseURL;
 @end

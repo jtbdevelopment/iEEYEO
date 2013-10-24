@@ -5,8 +5,9 @@
 
 
 #import <Foundation/Foundation.h>
-#import "EntityRequest.h"
+#import "RequestBuilder.h"
 
 
-@interface CreateRequest : EntityRequest
+@interface PagingRequestBuilder : RequestBuilder
+- (void)incrementPage;
 @end

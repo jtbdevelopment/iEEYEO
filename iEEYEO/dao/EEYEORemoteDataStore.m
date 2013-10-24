@@ -251,8 +251,7 @@
 }
 
 - (NSString *)lastModifiedURL {
-    NSString *lastModificationFromServer = [self lastUpdateFromServerAsString];
-    return [[self getBaseRESTURL] stringByAppendingFormat:@"%@/ModifiedSince/%@", [self getCurrentUserID], lastModificationFromServer];
+    return [[self getBaseRESTURL] stringByAppendingFormat:@"%@/ModifiedSince/%@", [self getCurrentUserID], [self lastUpdateFromServerAsString]];
 }
 
 - (void)setLastServerResyncWithNSDateWithMillis:(NSDateWithMillis *)value {

@@ -4,13 +4,13 @@
 //
 
 
-#import "InitialAuthenticationHelper.h"
+#import "AuthenticateAndInitialize.h"
 #import "EEYEOLocalDataStore.h"
 #import "RemoteStoreUpdateProcessor.h"
-#import "UserDataRequest.h"
+#import "RequestUserData.h"
 
 
-@implementation InitialAuthenticationHelper
+@implementation AuthenticateAndInitialize
 
 + (BOOL)authenticateUser:(NSString *)userId WithPassword:(NSString *)password AndBaseURL:(NSString *)baseURL {
     if ([super authenticateUser:userId WithPassword:password AndBaseURL:baseURL]) {
@@ -22,10 +22,9 @@
         NSURLResponse *response;
         NSError *error;
 
-        NSURLRequest *userRequest = [[[UserDataRequest alloc] init] createRequest];
+        NSURLRequest *userRequest = [[[RequestUserData alloc] init] createNSURLRequest];
         NSData *userData = [NSURLConnection sendSynchronousRequest:userRequest returningResponse:&response error:&error];
         if ([[response MIMEType] isEqualToString:@"application/json"]) {
-            NSError *error;
             id updateUnknown = [NSJSONSerialization JSONObjectWithData:userData options:kNilOptions error:&error];
             [RemoteStoreUpdateProcessor processUpdates:updateUnknown];
             return YES;
