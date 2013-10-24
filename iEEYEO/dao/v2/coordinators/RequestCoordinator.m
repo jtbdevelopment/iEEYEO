@@ -4,34 +4,56 @@
 //
 
 
-#import "BaseCoordinator.h"
+#import "RequestCoordinator.h"
 #import "RequestBuilder.h"
 #import "Reauthenticator.h"
+#import "EEYEORemoteQueue.h"
 
-@implementation BaseCoordinator {
+@implementation RequestCoordinator {
 @private
     NSURLConnection *activeConnection;
     NSURLResponse *activeResponse;
     NSMutableData *activeData;
     NSURLRequest *_activeURLRequest;
     RequestBuilder *_activeRequestBuilder;
+    NSUInteger _attempts;
 }
 
 @synthesize activeURLRequest = _activeURLRequest;
 @synthesize activeRequestBuilder = _activeRequestBuilder;
 
-- (BOOL)generateWork {
+@synthesize attempts = _attempts;
+
+- (BOOL)doWork {
+    if ([self activeURLRequest] || [self activeRequestBuilder]) {
+        return [self makeRequest];
+    }
+
+    RequestBuilder *requestBuilder = [self generateRequestBuilder];
+    if (requestBuilder) {
+        [self setActiveRequestBuilder:requestBuilder];
+        return [self makeRequest];
+    }
+
     return NO;
+}
+
+- (RequestBuilder *)generateRequestBuilder {
+    return nil;
 }
 
 - (BOOL)processResults:(NSData *)data {
     [self setActiveURLRequest:nil];
+    [self setActiveRequestBuilder:nil];
     [self markComplete];
     return YES;
 }
 
 - (BOOL)makeRequest {
     if (![self activeURLRequest]) {
+        if (![self activeRequestBuilder]) {
+            return NO;
+        }
         [self setActiveURLRequest:[[self activeRequestBuilder] createNSURLRequest]];
     }
     activeConnection = [[NSURLConnection alloc] initWithRequest:[self activeURLRequest] delegate:self];
@@ -43,11 +65,11 @@
 }
 
 - (void)requeueSelf {
-    //  TODO
+    [[EEYEORemoteQueue instance] resubmitRequest:self];
 }
 
 - (void)markComplete {
-    //  TODO
+    [[EEYEORemoteQueue instance] closeRequest:self];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -85,6 +107,15 @@
             [self requeueSelf];
         }
     }
+}
+
+- (id)convertToJSON:(NSData *)data {
+    NSError *error;
+    id json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+    if (error) {
+        return nil;
+    }
+    return json;
 }
 
 - (void)reauthenticateAndRetry {

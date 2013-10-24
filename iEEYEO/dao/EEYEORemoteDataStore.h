@@ -28,8 +28,6 @@ static NSString *const REFRESH_FREQUENCY_KEY = @"REFRESH_FREQUENCY";
 
 static const int MAX_RETRIES = 5;
 
-static const float SLEEP_TIME = 30.0;
-
 @interface EEYEORemoteDataStore : NSObject
 @property BOOL networkAvailable;
 @property(nonatomic, weak) Reachability *reachability;
@@ -64,6 +62,8 @@ static const float SLEEP_TIME = 30.0;
 - (NSString *)entityURLForObject:(EEYEOIdObject *)entity;
 
 - (NSString *)entityURLForId:(NSString *)entity;
+
+- (void)setLastServerResyncWithNSDateWithMillis:(NSDateWithMillis *)value;
 
 - (NSString *)lastServerResyncAsString;
 

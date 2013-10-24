@@ -18,6 +18,8 @@
 @implementation WriteToRemoteCoordinator {
 @private
     NSString *_category;
+    BOOL isDelete;
+    EEYEOIdObject *entity;
 }
 
 - (instancetype)initWithCategory:(NSString *)category {
@@ -33,42 +35,42 @@
     return [[self alloc] initWithCategory:category];
 }
 
-- (BOOL)generateWork {
-    if ([self activeURLRequest]) {
-        return [self makeRequest];
-    }
-    EEYEOIdObject *entity = [[EEYEOLocalDataStore instance] getNextDirtyEntityOfType:_category];
+- (RequestBuilder *)generateRequestBuilder {
+    entity = [[EEYEOLocalDataStore instance] getNextDirtyEntityOfType:_category];
     if (!entity) {
-        return NO;
+        return nil;
     }
-    [self setActiveRequestBuilder:[self getRequestBuilder:entity]];
-    return [self makeRequest];
-}
 
-- (BOOL)processResults:(NSData *)data {
-    NSError *error;
-    id updateUnknown = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-    if (error) {
-        return NO;
-    }
-    if ([RemoteStoreUpdateProcessor processUpdates:updateUnknown] == nil) {
-        return NO;
-    }
-    [self setActiveURLRequest:nil];
-    if (![self generateWork]) {
-        [self markComplete];
-    }
-    return YES;
-}
-
-- (RequestBuilder *)getRequestBuilder:(EEYEOIdObject *)entity {
+    isDelete = NO;
     if ([entity isKindOfClass:[EEYEODeletedObject class]]) {
+        isDelete = YES;
         return [[RequestDelete alloc] initForEntity:(EEYEODeletedObject *) entity];
     }
     if ([[entity id] isEqualToString:@""]) {
         return [[RequestCreate alloc] initForEntity:entity];
     }
     return [[RequestUpdate alloc] initForEntity:entity];
+}
+
+- (BOOL)processResults:(NSData *)data {
+    id json = [self convertToJSON:data];
+    if (!json) {
+        return NO;
+    }
+    if (isDelete) {
+        [[EEYEOLocalDataStore instance] deleteFromLocalStore:entity];
+    }
+    if ([RemoteStoreUpdateProcessor processUpdates:json] == nil) {
+        return NO;
+    }
+    isDelete = NO;
+    entity = nil;
+    [self setActiveURLRequest:nil];
+    [self setActiveRequestBuilder:nil];
+    if (![self doWork]) {
+        [self markComplete];
+    }
+    return YES;
 }
 
 @end

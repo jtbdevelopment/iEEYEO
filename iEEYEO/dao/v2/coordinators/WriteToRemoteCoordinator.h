@@ -5,10 +5,10 @@
 
 
 #import <Foundation/Foundation.h>
-#import "BaseCoordinator.h"
+#import "RequestCoordinator.h"
 
 
-@interface WriteToRemoteCoordinator : BaseCoordinator
+@interface WriteToRemoteCoordinator : RequestCoordinator
 - (instancetype)initWithCategory:(NSString *)category;
 
 + (instancetype)serverWithCategory:(NSString *)category;

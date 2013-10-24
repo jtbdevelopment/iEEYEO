@@ -9,15 +9,20 @@
 @class RequestBuilder;
 
 
-@interface BaseCoordinator : NSObject <NSURLConnectionDataDelegate>
+@interface RequestCoordinator : NSObject <NSURLConnectionDataDelegate>
+@property NSUInteger attempts;
 @property(nonatomic, retain) NSURLRequest *activeURLRequest;
 @property(nonatomic, retain) RequestBuilder *activeRequestBuilder;
 
-- (BOOL)generateWork;
+- (BOOL)doWork;
+
+- (RequestBuilder *)generateRequestBuilder;
 
 - (BOOL)processResults:(NSData *)data;
 
 - (BOOL)makeRequest;
 
 - (void)markComplete;
+
+- (id)convertToJSON:(NSData *)data;
 @end

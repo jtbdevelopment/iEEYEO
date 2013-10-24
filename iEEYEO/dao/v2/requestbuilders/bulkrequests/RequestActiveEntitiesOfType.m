@@ -15,6 +15,16 @@
 }
 @synthesize pageNumber = _pageNumber;
 
+- (instancetype)initWithCategory:(NSString *)category {
+    self = [super init];
+    if (self) {
+        _category = category;
+        self.pageNumber = 0;
+    }
+
+    return self;
+}
+
 - (instancetype)initWithCategory:(NSString *)category AndPageNumber:(int)pageNumber {
     self = [super init];
     if (self) {
