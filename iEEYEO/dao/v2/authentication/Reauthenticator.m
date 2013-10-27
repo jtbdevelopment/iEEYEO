@@ -7,6 +7,11 @@
 #import "Reauthenticator.h"
 #import "EEYEOLocalDataStore.h"
 
+#if TARGET_IPHONE_SIMULATOR
+@interface NSURLRequest(Private)
++(void)setAllowsAnyHTTPSCertificate:(BOOL)inAllow forHost:(NSString *)inHost;
+@end
+#endif
 
 @implementation Reauthenticator
 
@@ -15,7 +20,7 @@
 }
 
 + (BOOL)authenticateUser:(NSString *)userId WithPassword:(NSString *)password AndBaseURL:(NSString *)baseURL {
-    NSURL *url = [[NSURL alloc] initWithString:[baseURL stringByAppendingString:@"security/login?_spring_security_remember_me=true"]];
+    NSURL *url = [[NSURL alloc] initWithString:[baseURL stringByAppendingString:@"REST/v2/security/login?_spring_security_remember_me=true"]];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];

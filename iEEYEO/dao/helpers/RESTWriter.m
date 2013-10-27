@@ -9,8 +9,6 @@
 #import "EEYEORemoteDataStore.h"
 #import "EEYEODeletedObject.h"
 #import "BaseRESTDelegate.h"
-#import "CreationRESTDelegate.h"
-#import "DeletionRESTDelegate.h"
 #import "EntityToDictionaryHelper.h"
 
 
@@ -40,12 +38,12 @@
 
 - (void)updateEntityToRemote:(EEYEOIdObject *)updated {
     NSURLRequest *request = [self createWriteRequestToRemoteServer:updated method:@"PUT" urlString:[_instance entityURLForObject:updated]];
-    [_instance addWorkItem:[[BaseRESTDelegate alloc] initWithRequest:request]];
+    //[_instance addWorkItem:[[BaseRESTDelegate alloc] initWithRequest:request]];
 }
 
 - (void)createEntityToRemote:(EEYEOIdObject *)created {
     NSMutableURLRequest *request = [self createWriteRequestToRemoteServer:created method:@"POST" urlString:[_instance userURL]];
-    [_instance addWorkItem:[[CreationRESTDelegate alloc] initWithRequest:request AndEntity:created AndWriter:self]];
+    //[_instance addWorkItem:[[CreationRESTDelegate alloc] initWithRequest:request AndEntity:created AndWriter:self]];
 }
 
 - (void)deleteEntityToRemote:(EEYEODeletedObject *)deleted {
@@ -53,7 +51,7 @@
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"DELETE"];
 
-    [_instance addWorkItem:[[DeletionRESTDelegate alloc] initWithDeletedObject:deleted AndRequest:request]];
+    //[_instance addWorkItem:[[DeletionRESTDelegate alloc] initWithDeletedObject:deleted AndRequest:request]];
 }
 
 - (NSMutableURLRequest *)createWriteRequestToRemoteServer:(EEYEOIdObject *)entity method:(NSString *)method urlString:(NSString *)urlString {
@@ -65,7 +63,6 @@
     [EntityToDictionaryHelper writeEntity:entity ToForm:request];
     return request;
 }
-
 
 
 @end

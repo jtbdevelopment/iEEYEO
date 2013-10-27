@@ -10,7 +10,13 @@
 
 
 @interface EEYEORemoteQueue : NSObject
+@property(nonatomic) BOOL networkAvailable;
+
 + (EEYEORemoteQueue *)instance;
+
+- (void)resetQueue;
+
+- (void)addRequest:(RequestCoordinator *)requestCoordinator;
 
 - (void)processNextRequest;
 

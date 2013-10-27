@@ -9,8 +9,8 @@
 #import "EEYEOLocalDataStore.h"
 #import "EEYEORemoteDataStore.h"
 #import "BaseRESTDelegate.h"
-#import "InitialAuthenticationDelegate.h"
 #import "Colors.h"
+#import "AuthenticateAndInitialize.h"
 
 @interface SettingsViewController ()
 
@@ -163,11 +163,10 @@
 //  TODO - alerts show up after the fact not before
 - (IBAction)testConnection:(id)sender {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Authentication" message:@"Worked!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    InitialAuthenticationDelegate *delegate = [[InitialAuthenticationDelegate alloc] init];
     EEYEOLocalDataStore *localDataStore = [EEYEOLocalDataStore instance];
     NSString *originalLogin = [localDataStore login];
     NSString *originalWebsite = [localDataStore website];
-    if ([delegate authenticateConnection:[_login text] password:[_password text] AndBaseURL:[_website text]]) {
+    if ([AuthenticateAndInitialize authenticateUser:[_login text] WithPassword:[_password text] AndBaseURL:[_website text]]) {
         [alertView setMessage:@"Connected Successfully.  Resycning data..."];
         [alertView show];
         if ([[_login text] isEqualToString:originalLogin] && [[_website text] isEqualToString:originalWebsite] && ![[[_editConnections titleLabel] text] isEqualToString:TEST_CONNECTION_ONLY]) {

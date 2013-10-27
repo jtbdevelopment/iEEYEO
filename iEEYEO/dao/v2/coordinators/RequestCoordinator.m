@@ -24,6 +24,16 @@
 
 @synthesize attempts = _attempts;
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        [self setAttempts:0];
+    }
+
+    return self;
+}
+
+
 - (BOOL)doWork {
     if ([self activeURLRequest] || [self activeRequestBuilder]) {
         return [self makeRequest];

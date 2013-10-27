@@ -25,10 +25,6 @@
     return self;
 }
 
-+ (instancetype)coordinatorWithCategory:(NSString *)category {
-    return [[self alloc] initWithCategory:category];
-}
-
 - (RequestBuilder *)generateRequestBuilder {
     return [[RequestActiveEntitiesOfType alloc] initWithCategory:_category];
 }

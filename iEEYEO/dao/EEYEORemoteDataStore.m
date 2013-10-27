@@ -7,32 +7,28 @@
 #import "EEYEORemoteDataStore.h"
 #import "EEYEOObservationCategory.h"
 #import "EEYEOLocalDataStore.h"
-#import "BaseRESTDelegate.h"
-#import "UpdatesFromServerRESTDelegate.h"
-#import "RESTWriter.h"
 #import "NSDateWithMillis.h"
 #import "EEYEOAppUser.h"
 #import "Reachability.h"
+#import "EEYEORemoteQueue.h"
+#import "ReadUsersFromRemoteCoordinator.h"
+#import "ReadCategoryFromRemoteCoordinator.h"
+#import "ReadUpdatesFromRemoteCoordinator.h"
+#import "WriteToRemoteCoordinator.h"
 
 
 @implementation EEYEORemoteDataStore {
 @private
-    NSMutableArray *_workQueue;
-    BaseRESTDelegate *_currentWorkItem;
-
+    EEYEORemoteQueue *remoteQueue;
     NSDateFormatter *_dateFormatter;
     NSNumberFormatter *_numberFormatter;
-
-    RESTWriter *_restWriter;
 
     NSTimer *_timer;
 
     Reachability __weak *_reachability;
 
-    BOOL _networkAvailable;
 }
 
-@synthesize networkAvailable = _networkAvailable;
 
 @synthesize reachability = _reachability;
 
@@ -79,6 +75,8 @@
 - (id)init {
     self = [super init];
     if (self) {
+        remoteQueue = [EEYEORemoteQueue instance];
+
         _dateFormatter = [[NSDateFormatter alloc] init];
         [_dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
 
@@ -86,23 +84,17 @@
         //  TODO??
         //[_dateFormatter setCalendar:[[NSCalendar alloc] initWithCalendarIdentifier:@"GMT"]];
 
-        _currentWorkItem = nil;
-        _workQueue = [[NSMutableArray alloc] init];
-
-        _restWriter = [[RESTWriter alloc] initWithRemoteStore:self];
-
         _timer = nil;
-
-        _networkAvailable = NO;
 
         _reachability = [Reachability reachabilityWithHostname:@"www.e-eye-o.com"];
         [_reachability setReachableOnWWAN:NO];
+        [remoteQueue setNetworkAvailable:NO];
         _reachability.reachableBlock = ^(Reachability *reach) {
-            [self setNetworkAvailable:YES];
-            [self addWorkItem:nil];
+            [remoteQueue setNetworkAvailable:YES];
+            [remoteQueue processNextRequest];
         };
         _reachability.unreachableBlock = ^(Reachability *reach) {
-            [self setNetworkAvailable:NO];
+            [remoteQueue setNetworkAvailable:NO];
         };
         [_reachability startNotifier];
     };
@@ -123,8 +115,7 @@
 - (void)haltRemoteSyncs {
     @synchronized (self) {
         [self stopTimer];
-        [_workQueue removeAllObjects];
-        _currentWorkItem = nil;
+        [remoteQueue resetQueue];
     }
 }
 
@@ -157,12 +148,6 @@
     [self startTimer];
 }
 
-- (void)resubmitTimer:(NSTimer *)timer {
-    @synchronized (self) {
-        [self submitNextWorkItem];
-    }
-}
-
 - (void)remoteSyncTimer:(NSTimer *)timer {
     [self resyncWithRemoteServer];
 }
@@ -176,61 +161,6 @@
     return @"NOTFOUND";
 }
 
-- (void)requeueWorkItem:(BaseRESTDelegate *)delegate {
-    @synchronized (self) {
-        if (delegate != _currentWorkItem) {
-            NSLog(@"Current work item not same as completed - how did this happen");
-        }
-        if ([delegate retries] < MAX_RETRIES) {
-            [delegate setRetries:([delegate retries] + 1)];
-            [_workQueue insertObject:delegate atIndex:0];
-            [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(resubmitTimer:) userInfo:nil repeats:NO];
-            return;
-        } else {
-            NSLog(@"Request has been tried max times already - skipping");
-        }
-        [self submitNextWorkItem];
-    }
-}
-
-- (void)completeWorkItem:(BaseRESTDelegate *)delegate {
-    @synchronized (self) {
-        if (delegate != _currentWorkItem) {
-            NSLog(@"Current work item not same as completed - how did this happen");
-        }
-        [self setLastServerResyncWithNSDateWithMillis:[NSDateWithMillis dateWithTimeIntervalFromNow:0]];
-        [self submitNextWorkItem];
-    }
-}
-
-- (void)addWorkItem:(BaseRESTDelegate *)delegate {
-    @synchronized (self) {
-        if (delegate) {
-            [_workQueue addObject:delegate];
-        }
-        if (!_currentWorkItem) {
-            [self submitNextWorkItem];
-        }
-    }
-}
-
-//  Expected to be called from function that is already synchronized
-- (void)submitNextWorkItem {
-    _currentWorkItem = nil;
-
-#if TARGET_IPHONE_SIMULATOR
-#else
-    if (!_networkAvailable) {
-        return;
-    }
-#endif
-
-    if ([_workQueue count] > 0) {
-        _currentWorkItem = [_workQueue objectAtIndex:0];
-        [_workQueue removeObjectAtIndex:0];
-        [_currentWorkItem submitRequest];
-    }
-}
 
 - (NSString *)getBaseRESTURL {
     //  TODO - more efficient
@@ -248,10 +178,6 @@
 - (NSString *)entityURLForId:(NSString *)id {
     return [[self userURL] stringByAppendingFormat:@"%@/", id];
 
-}
-
-- (NSString *)lastModifiedURL {
-    return [[self getBaseRESTURL] stringByAppendingFormat:@"%@/ModifiedSince/%@", [self getCurrentUserID], [self lastUpdateFromServerAsString]];
 }
 
 - (void)setLastServerResyncWithNSDateWithMillis:(NSDateWithMillis *)value {
@@ -367,20 +293,12 @@
 }
 
 - (void)initializeFromRemoteServer {
-    [self initializeUsersFromRemoteServer];
+    [remoteQueue addRequest:[[ReadUsersFromRemoteCoordinator alloc] init]];
 
     NSArray *objectTypes = [[NSArray alloc] initWithObjects:@"categories", @"classes", @"students", @"observations", @"photos", nil];
     for (NSString *type in objectTypes) {
-        NSURL *url = [[NSURL alloc] initWithString:[[self userURL] stringByAppendingFormat:@"%@/active", type]];
-        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
-        [self addWorkItem:[[UpdatesFromServerRESTDelegate alloc] initWithRequest:request]];
+        [remoteQueue addRequest:[[ReadCategoryFromRemoteCoordinator alloc] initWithCategory:type]];
     }
-
-    //[self setLastUpdateFromServerWithNSDateWithMillis:[[NSDateWithMillis alloc] init]];
-}
-
-- (void)initializeUsersFromRemoteServer {
-    [self addWorkItem:[[BaseRESTDelegate alloc] initWithRequest:[self generateUserLoadRequest]]];
 }
 
 - (NSURLRequest *)generateUserLoadRequest {
@@ -390,27 +308,14 @@
 }
 
 - (void)resyncWithRemoteServer {
-    //  TODO - prevent multiple items queued - better?
-    @synchronized (self) {
-        if ([_workQueue count] > 0) {
-            return;
-        }
-        [self updateFromRemoteServer];
+    [remoteQueue addRequest:[[ReadUpdatesFromRemoteCoordinator alloc] init]];
 
-        NSArray *objectTypes = [[NSArray alloc] initWithObjects:CATEGORYENTITY, CLASSLISTENTITY, STUDENTENTITY, OBSERVATIONENTITY, PHOTOENTITY, DELETEDENTITY, nil];
-        for (NSString *type in objectTypes) {
-            NSArray *dirtyEntities = [[EEYEOLocalDataStore instance] getDirtyEntities:type];
-            for (EEYEOIdObject *entity in dirtyEntities) {
-                [_restWriter saveEntityToRemote:entity];
-            }
-        }
+    NSArray *objectTypes = [[NSArray alloc] initWithObjects:CATEGORYENTITY, CLASSLISTENTITY, STUDENTENTITY, OBSERVATIONENTITY, PHOTOENTITY, DELETEDENTITY, nil];
+    for (NSString *type in objectTypes) {
+        [remoteQueue addRequest:[[WriteToRemoteCoordinator alloc] initWithCategory:type]];
     }
-}
 
-- (void)updateFromRemoteServer {
-    NSURL *url = [[NSURL alloc] initWithString:[self lastModifiedURL]];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    [self addWorkItem:[[UpdatesFromServerRESTDelegate alloc] initWithRequest:request]];
+    [remoteQueue addRequest:[[ReadUpdatesFromRemoteCoordinator alloc] init]];
 }
 
 @end

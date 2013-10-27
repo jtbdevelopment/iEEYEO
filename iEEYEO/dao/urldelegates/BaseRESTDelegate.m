@@ -40,7 +40,7 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    [[EEYEORemoteDataStore instance] requeueWorkItem:self];
+    //[[EEYEORemoteDataStore instance] requeueWorkItem:self];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -79,10 +79,10 @@
         if ([string isEqualToString:@"SUCCESS"]) {
             authenticated = YES;
         } else {
-            [[EEYEORemoteDataStore instance] requeueWorkItem:self];
+            //      [[EEYEORemoteDataStore instance] requeueWorkItem:self];
         }
     } else {
-        [[EEYEORemoteDataStore instance] requeueWorkItem:self];
+//        [[EEYEORemoteDataStore instance] requeueWorkItem:self];
     }
     return authenticated;
 }
@@ -90,7 +90,7 @@
 - (void)submitRequest {
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:_request delegate:self];
     if (!connection) {
-        [[EEYEORemoteDataStore instance] requeueWorkItem:self];
+        //      [[EEYEORemoteDataStore instance] requeueWorkItem:self];
     }
 }
 
@@ -102,7 +102,7 @@
     if ([[_response MIMEType] isEqualToString:@"text/html"]) {
         NSString *html = [[NSString alloc] initWithData:_data encoding:NSUTF8StringEncoding];
         if ([html rangeOfString:@"javascript"].location == NSNotFound) {
-            [[EEYEORemoteDataStore instance] requeueWorkItem:self];
+            //        [[EEYEORemoteDataStore instance] requeueWorkItem:self];
         } else {
             [self authenticate];
         }
@@ -115,7 +115,7 @@
                 _request = [[NSURLRequest alloc] initWithURL:newURL];
                 NSURLConnection *redirect = [NSURLConnection connectionWithRequest:_request delegate:self];
                 if (!redirect) {
-                    [[EEYEORemoteDataStore instance] requeueWorkItem:self];
+                    //              [[EEYEORemoteDataStore instance] requeueWorkItem:self];
                 }
                 return;
             }
@@ -126,7 +126,7 @@
 
 - (void)doProcessing {
     [self processUpdatesFromServer:_data];
-    [[EEYEORemoteDataStore instance] completeWorkItem:self];
+    //[[EEYEORemoteDataStore instance] completeWorkItem:self];
 }
 
 - (id)getObjectToUpdateWithType:(NSString *)localType AndId:(NSString *)id {

@@ -13,6 +13,4 @@
 
 - (instancetype)initWithCategory:(NSString *)category;
 
-+ (instancetype)coordinatorWithCategory:(NSString *)category;
-
 @end

@@ -26,12 +26,8 @@ static NSString *const JAVA_DELETED = @"com.jtbdevelopment.e_eye_o.entities.Dele
 
 static NSString *const REFRESH_FREQUENCY_KEY = @"REFRESH_FREQUENCY";
 
-static const int MAX_RETRIES = 5;
-
 @interface EEYEORemoteDataStore : NSObject
-@property BOOL networkAvailable;
 @property(nonatomic, weak) Reachability *reachability;
-
 
 + (EEYEORemoteDataStore *)instance;
 
@@ -50,12 +46,6 @@ static const int MAX_RETRIES = 5;
 - (void)resetTimer;
 
 - (NSString *)getCurrentUserID;
-
-- (void)requeueWorkItem:(BaseRESTDelegate *)delegate;
-
-- (void)completeWorkItem:(BaseRESTDelegate *)delegate;
-
-- (void)addWorkItem:(BaseRESTDelegate *)delegate;
 
 - (NSString *)userURL;
 
@@ -78,8 +68,6 @@ static const int MAX_RETRIES = 5;
 - (int)refreshFrequency;
 
 - (void)initializeFromRemoteServer;
-
-- (void)initializeUsersFromRemoteServer;
 
 - (NSURLRequest *)generateUserLoadRequest;
 

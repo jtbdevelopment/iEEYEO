@@ -17,7 +17,10 @@ static const int RETRY_TIMER = 30;
 @private
     NSMutableArray *_workQueue;
     RequestCoordinator *_currentRequest;
+    BOOL _networkAvailable;
 }
+
+@synthesize networkAvailable = _networkAvailable;
 
 + (EEYEORemoteQueue *)instance {
     static EEYEORemoteQueue *_instance = nil;
@@ -36,19 +39,38 @@ static const int RETRY_TIMER = 30;
     if (self) {
         _workQueue = [[NSMutableArray alloc] init];
         _currentRequest = nil;
+        [self setNetworkAvailable:NO];
     }
 
     return self;
 }
 
-- (void)processNextRequest {
+- (void)resetQueue {
     @synchronized (self) {
         _currentRequest = nil;
-        if ([_workQueue count] > 0) {
-            _currentRequest = [_workQueue objectAtIndex:0];
-            [_workQueue removeObjectAtIndex:0];
-            [_currentRequest setAttempts:([_currentRequest attempts] + 1)];
-            [_currentRequest doWork];
+        _workQueue = [[NSMutableArray alloc] init];
+    }
+}
+
+- (void)addRequest:(RequestCoordinator *)requestCoordinator {
+    @synchronized (self) {
+        [_workQueue addObject:requestCoordinator];
+        if (!_currentRequest) {
+            [self processNextRequest];
+        }
+    }
+}
+
+- (void)processNextRequest {
+    @synchronized (self) {
+        if ([self networkAvailable]) {
+            _currentRequest = nil;
+            if ([_workQueue count] > 0) {
+                _currentRequest = [_workQueue objectAtIndex:0];
+                [_workQueue removeObjectAtIndex:0];
+                [_currentRequest setAttempts:([_currentRequest attempts] + 1)];
+                [_currentRequest doWork];
+            }
         }
     }
 }

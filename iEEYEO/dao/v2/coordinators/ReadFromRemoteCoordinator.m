@@ -40,10 +40,9 @@
     RequestBuilder *requestBuilder = [self activeRequestBuilder];
     if (moreToFollow && [requestBuilder isKindOfClass:[PagingRequestBuilder class]]) {
         [(PagingRequestBuilder *) requestBuilder incrementPage];
+        [self doWork];
     } else {
         [self setActiveRequestBuilder:nil];
-    }
-    if (![self doWork]) {
         [self markComplete];
     }
     return YES;
