@@ -4,7 +4,6 @@
 //
 
 
-#import "RESTWriter.h"
 #import "EEYEOIdObject.h"
 #import "EEYEORemoteDataStore.h"
 #import "EntityToDictionaryHelper.h"

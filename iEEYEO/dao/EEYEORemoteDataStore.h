@@ -6,7 +6,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class BaseRESTDelegate;
 @class EEYEOIdObject;
 @class NSDateWithMillis;
 @class Reachability;
@@ -47,12 +46,6 @@ static NSString *const REFRESH_FREQUENCY_KEY = @"REFRESH_FREQUENCY";
 
 - (NSString *)getCurrentUserID;
 
-- (NSString *)userURL;
-
-- (NSString *)entityURLForObject:(EEYEOIdObject *)entity;
-
-- (NSString *)entityURLForId:(NSString *)entity;
-
 - (void)setLastServerResyncWithNSDateWithMillis:(NSDateWithMillis *)value;
 
 - (NSString *)lastServerResyncAsString;
@@ -68,8 +61,6 @@ static NSString *const REFRESH_FREQUENCY_KEY = @"REFRESH_FREQUENCY";
 - (int)refreshFrequency;
 
 - (void)initializeFromRemoteServer;
-
-- (NSURLRequest *)generateUserLoadRequest;
 
 - (void)resyncWithRemoteServer;
 

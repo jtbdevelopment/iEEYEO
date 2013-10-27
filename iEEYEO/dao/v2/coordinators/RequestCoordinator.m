@@ -8,6 +8,7 @@
 #import "RequestBuilder.h"
 #import "Reauthenticator.h"
 #import "EEYEORemoteQueue.h"
+#import "EEYEOLocalDataStore.h"
 
 @implementation RequestCoordinator {
 @private
@@ -23,6 +24,18 @@
 @synthesize activeRequestBuilder = _activeRequestBuilder;
 
 @synthesize attempts = _attempts;
+
+- (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection *)connection {
+    return YES;
+}
+
+- (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    //  TODO - Unclear if this works or even necessary
+    NSURLCredential *credential = [NSURLCredential credentialWithUser:[[EEYEOLocalDataStore instance] login]
+                                                             password:[[EEYEOLocalDataStore instance] password]
+                                                          persistence:NSURLCredentialPersistencePermanent];
+    [[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
+}
 
 - (id)init {
     self = [super init];
@@ -43,6 +56,8 @@
     if (requestBuilder) {
         [self setActiveRequestBuilder:requestBuilder];
         return [self makeRequest];
+    } else {
+        [self markComplete];
     }
 
     return NO;

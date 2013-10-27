@@ -26,7 +26,6 @@
     NSTimer *_timer;
 
     Reachability __weak *_reachability;
-
 }
 
 
@@ -161,25 +160,6 @@
     return @"NOTFOUND";
 }
 
-
-- (NSString *)getBaseRESTURL {
-    //  TODO - more efficient
-    return [[[EEYEOLocalDataStore instance] website] stringByAppendingFormat:@"users/"];
-}
-
-- (NSString *)userURL {
-    return [[self getBaseRESTURL] stringByAppendingFormat:@"%@/", [self getCurrentUserID]];
-}
-
-- (NSString *)entityURLForObject:(EEYEOIdObject *)entity {
-    return [self entityURLForId:[entity id]];
-}
-
-- (NSString *)entityURLForId:(NSString *)id {
-    return [[self userURL] stringByAppendingFormat:@"%@/", id];
-
-}
-
 - (void)setLastServerResyncWithNSDateWithMillis:(NSDateWithMillis *)value {
     @synchronized (self) {
         NSDateWithMillis *currentValue = [self lastServerResyncAsNSDateWithMillis];
@@ -299,12 +279,6 @@
     for (NSString *type in objectTypes) {
         [remoteQueue addRequest:[[ReadCategoryFromRemoteCoordinator alloc] initWithCategory:type]];
     }
-}
-
-- (NSURLRequest *)generateUserLoadRequest {
-    NSURL *url = [[NSURL alloc] initWithString:[self getBaseRESTURL]];
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
-    return request;
 }
 
 - (void)resyncWithRemoteServer {

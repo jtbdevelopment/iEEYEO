@@ -8,7 +8,6 @@
 #import "SettingsViewController.h"
 #import "EEYEOLocalDataStore.h"
 #import "EEYEORemoteDataStore.h"
-#import "BaseRESTDelegate.h"
 #import "Colors.h"
 #import "AuthenticateAndInitialize.h"
 

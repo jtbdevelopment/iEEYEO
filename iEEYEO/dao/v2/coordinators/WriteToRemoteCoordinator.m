@@ -15,10 +15,16 @@
 #import "RemoteStoreUpdateProcessor.h"
 
 
+enum WriteType : NSUInteger {
+    Create,
+    Update,
+    Delete
+};
+
 @implementation WriteToRemoteCoordinator {
 @private
     NSString *_category;
-    BOOL isDelete;
+    enum WriteType _writeType;
     EEYEOIdObject *entity;
 }
 
@@ -41,29 +47,34 @@
         return nil;
     }
 
-    isDelete = NO;
     if ([entity isKindOfClass:[EEYEODeletedObject class]]) {
-        isDelete = YES;
+        _writeType = Delete;
         return [[RequestDelete alloc] initForEntity:(EEYEODeletedObject *) entity];
     }
     if ([[entity id] isEqualToString:@""]) {
+        _writeType = Create;
         return [[RequestCreate alloc] initForEntity:entity];
     }
+    _writeType = Update;
     return [[RequestUpdate alloc] initForEntity:entity];
 }
 
 - (BOOL)processResults:(NSData *)data {
     id json = [self convertToJSON:data];
     if (!json) {
-        return NO;
-    }
-    if (isDelete) {
-        [[EEYEOLocalDataStore instance] deleteFromLocalStore:entity];
+        if (_writeType == Delete) {
+            [[EEYEOLocalDataStore instance] deleteFromLocalStore:entity];
+        } else {
+            return NO;
+        }
     }
     if ([RemoteStoreUpdateProcessor processUpdates:json] == nil) {
         return NO;
     }
-    isDelete = NO;
+    if (_writeType == Create) {
+        //  processUpdates created new one
+        [[EEYEOLocalDataStore instance] deleteFromLocalStore:entity];
+    }
     entity = nil;
     [self setActiveURLRequest:nil];
     [self setActiveRequestBuilder:nil];

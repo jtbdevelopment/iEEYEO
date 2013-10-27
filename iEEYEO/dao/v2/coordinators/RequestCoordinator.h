@@ -9,7 +9,7 @@
 @class RequestBuilder;
 
 
-@interface RequestCoordinator : NSObject <NSURLConnectionDataDelegate>
+@interface RequestCoordinator : NSObject <NSURLConnectionDataDelegate, NSURLConnectionDelegate>
 @property NSUInteger attempts;
 @property(nonatomic, retain) NSURLRequest *activeURLRequest;
 @property(nonatomic, retain) RequestBuilder *activeRequestBuilder;
