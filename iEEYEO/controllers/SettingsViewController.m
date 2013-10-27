@@ -49,6 +49,7 @@
 }
 
 - (void)viewDidLoad {
+    //  TODO - color buttons
     [super viewDidLoad];
     [_refreshStepper setMaximumValue:24.0];
     [_refreshStepper setMinimumValue:1.0];

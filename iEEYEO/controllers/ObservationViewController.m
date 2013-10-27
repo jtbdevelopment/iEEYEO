@@ -104,6 +104,12 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [self commentField].backgroundColor = [UIColor whiteColor];
     [self significantField].thumbTintColor = [Colors darkBrown];
     [self significantField].onTintColor = [Colors darkBrown];
+    [self categoriesField].backgroundColor = [Colors darkBrown];
+    [self observableField].backgroundColor = [Colors darkBrown];
+    [self timestampField].backgroundColor = [Colors darkBrown];
+    [self timestampField].layer.cornerRadius = 12.0;
+    [self observableField].layer.cornerRadius = 12.0;
+    [self categoriesField].layer.cornerRadius = 12.0;
     [[self images] setDataSource:self];
     UINib *nib = [UINib nibWithNibName:@"PhotoThumbnailCell" bundle:nil];
     [[self images] registerNib:nib forCellWithReuseIdentifier:THUMBNAIL_CELL];
