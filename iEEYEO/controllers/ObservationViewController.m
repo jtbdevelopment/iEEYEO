@@ -58,6 +58,8 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
 
     UIImagePickerController *_imagePicker;
     UIPopoverController *popover;
+    UIToolbar *_toolbar;
+    UIBarButtonItem *_trashButton;
 }
 
 @synthesize commentField = _commentField;
@@ -107,9 +109,9 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [self categoriesField].backgroundColor = [Colors darkBrown];
     [self observableField].backgroundColor = [Colors darkBrown];
     [self timestampField].backgroundColor = [Colors darkBrown];
-    [self timestampField].layer.cornerRadius = 12.0;
-    [self observableField].layer.cornerRadius = 12.0;
-    [self categoriesField].layer.cornerRadius = 12.0;
+    [self timestampField].layer.cornerRadius = 10.0;
+    [self observableField].layer.cornerRadius = 10.0;
+    [self categoriesField].layer.cornerRadius = 10.0;
     [[self images] setDataSource:self];
     UINib *nib = [UINib nibWithNibName:@"PhotoThumbnailCell" bundle:nil];
     [[self images] registerNib:nib forCellWithReuseIdentifier:THUMBNAIL_CELL];
@@ -123,6 +125,7 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [self.images setAllowsSelection:YES];
     [self.images setBackgroundColor:[Colors cream]];
     [self.images setDelegate:self];
+    [self setHidesBottomBarWhenPushed:YES];
 }
 
 - (void)didReceiveMemoryWarning {

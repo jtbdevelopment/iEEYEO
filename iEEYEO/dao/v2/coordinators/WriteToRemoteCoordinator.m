@@ -12,7 +12,6 @@
 #import "RequestDelete.h"
 #import "RequestCreate.h"
 #import "RequestUpdate.h"
-#import "RemoteStoreUpdateProcessor.h"
 
 
 enum WriteType : NSUInteger {
@@ -68,12 +67,9 @@ enum WriteType : NSUInteger {
             return NO;
         }
     }
-    if ([RemoteStoreUpdateProcessor processUpdates:json] == nil) {
-        return NO;
-    }
-    if (_writeType == Create) {
-        //  processUpdates created new one
-        [[EEYEOLocalDataStore instance] deleteFromLocalStore:entity];
+    if ([json isKindOfClass:[NSDictionary class]]) {
+        [entity loadFromDictionary:(NSDictionary *) json];
+        [[EEYEOLocalDataStore instance] updateFromRemoteStore:entity];
     }
     entity = nil;
     [self setActiveURLRequest:nil];

@@ -77,7 +77,7 @@
 - (NSString *)website {
 #if TARGET_IPHONE_SIMULATOR
     //static NSString *const DEFAULT_REST_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/";
-    static NSString *const DEFAULT_REST_URL = @"https://Josephs-MacBook-Pro.local:8443/REST/v2/";
+    static NSString *const DEFAULT_REST_URL = @"https://Josephs-MacBook-Pro.local:8443/";
     static NSString *const OLD_DEFAULT_REST_URL = @"http://Josephs-MacBook-Pro.local:8080/REST/";
 #else
     static NSString *const DEFAULT_REST_URL = @"http://www.e-eye-o.com/";

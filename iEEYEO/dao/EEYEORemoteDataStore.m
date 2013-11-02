@@ -87,7 +87,11 @@
 
         _reachability = [Reachability reachabilityWithHostname:@"www.e-eye-o.com"];
         [_reachability setReachableOnWWAN:NO];
+#if TARGET_IPHONE_SIMULATOR
+        [remoteQueue setNetworkAvailable:YES];
+#else
         [remoteQueue setNetworkAvailable:NO];
+#endif
         _reachability.reachableBlock = ^(Reachability *reach) {
             [remoteQueue setNetworkAvailable:YES];
             [remoteQueue processNextRequest];

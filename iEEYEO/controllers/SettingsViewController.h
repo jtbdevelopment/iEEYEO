@@ -28,6 +28,7 @@ static NSString *const CANCEL_OR_TEST_CONNECTION = @"Press to Cancel Changes or 
 @property(nonatomic, retain) IBOutlet UIButton *editConnections;
 @property(nonatomic, retain) IBOutlet UIButton *resyncButton;
 @property(nonatomic, retain) IBOutlet UIButton *resetButton;
+@property(nonatomic, retain) IBOutlet UIButton *testButton;
 
 + (BOOL)forceConnectionSettings;
 

@@ -63,14 +63,18 @@ static const int RETRY_TIMER = 30;
 
 - (void)processNextRequest {
     @synchronized (self) {
-        if ([self networkAvailable]) {
-            _currentRequest = nil;
-            if ([_workQueue count] > 0) {
-                _currentRequest = [_workQueue objectAtIndex:0];
-                [_workQueue removeObjectAtIndex:0];
-                [_currentRequest setAttempts:([_currentRequest attempts] + 1)];
-                [_currentRequest doWork];
-            }
+#if TARGET_IPHONE_SIMULATOR
+#else
+        if (![self networkAvailable]) {
+            return;
+        }
+#endif
+        _currentRequest = nil;
+        if ([_workQueue count] > 0) {
+            _currentRequest = [_workQueue objectAtIndex:0];
+            [_workQueue removeObjectAtIndex:0];
+            [_currentRequest setAttempts:([_currentRequest attempts] + 1)];
+            [_currentRequest doWork];
         }
     }
 }

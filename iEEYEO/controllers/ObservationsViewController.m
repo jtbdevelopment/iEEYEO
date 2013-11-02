@@ -57,6 +57,7 @@
 
     [self tableView].backgroundColor = [Colors cream];
     [self tableView].separatorColor = [Colors darkBrown];
+    [self setHidesBottomBarWhenPushed:YES];
 }
 
 - (void)didReceiveMemoryWarning {

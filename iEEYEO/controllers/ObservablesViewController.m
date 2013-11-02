@@ -49,9 +49,9 @@
     [[self collectionView] setDataSource:self];
     [[self collectionView] setDelegate:self];
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addObservable:)];
-    UIBarButtonItem *deleteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteObservable:)];
-    UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editObservable:)];
+//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addObservable:)];
+//    UIBarButtonItem *deleteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteObservable:)];
+//    UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(editObservable:)];
 //  TODO - make buttons work
 //    self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:addButton, editButton, deleteButton, nil];
 
@@ -62,14 +62,14 @@
     }
 }
 
-- (void)addObservable:(id)sender {
-}
+//- (void)addObservable:(id)sender {
+//}
 
-- (void)deleteObservable:(id)sender {
-}
+//- (void)deleteObservable:(id)sender {
+//}
 
-- (void)editObservable:(id)sender {
-}
+//- (void)editObservable:(id)sender {
+//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

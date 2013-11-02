@@ -27,6 +27,9 @@
     UILabel *_local;
 
     NSTimer *_timer;
+    UIButton *_resyncButton;
+    UIButton *_resetButton;
+    UIButton *_editConnections;
 }
 
 @synthesize refreshFrequency = _refreshFrequency;
@@ -37,6 +40,11 @@
 @synthesize website = _website;
 @synthesize refreshStepper = _refreshStepper;
 @synthesize local = _local;
+
+@synthesize resyncButton = _resyncButton;
+@synthesize resetButton = _resetButton;
+
+@synthesize editConnections = _editConnections;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -49,12 +57,22 @@
 }
 
 - (void)viewDidLoad {
-    //  TODO - color buttons
+    //  TODO - common styling function
     [super viewDidLoad];
     [_refreshStepper setMaximumValue:24.0];
     [_refreshStepper setMinimumValue:1.0];
     [_refreshStepper setStepValue:1.0];
     [_editConnections setTitle:CHANGE_CONNECTION forState:UIControlStateNormal];
+
+    [self editConnections].backgroundColor = [Colors darkBrown];
+    [self resetButton].backgroundColor = [Colors darkBrown];
+    [self resyncButton].backgroundColor = [Colors darkBrown];
+    [self testButton].backgroundColor = [Colors darkBrown];
+
+    [self resyncButton].layer.cornerRadius = 10.0;
+    [self resetButton].layer.cornerRadius = 10.0;
+    [self editConnections].layer.cornerRadius = 10.0;
+    [self testButton].layer.cornerRadius = 10.0;
     [[self view] setBackgroundColor:[Colors cream]];
     [self setTitle:@"Settings"];
 }
