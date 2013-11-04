@@ -85,7 +85,7 @@
                     <rect key="frame" x="310" y="285" width="51" height="31"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </switch>
-                <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="TopLeft" misplaced="YES" pagingEnabled="YES" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="204">
+                <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="TopLeft" pagingEnabled="YES" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="204">
                     <rect key="frame" x="20" y="329" width="728" height="642"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <rect key="contentStretch" x="0.0" y="0.0" width="0.0" height="0.0"/>
@@ -154,7 +154,7 @@
                 <constraint firstItem="Ejg-I9-DcE" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="3ES-6R-UcX"/>
                 <constraint firstAttribute="bottom" secondItem="Ejg-I9-DcE" secondAttribute="bottom" id="Gb0-cv-7sP"/>
                 <constraint firstAttribute="trailing" secondItem="Ejg-I9-DcE" secondAttribute="trailing" id="ff7-id-854"/>
-                <constraint firstItem="Ejg-I9-DcE" firstAttribute="top" secondItem="204" secondAttribute="bottom" id="miX-LZ-dst"/>
+                <constraint firstItem="Ejg-I9-DcE" firstAttribute="top" secondItem="204" secondAttribute="bottom" constant="9" id="kfD-qD-epw"/>
                 <constraint firstAttribute="centerX" secondItem="Ejg-I9-DcE" secondAttribute="centerX" id="nED-kW-HsW"/>
             </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>

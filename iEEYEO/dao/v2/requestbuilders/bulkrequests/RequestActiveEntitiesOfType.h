@@ -16,9 +16,6 @@
 
 - (instancetype)initWithCategory:(NSString *)category;
 
-+ (instancetype)typeWithCategory:(NSString *)category;
-
-
 + (instancetype)requestWithCategory:(NSString *)category AndPageNumber:(int)pageNumber;
 
 @end
