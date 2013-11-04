@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="4510" systemVersion="12F45" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="4514" systemVersion="12F45" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment defaultVersion="1552" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3746"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ObservationViewController">
             <connections>
-                <outlet property="cameraButton" destination="284" id="331"/>
+                <outlet property="cameraButton" destination="yt0-2i-4lr" id="6XB-zS-dEA"/>
                 <outlet property="categoriesField" destination="71" id="132"/>
                 <outlet property="commentField" destination="4" id="25"/>
                 <outlet property="images" destination="204" id="216"/>
@@ -85,14 +85,10 @@
                     <rect key="frame" x="310" y="285" width="51" height="31"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </switch>
-                <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="TopLeft" pagingEnabled="YES" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="204">
-                    <rect key="frame" x="20" y="329" width="728" height="640"/>
+                <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="TopLeft" misplaced="YES" pagingEnabled="YES" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="204">
+                    <rect key="frame" x="20" y="329" width="728" height="642"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <rect key="contentStretch" x="0.0" y="0.0" width="0.0" height="0.0"/>
-                    <constraints>
-                        <constraint firstAttribute="height" priority="238" constant="582" id="306"/>
-                        <constraint firstAttribute="height" constant="640" id="920"/>
-                    </constraints>
                     <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="5" minimumInteritemSpacing="1" id="205">
                         <size key="itemSize" width="160" height="160"/>
                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -101,27 +97,26 @@
                     </collectionViewFlowLayout>
                     <cells/>
                 </collectionView>
-                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="283">
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ejg-I9-DcE">
                     <rect key="frame" x="0.0" y="980" width="768" height="44"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <items>
-                        <barButtonItem systemItem="trash" id="328">
+                        <barButtonItem systemItem="trash" id="9dk-ZX-OZg">
                             <connections>
-                                <action selector="trash:" destination="-1" id="334"/>
+                                <action selector="trash:" destination="-1" id="Qk2-K4-3Zu"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem systemItem="camera" id="284">
+                        <barButtonItem systemItem="camera" id="yt0-2i-4lr">
                             <connections>
-                                <action selector="camera:" destination="-1" id="333"/>
+                                <action selector="camera:" destination="-1" id="JdV-SH-vVw"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem systemItem="action" id="297">
+                        <barButtonItem systemItem="organize" id="bPM-qc-u94">
                             <connections>
-                                <action selector="photos:" destination="-1" id="332"/>
+                                <action selector="photos:" destination="-1" id="RQr-aw-Dx0"/>
                             </connections>
                         </barButtonItem>
                     </items>
-                    <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </toolbar>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Significant:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="342">
                     <rect key="frame" x="213" y="290" width="89" height="21"/>
@@ -140,9 +135,6 @@
                 <constraint firstItem="4" firstAttribute="trailing" secondItem="2" secondAttribute="trailing" id="246"/>
                 <constraint firstAttribute="trailing" secondItem="204" secondAttribute="trailing" constant="20" symbolic="YES" id="260"/>
                 <constraint firstItem="204" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="20" symbolic="YES" id="261"/>
-                <constraint firstItem="283" firstAttribute="trailing" secondItem="2" secondAttribute="trailing" id="335"/>
-                <constraint firstItem="283" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="337"/>
-                <constraint firstItem="283" firstAttribute="bottom" secondItem="2" secondAttribute="bottom" id="339"/>
                 <constraint firstItem="4" firstAttribute="top" secondItem="2" secondAttribute="top" id="408"/>
                 <constraint firstItem="102" firstAttribute="leading" secondItem="342" secondAttribute="trailing" constant="8" symbolic="YES" id="693"/>
                 <constraint firstItem="94" firstAttribute="leading" secondItem="102" secondAttribute="trailing" constant="8" symbolic="YES" id="713"/>
@@ -159,6 +151,11 @@
                 <constraint firstItem="94" firstAttribute="top" secondItem="4" secondAttribute="bottom" constant="8" symbolic="YES" id="918"/>
                 <constraint firstItem="71" firstAttribute="top" secondItem="4" secondAttribute="bottom" constant="8" symbolic="YES" id="921"/>
                 <constraint firstItem="204" firstAttribute="top" secondItem="87" secondAttribute="bottom" constant="8" symbolic="YES" id="922"/>
+                <constraint firstItem="Ejg-I9-DcE" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="3ES-6R-UcX"/>
+                <constraint firstAttribute="bottom" secondItem="Ejg-I9-DcE" secondAttribute="bottom" id="Gb0-cv-7sP"/>
+                <constraint firstAttribute="trailing" secondItem="Ejg-I9-DcE" secondAttribute="trailing" id="ff7-id-854"/>
+                <constraint firstItem="Ejg-I9-DcE" firstAttribute="top" secondItem="204" secondAttribute="bottom" id="miX-LZ-dst"/>
+                <constraint firstAttribute="centerX" secondItem="Ejg-I9-DcE" secondAttribute="centerX" id="nED-kW-HsW"/>
             </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>
         </view>
