@@ -90,7 +90,7 @@
 #if TARGET_IPHONE_SIMULATOR
         [remoteQueue setNetworkAvailable:YES];
 #else
-        [remoteQueue setNetworkAvailable:NO];
+        [remoteQueue setNetworkAvailable:[[Reachability reachabilityForLocalWiFi] isReachable]];
 #endif
         _reachability.reachableBlock = ^(Reachability *reach) {
             [remoteQueue setNetworkAvailable:YES];

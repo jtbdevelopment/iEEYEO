@@ -101,16 +101,19 @@
                     <rect key="frame" x="0.0" y="980" width="768" height="44"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <items>
+                        <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="ZBN-um-CJj"/>
                         <barButtonItem systemItem="trash" id="9dk-ZX-OZg">
                             <connections>
                                 <action selector="trash:" destination="-1" id="Qk2-K4-3Zu"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="8vh-fw-hVI"/>
                         <barButtonItem systemItem="camera" id="yt0-2i-4lr">
                             <connections>
                                 <action selector="camera:" destination="-1" id="JdV-SH-vVw"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="4wq-T1-AEX"/>
                         <barButtonItem systemItem="organize" id="bPM-qc-u94">
                             <connections>
                                 <action selector="photos:" destination="-1" id="RQr-aw-Dx0"/>
