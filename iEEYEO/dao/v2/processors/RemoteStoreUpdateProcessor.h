@@ -9,6 +9,13 @@
 @class NSDateWithMillis;
 
 
+static NSString *const LASTTIMESTAMPKEY = @"lastTimestamp";
+
+static NSString *const LASTIDKEY = @"lastId";
+
 @interface RemoteStoreUpdateProcessor : NSObject
-+ (NSDateWithMillis *)processUpdates:(id)unknownUpdates;
+//  Returns dictionary with two values:
+//    last timestamp - key = "lastTimestamp"
+//    last id associated with timestamp - key = "lastId";
++ (NSDictionary *)processUpdates:(id)unknownUpdates;
 @end

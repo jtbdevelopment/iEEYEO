@@ -16,7 +16,7 @@
 @implementation RemoteStoreUpdateProcessor {
 
 }
-+ (NSDateWithMillis *)processUpdates:(id)unknownUpdates {
++ (NSDictionary *)processUpdates:(id)unknownUpdates {
     static NSString *lock = @"RemoteStoreUpdateProcessor.LOCK";
     @synchronized (lock) {
         NSArray *updates;
@@ -25,17 +25,22 @@
         } else {
             updates = unknownUpdates;
         }
-        NSDateWithMillis *lastModTS = [[NSDateWithMillis alloc] init];
+        NSMutableDictionary *results = [[NSMutableDictionary alloc] init];
+        NSDateWithMillis *lastModTS = [[EEYEORemoteDataStore instance] lastUpdateFromServerAsNSDateWithMillis];
+        NSString *lastId = [[EEYEORemoteDataStore instance] lastUpdateIdFromServer];
         for (NSDictionary *update in updates) {
             EEYEOIdObject *local = [self processJSONEntity:update];
             if (local) {
                 NSDateWithMillis *modified = [local modificationTimestampToNSDateWithMillis];
                 if ([modified compare:lastModTS] == NSOrderedDescending) {
                     lastModTS = modified;
+                    lastId = [local id];
                 }
             }
         }
-        return lastModTS;
+        [results setObject:lastModTS forKey:LASTTIMESTAMPKEY];
+        [results setObject:lastId forKey:LASTIDKEY];
+        return results;
     }
 }
 
@@ -49,7 +54,7 @@
 }
 
 + (id)processSaveOrUpdateFor:(NSDictionary *)update OfType:(NSString *)entityType {
-    //  TODO - this works under an assumptions which are wrong
+    //  TODO - this works under an assumption which is wrong
     //    a.  That there are no active entities linked to archived entities
     //         (i.e. no active observation on an archived student)
     //         not always true with current server

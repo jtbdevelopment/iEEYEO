@@ -12,6 +12,7 @@
 
 static NSString *const LAST_MODTS_KEY = @"LAST_SERVER_MODTS";
 static NSString *const LAST_MODTSMILLIS_KEY = @"LAST_SERVER_MODTSMILLIS";
+static NSString *const LAST_MODID_KEY = @"LAST_SERVER_MODID";
 static NSString *const LAST_RESYNC_KEY = @"LAST_SERVER_RESYNC";
 static NSString *const LAST_RESYNCMILLIS_KEY = @"LAST_SERVER_RESYNCMILLIS";
 
@@ -50,11 +51,13 @@ static NSString *const REFRESH_FREQUENCY_KEY = @"REFRESH_FREQUENCY";
 
 - (NSString *)lastServerResyncAsString;
 
-- (void)setLastUpdateFromServerWithNSDateWithMillis:(NSDateWithMillis *)value;
+- (void)setLastUpdateFromServerWithNSDateWithMillis:(NSDateWithMillis *)value AndId:(NSString *)id;
 
 - (NSString *)lastUpdateFromServerAsString;
 
 - (NSDateWithMillis *)lastUpdateFromServerAsNSDateWithMillis;
+
+- (NSString *)lastUpdateIdFromServer;
 
 - (void)setRefreshFrequency:(int)frequency;
 

@@ -30,11 +30,13 @@
         return NO;
     }
 
-    NSDateWithMillis *lastMillis = [RemoteStoreUpdateProcessor processUpdates:entities];
+    NSDictionary *results = [RemoteStoreUpdateProcessor processUpdates:entities];
+    NSDateWithMillis *lastMillis = [results objectForKey:LASTTIMESTAMPKEY];
+    NSString *lastId = [results objectForKey:LASTIDKEY];
     if (lastMillis == nil) {
         return NO;
     }
-    [[EEYEORemoteDataStore instance] setLastUpdateFromServerWithNSDateWithMillis:lastMillis];
+    [[EEYEORemoteDataStore instance] setLastUpdateFromServerWithNSDateWithMillis:lastMillis AndId:lastId];
 
     [self setActiveURLRequest:nil];
     RequestBuilder *requestBuilder = [self activeRequestBuilder];

@@ -103,7 +103,10 @@
     };
 
     if ([[self lastUpdateFromServer] count] == 0) {
-        [self setLastUpdateFromServerWithNSDateWithMillis:[[NSDateWithMillis alloc] init]];
+        [self setLastUpdateFromServerWithNSDateWithMillis:[[NSDateWithMillis alloc] init] AndId:@""];
+    }
+    if ([self lastUpdateIdFromServer] == nil) {
+        [self setLastUpdateFromServerWithNSDateWithMillis:[self lastServerResyncAsNSDateWithMillis] AndId:@""];
     }
     if ([[self lastServerResync] count] == 0) {
         [self setLastServerResyncWithNSDateWithMillis:[[NSDateWithMillis alloc] init]];
@@ -209,7 +212,11 @@
     return array;
 }
 
-- (void)setLastUpdateFromServerWithNSDateWithMillis:(NSDateWithMillis *)value {
+- (NSString *)lastUpdateIdFromServer {
+    return [[NSUserDefaults standardUserDefaults] stringForKey:LAST_MODID_KEY];
+}
+
+- (void)setLastUpdateFromServerWithNSDateWithMillis:(NSDateWithMillis *)value AndId:(NSString *)id {
     @synchronized (self) {
         NSDateWithMillis *currentValue = [self lastUpdateFromServerAsNSDateWithMillis];
         if ([currentValue compare:value] != NSOrderedAscending) {
@@ -218,6 +225,7 @@
         NSMutableArray *strings = [[NSMutableArray alloc] init];
         [strings addObject:[_dateFormatter stringFromDate:[value date]]];
         [strings addObject:[_numberFormatter stringFromNumber:[[NSNumber alloc] initWithInt:[value millis]]]];
+        [strings addObject:id];
         [self setLastUpdateFromServer:strings];
     }
 }
@@ -226,6 +234,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:[values objectAtIndex:0] forKey:LAST_MODTS_KEY];
     [defaults setObject:[values objectAtIndex:1] forKey:LAST_MODTSMILLIS_KEY];
+    [defaults setObject:[values objectAtIndex:2] forKey:LAST_MODID_KEY];
     [defaults synchronize];
 }
 

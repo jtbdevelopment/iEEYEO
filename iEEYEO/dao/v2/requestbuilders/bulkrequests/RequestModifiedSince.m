@@ -12,7 +12,8 @@
 
 }
 - (NSString *)restLastModifiedSinceURL {
-    return [[self restUserURL] stringByAppendingFormat:@"ModifiedSince/%@", [[EEYEORemoteDataStore instance] lastUpdateFromServerAsString]];
+    EEYEORemoteDataStore *store = [EEYEORemoteDataStore instance];
+    return [[self restUserURL] stringByAppendingFormat:@"ModifiedSince/%@?lastIdSeen=%@", [store lastUpdateFromServerAsString], [store lastUpdateIdFromServer]];
 }
 
 - (NSURLRequest *)createNSURLRequest {
