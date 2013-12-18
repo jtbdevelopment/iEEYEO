@@ -11,10 +11,10 @@
 @implementation EntityToDictionaryHelper
 
 + (void)writeEntity:(EEYEOIdObject *)entity ToForm:(NSMutableURLRequest *)request {
-    [EntityToDictionaryHelper writeDictionary:[EntityToDictionaryHelper getDictionary:entity] ForEntity:entity ToForm:request];
+    [EntityToDictionaryHelper writeDictionary:[EntityToDictionaryHelper getDictionary:entity] ToForm:request];
 }
 
-+ (void)writeDictionary:(NSMutableDictionary *)dictionary ForEntity:(EEYEOIdObject *)entity ToForm:(NSMutableURLRequest *)request {
++ (void)writeDictionary:(NSMutableDictionary *)dictionary ToForm:(NSMutableURLRequest *)request {
     NSError *error;
     NSOutputStream *stream = [[NSOutputStream alloc] initToMemory];
     [stream open];

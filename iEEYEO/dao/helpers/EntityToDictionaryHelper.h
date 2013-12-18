@@ -13,5 +13,5 @@
 @interface EntityToDictionaryHelper : NSObject
 + (void)writeEntity:(EEYEOIdObject *)entity ToForm:(NSMutableURLRequest *)request;
 
-+ (void)writeDictionary:(NSMutableDictionary *)dictionary ForEntity:(EEYEOIdObject *)entity ToForm:(NSMutableURLRequest *)request;
++ (void)writeDictionary:(NSMutableDictionary *)dictionary ToForm:(NSMutableURLRequest *)request;
 @end
