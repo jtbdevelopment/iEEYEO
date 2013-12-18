@@ -5,7 +5,6 @@
 
 
 #import "EEYEOIdObject.h"
-#import "EEYEORemoteDataStore.h"
 #import "EntityToDictionaryHelper.h"
 
 
@@ -23,10 +22,6 @@
     [stream close];
     NSData *streamData = [stream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
     NSString *form = [[NSString alloc] initWithFormat:@"appUserOwnedObject=%@", [[NSString alloc] initWithData:streamData encoding:NSASCIIStringEncoding]];
-
-    //  TODO - hack to do with JSON parser requiring entity type being first field
-    NSString *replacement = [[NSString alloc] initWithFormat:@"{ \"entityType\": \"%@\",", [[EEYEORemoteDataStore iosToJavaEntityMap] valueForKey:[[entity class] description]]];
-    form = [form stringByReplacingOccurrencesOfString:@"appUserOwnedObject={" withString:replacement];
 
     char const *bytes = [form UTF8String];
     [request setHTTPBody:[NSData dataWithBytes:bytes length:[form length]]];

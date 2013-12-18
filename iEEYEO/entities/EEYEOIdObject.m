@@ -69,6 +69,7 @@
 - (void)writeToDictionary:(NSMutableDictionary *)dictionary {
     [dictionary setValue:[self id] forKey:JSON_ID];
     [dictionary setValue:[self modificationTimestampToJoda] forKey:JSON_MODIFICATIONTS];
+    [dictionary setValue:[[EEYEORemoteDataStore iosToJavaEntityMap] valueForKey:[[self class] description]] forKey:JSON_ENTITY];
 }
 
 - (void)setModificationTimestampFromNSDateWithMillis:(NSDateWithMillis *)date {
