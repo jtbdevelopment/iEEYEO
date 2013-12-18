@@ -21,7 +21,7 @@
     [NSJSONSerialization writeJSONObject:dictionary toStream:stream options:NSJSONWritingPrettyPrinted error:&error];
     [stream close];
     NSData *streamData = [stream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
-    NSString *form = [[NSString alloc] initWithFormat:@"appUserOwnedObject=%@", [[NSString alloc] initWithData:streamData encoding:NSASCIIStringEncoding]];
+    NSString *form = [[NSString alloc] initWithData:streamData encoding:NSASCIIStringEncoding];
 
     char const *bytes = [form UTF8String];
     [request setHTTPBody:[NSData dataWithBytes:bytes length:[form length]]];
