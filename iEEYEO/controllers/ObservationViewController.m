@@ -18,6 +18,7 @@
 #import "PhotoThumbnailCell.h"
 #import "PhotoThumbnailViewLayout.h"
 #import "NSDateWithMillis.h"
+#import "CopyObservationViewController.h"
 
 //  TODO - make this all look a heck of lot nicer
 //  TODO - look into custom inputs for setting fields instead of more screens
@@ -31,7 +32,8 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     Observable,
     Categories,
     Timestamp,
-    Image
+    Image,
+    CopyObservation
 };
 
 @implementation ObservationViewController {
@@ -58,8 +60,6 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
 
     UIImagePickerController *_imagePicker;
     UIPopoverController *popover;
-    UIToolbar *_toolbar;
-    UIBarButtonItem *_trashButton;
 }
 
 @synthesize commentField = _commentField;
@@ -118,9 +118,11 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
     [[self images] setCollectionViewLayout:[[PhotoThumbnailViewLayout alloc] init]];
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)];
     UIBarButtonItem *resetButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemUndo target:self action:@selector(reset:)];
+    UIBarButtonItem *copyButton = [[UIBarButtonItem alloc] initWithTitle:@"Copy" style:UIBarButtonItemStylePlain target:self action:@selector(copy:)];
     doneButton.title = @"Done";
     resetButton.title = @"Reset";
-    [[self navigationItem] setRightBarButtonItems:[NSArray arrayWithObjects:doneButton, resetButton, nil] animated:YES];
+    copyButton.title = @"Copy";
+    [[self navigationItem] setRightBarButtonItems:[NSArray arrayWithObjects:doneButton, resetButton, copyButton, nil] animated:YES];
     [self.images setOpaque:NO];
     [self.images setAllowsSelection:YES];
     [self.images setBackgroundColor:[Colors cream]];
@@ -159,6 +161,7 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
             [self updateTimestampField];
             break;
         case Image:
+        case CopyObservation:
             break;
     }
     _childPopping = None;
@@ -197,6 +200,7 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
             [self updateTimestampField];
             break;
         case Image:
+        case CopyObservation:
             break;
     }
     _childPopping = None;
@@ -265,6 +269,15 @@ typedef NS_ENUM(NSInteger, ChildPopping) {
 - (void)reset:(id)sender {
     [self setObservation:_observation AndIsNew:_newObservation];
     [self viewWillAppear:NO];
+}
+
+- (void)copy:(id)sender {
+    CopyObservationViewController *copyObservationViewController = [[CopyObservationViewController alloc] init];
+    [copyObservationViewController setManagedObjectContext:[self managedObjectContext]];
+    [copyObservationViewController setObservable:_observable];
+    [copyObservationViewController setObservation:_observation];
+    _childPopping = CopyObservation;
+    [[self navigationController] pushViewController:copyObservationViewController animated:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
