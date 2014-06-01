@@ -78,11 +78,9 @@
 
         _dateFormatter = [[NSDateFormatter alloc] init];
         [_dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
+        [_dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
 
         _numberFormatter = [[NSNumberFormatter alloc] init];
-        //  TODO??
-        //[_dateFormatter setCalendar:[[NSCalendar alloc] initWithCalendarIdentifier:@"GMT"]];
-
         _timer = nil;
 
         _reachability = [Reachability reachabilityWithHostname:@"www.e-eye-o.com"];
