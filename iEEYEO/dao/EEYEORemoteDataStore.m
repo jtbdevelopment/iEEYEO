@@ -188,7 +188,7 @@
 - (NSString *)lastServerResyncAsString {
     NSDateWithMillis *dateWithMillis = [self lastServerResyncAsNSDateWithMillis];
     NSString *string = [_dateFormatter stringFromDate:[dateWithMillis date]];
-    return [string stringByAppendingFormat:@".%03d", [dateWithMillis millis]];
+    return [string stringByAppendingFormat:@".%03dZ", [dateWithMillis millis]];
 }
 
 - (NSDateWithMillis *)lastServerResyncAsNSDateWithMillis {
@@ -239,7 +239,7 @@
 - (NSString *)lastUpdateFromServerAsString {
     NSDateWithMillis *dateWithMillis = [self lastUpdateFromServerAsNSDateWithMillis];
     NSString *string = [_dateFormatter stringFromDate:[dateWithMillis date]];
-    return [string stringByAppendingFormat:@".%03d", [dateWithMillis millis]];
+    return [string stringByAppendingFormat:@".%03dZ", [dateWithMillis millis]];
 }
 
 - (NSDateWithMillis *)lastUpdateFromServerAsNSDateWithMillis {
@@ -284,6 +284,7 @@
 }
 
 - (void)initializeFromRemoteServer {
+    [self setLastUpdateFromServerWithNSDateWithMillis:[NSDateWithMillis dateWithTimeIntervalFromNow:0] AndId:@""];
     [remoteQueue addRequest:[[ReadUsersFromRemoteCoordinator alloc] init]];
 
     NSArray *objectTypes = [[NSArray alloc] initWithObjects:@"categories", @"classes", @"students", @"observations", @"photos", nil];
