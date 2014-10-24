@@ -151,7 +151,13 @@
     if ([object isKindOfClass:[EEYEOAppUserOwnedObject class]]) {
         EEYEOAppUserOwnedObject *owned = (EEYEOAppUserOwnedObject *) object;
         [[owned appUser] removeOwnedObjectsObject:owned];
+        NSSet *photos = [[NSSet alloc] initWithSet:[owned photos]];
+        for (EEYEOPhoto *photo in photos) {
+            [[photo photoFor] removePhotosObject:photo];
+            [context deleteObject:photo];
+        }
     }
+
     if ([object isKindOfClass:[EEYEOObservation class]]) {
         EEYEOObservation *obs = (EEYEOObservation *) object;
         [[obs observable] removeObservationsObject:obs];
@@ -160,6 +166,29 @@
             [category removeObservationsObject:obs];
         }
     }
+
+    if ([object isKindOfClass:[EEYEOObservable class]]) {
+        EEYEOObservable *observable = (EEYEOObservable *) object;
+        NSSet *observations = [[NSSet alloc] initWithSet:[observable observations]];
+        for (EEYEOObservation *observation in observations) {
+            NSSet *categories = [[NSSet alloc] initWithSet:[observation categories]];
+            for (EEYEOObservationCategory *category in categories) {
+                [category removeObservationsObject:observation];
+            }
+            [[observation observable] removeObservationsObject:observation];
+            [context deleteObject:observation];
+        }
+        [observable removeObservations:observations];
+    }
+
+    if ([object isKindOfClass:[EEYEOClassList class]]) {
+        EEYEOClassList *classList = (EEYEOClassList *) object;
+        NSSet *students = [[NSSet alloc] initWithSet:[classList photos]];
+        for (EEYEOStudent *student in students) {
+            [student removeClassListsObject:classList];
+        }
+    }
+
     if ([object isKindOfClass:[EEYEOStudent class]]) {
         EEYEOStudent *student = (EEYEOStudent *) object;
         NSSet *classes = [[NSSet alloc] initWithSet:[student classLists]];
@@ -167,10 +196,12 @@
             [classList removeStudentsObject:student];
         }
     }
+
     if ([object isKindOfClass:[EEYEOPhoto class]]) {
         EEYEOPhoto *photo = (EEYEOPhoto *) object;
         [[photo photoFor] removePhotosObject:photo];
     }
+
     [context deleteObject:object];
     [self saveContext:object];
 }
